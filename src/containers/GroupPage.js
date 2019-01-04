@@ -26,7 +26,10 @@ class GroupPage extends React.Component {
     const group = this.props.data.Group;
     if (!group) return <div>Loading</div>;
     const groupEmail = `${group.slug}@${env.DOMAIN}`;
-    const joinGroupEmail = `${group.slug}/follow@${env.DOMAIN}`;
+    const joinGroupEmail = `${group.slug}/follow@${env.DOMAIN}?subject=${encodeURIComponent(
+      `Follow ${group.name}`,
+    )}&body=${encodeURIComponent('Just send this email to start following this group')}`;
+
     const actions = [
       { label: 'follow', mailto: joinGroupEmail, style: 'standard' },
       { label: '+ New Thread', mailto: groupEmail },
