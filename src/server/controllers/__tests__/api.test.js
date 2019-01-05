@@ -43,7 +43,7 @@ describe('controllers.api', () => {
     };
     const res = {
       redirect: path => {
-        expect(path).toMatch(/^\/testgroup\/[0-9]+/);
+        expect(path).toMatch(/^\/testgroup\/.+(-[0-9]+)$/);
       },
     };
     try {

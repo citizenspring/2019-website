@@ -143,12 +143,44 @@ module.exports = (sequelize, DataTypes) => {
    *   - sender and all recipients (To, Cc) added as followers of the Post
    */
   Post.createFromEmail = async email => {
-    const { groupSlug, tags, recipients, ParentPostId, PostId } = libemail.parseHeaders(email);
+    const { groupSlug, tags, recipients, action, ParentPostId, PostId } = libemail.parseHeaders(email);
     const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
     const userData = extractNamesAndEmailsFromString(email.From)[0];
     const user = await models.User.findOrCreate(userData);
 
     let group = await models.Group.findBySlug(groupSlug);
+
+    if (action === 'follow') {
+      if (!group) {
+        console.error(`Can't follow ${groupSlug}: group not found`);
+        return;
+      }
+      if (PostId) {
+        // Follow thread
+        const post = await models.Post.findById(PostId);
+        if (!post) {
+          console.error(`Can't follow PostId ${PostId}: post not found`);
+          return;
+        }
+        const postUrl = await post.getUrl();
+        const data = {
+          groupSlug,
+          postUrl,
+          post,
+          unsubscribe: { label: 'Unfollow this thread', data: { PostId } },
+        };
+        await libemail.sendTemplate('followThread', data, email.sender);
+        return;
+      } else {
+        // Follow group
+        const data = {
+          groupSlug,
+          unsubscribe: { label: 'Unfollow this group', data: { GroupId: group.GroupId } },
+        };
+        await libemail.sendTemplate('followGroup', data, email.sender);
+        return;
+      }
+    }
 
     // If the group doesn't exist, we create it and add the recipients as admins and followers
     if (!group) {
@@ -157,6 +189,10 @@ module.exports = (sequelize, DataTypes) => {
       await group.addFollowers(recipients);
       const followers = await group.getFollowers();
       await libemail.sendTemplate('groupCreated', { group, followers }, user.email);
+      // if the email is the default email, we don't create the post
+      if (email.subject === 'Create a new working group') {
+        return;
+      }
     } else {
       // If the group exists and if the email is empty,
       if (isEmpty(email.subject) || isEmpty(email['stripped-text'])) {

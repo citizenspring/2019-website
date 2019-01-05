@@ -50,7 +50,7 @@ export async function publishEmail(req, res, next) {
   const post = await models.Post.createFromEmail(email);
   let redirect = `/${groupSlug}`;
   if (post) {
-    redirect += `/${post.id}`;
+    redirect += `/${post.slug}`;
   }
   return res.redirect(redirect);
 }

@@ -7,7 +7,7 @@ import { get } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('webhook');
 
-async function handleFirstTimeUser(groupSlug, email) {
+async function handleFirstTimeUser(email, data) {
   if (!email['message-url']) {
     throw new Error('Invalid webhook payload: missing "message-url"');
   }
@@ -17,10 +17,8 @@ async function handleFirstTimeUser(groupSlug, email) {
 
   const tokenData = { messageId, mailServer };
   const token = createJwt('emailConfirmation', tokenData, '1h');
-  const data = {
-    groupSlug,
-    confirmationUrl: `${config.server.baseUrl}/api/publishEmail?groupSlug=${groupSlug}&token=${token}`,
-  };
+  data.confirmationUrl = `${config.server.baseUrl}/api/publishEmail?groupSlug=${data.groupSlug}&token=${token}`;
+
   if (isEmpty(email['stripped-text'])) {
     return await libemail.sendTemplate('confirmJoinGroup', data, email.sender);
   } else {
@@ -28,12 +26,6 @@ async function handleFirstTimeUser(groupSlug, email) {
       text: email['stripped-text'],
       html: email['stripped-html'],
     };
-    const group = await models.Group.findBySlug(groupSlug);
-    if (!group) {
-      data.action = `create the ${groupSlug} group`;
-    } else {
-      data.action = `post my email to the ${groupSlug} group`;
-    }
     return await libemail.sendTemplate('confirmEmail', data, email.sender);
   }
 }
@@ -55,36 +47,18 @@ export default async function webhook(req, res, next) {
     return res.send('ok');
   }
 
+  const group = await models.Group.findBySlug(groupSlug);
+  let data = { groupSlug, action: {} };
+  if (!group) {
+    data.action.label = `create the ${groupSlug} group`;
+  } else {
+    data.action.label = `post my email to the ${groupSlug} group`;
+  }
   if (action === 'follow') {
-    const group = await models.Group.findBySlug(groupSlug);
-    if (!group) {
-      console.error(`Group ${groupSlug} not found`);
-      return res.send(200);
-    }
     if (PostId) {
-      // Follow thread
-      const post = await models.Post.findById(PostId);
-      if (!post) {
-        console.error(`Post ${PostId} not found`);
-        return res.send(200);
-      }
-      const postUrl = await post.getUrl();
-      const data = {
-        groupSlug,
-        postUrl,
-        post,
-        unsubscribe: { label: 'Unfollow this thread', data: { PostId } },
-      };
-      await libemail.sendTemplate('followThread', data, email.sender);
-      return res.send('ok');
+      data.action.label = `follow this thread`;
     } else {
-      // Follow group
-      const data = {
-        groupSlug,
-        unsubscribe: { label: 'Unfollow this group', data: { GroupId: group.GroupId } },
-      };
-      await libemail.sendTemplate('followGroup', data, email.sender);
-      return res.send('ok');
+      data.action.label = `follow this group`;
     }
   }
 
@@ -95,7 +69,7 @@ export default async function webhook(req, res, next) {
   // the user will have to click the link provided in an email confirmation to publish their email to the group
   if (!user) {
     debug('user not found');
-    await handleFirstTimeUser(groupSlug, email);
+    await handleFirstTimeUser(email, data);
     return res.send('ok');
   }
 
