@@ -28,6 +28,12 @@ async function handleFirstTimeUser(groupSlug, email) {
       text: email['stripped-text'],
       html: email['stripped-html'],
     };
+    const group = await models.Group.findBySlug(groupSlug);
+    if (!group) {
+      data.action = `create the ${groupSlug} group`;
+    } else {
+      data.action = `post my email to the ${groupSlug} group`;
+    }
     return await libemail.sendTemplate('confirmEmail', data, email.sender);
   }
 }

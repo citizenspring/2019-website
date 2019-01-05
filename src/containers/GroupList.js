@@ -29,16 +29,10 @@ export default class PostList extends Component {
 
   render() {
     const { groups } = this.props;
-
+    const errorMessage = groups.total === 0 ? 'No group' : 'Loading';
     if (groups.total > 0) {
       return this.renderList(groups);
-    } else
-      return (
-        <LoadingWrapper>
-          loading
-          {/* <Spinner name="ball-grid-pulse" fadeIn="none" /> */}
-        </LoadingWrapper>
-      );
+    } else return <LoadingWrapper>{errorMessage}</LoadingWrapper>;
   }
 
   renderList(groups) {

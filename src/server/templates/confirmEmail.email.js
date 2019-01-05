@@ -31,13 +31,16 @@ export const previewText = ({ groupSlug }) => {
   return `Please confirm sending your email to ${groupSlug}@${get(config, 'server.domain')}`;
 };
 
-export const text = ({ groupSlug, confirmationUrl, post }) => {
+export const text = ({ groupSlug, confirmationUrl, post, action }) => {
   const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
-  return `Thank you for contacting the ${groupSlug} group.
+  return `Hi there! 👋<
 
-Since this is the first time you are sending an email to this address, we ask you to kindly confirm that you are a human ☺️ We also want to make sure that you understand that all emails sent this email address are published publicly on ${groupUrl}
+Since this is the first time you are sending an email to the ${get(
+    config,
+    'collective.name',
+  )} collective, we ask you to kindly confirm that you are a human ☺️ We also want to make sure that you understand that all emails sent to this email address are published publicly on ${groupUrl}
 
-To continue, click on the link below:
+To ${action}, click on the link below:
 ${confirmationUrl}
 
 
@@ -48,22 +51,23 @@ Note: If you'd like to use another identity, we recommend that you send your ema
 `;
 };
 
-export const body = ({ groupSlug, confirmationUrl, post }) => {
+export const body = ({ groupSlug, confirmationUrl, post, action }) => {
   const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
   return (
     <Layout>
-      <p>Thank you for contacting the {groupSlug} group.</p>
+      <p>Hi there! 👋</p>
       <p>
-        Since this is the first time you are sending an email to this address, we ask you to kindly confirm that you are
-        a human ☺️ We also want to make sure that you understand that all emails sent this email address are published
-        publicly on <a href={groupUrl}>{groupUrl}</a>.
+        Since this is the first time you are sending an email to the {get(config, 'collective.name')} collective, we ask
+        you to kindly confirm that you are a human ☺️🤖
+      </p>
+      <p>
+        We also want to make sure that you understand that all emails sent to this email address are published publicly
+        on <a href={groupUrl}>{groupUrl}</a>.
       </p>
       <p>To continue, click on the button below.</p>
       <center>
         <a style={styles.btn} href={confirmationUrl}>
-          post my email
-          <br />
-          to the {groupSlug} group
+          {action}
         </a>
       </center>
       <p style={styles.disclaimer}>
