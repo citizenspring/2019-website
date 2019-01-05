@@ -62,7 +62,7 @@ module.exports = {
             type: DataTypes.STRING,
           },
           uuid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
-          EmailThreadId: {
+          EmailMessageId: {
             type: DataTypes.STRING,
           },
           title: {

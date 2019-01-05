@@ -2,7 +2,7 @@ import config from 'config';
 import { verifyJwt } from '../lib/auth';
 import { get } from 'lodash';
 import request from 'request-promise';
-import { extractNamesAndEmailsFromString } from '../lib/utils';
+import { pluralize } from '../lib/utils';
 import models from '../models';
 import { db } from '../lib/test';
 
@@ -113,5 +113,14 @@ export async function reset(req, res) {
     return res.send('invalid secret');
   }
   await db.reset();
+  if (req.query.users) {
+    const emails = req.query.users.split(',');
+    await models.User.bulkCreate(
+      emails.map(e => {
+        return { email: e };
+      }),
+    );
+    return res.send(`db reset and ${emails.length} ${pluralize(emails.length, 'user')} created (${emails.join(', ')})`);
+  }
   return res.send('db reset');
 }

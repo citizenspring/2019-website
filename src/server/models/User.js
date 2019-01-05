@@ -2,6 +2,7 @@
 
 import * as auth from '../lib/auth';
 import libemail from '../lib/email';
+import config from 'config';
 
 module.exports = (sequelize, DataTypes) => {
   const { models, Op } = sequelize;
@@ -126,11 +127,10 @@ module.exports = (sequelize, DataTypes) => {
     return await this.save();
   };
 
-  User.prototype.generateShortCode = function() {
+  User.prototype.generateShortCode = async function() {
     const shortcode = Math.floor(Math.random() * 99999) + 10000;
     this.token = shortcode;
-    this.save();
-    return this;
+    return await this.save();
   };
 
   /**
@@ -188,7 +188,7 @@ module.exports = (sequelize, DataTypes) => {
         role: 'FOLLOWER',
       },
     ];
-    await models.Member.bulkCreate(memberships);
+    await memberships.map(models.Member.findOrCreate);
     return post;
   };
 

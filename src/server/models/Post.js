@@ -4,6 +4,8 @@ import slugify from 'limax';
 import { omit, get } from 'lodash';
 import libemail from '../lib/email';
 import { extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
+import debugLib from 'debug';
+const debug = debugLib('post');
 
 module.exports = (sequelize, DataTypes) => {
   const { models } = sequelize;
@@ -77,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       uuid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
-      EmailThreadId: DataTypes.STRING,
+      EmailMessageId: DataTypes.STRING,
       title: DataTypes.STRING,
       html: DataTypes.TEXT,
       text: DataTypes.TEXT,
@@ -118,14 +120,18 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
   );
-  Post.findBySlug = slug => Post.findOne({ where: { slug }, order: [['version', 'DESC']] });
-  Post.findByEmailThreadId = EmailThreadId => {
-    const matches = EmailThreadId.match(/\/posts\/([0-9]+)\/([0-9]+)@/);
-    if (matches) {
-      return Post.findById(matches[1]);
-    } else {
-      return Post.findOne({ where: { EmailThreadId }, order: [['version', 'DESC']] });
+
+  // Get the latest version of the post by slug (and optional status PUBLISHED/ARCHIVED/PENDING)
+  Post.findBySlug = (slug, status) => {
+    const where = { slug };
+    if (status) {
+      where.status = status;
     }
+    return Post.findOne({ where, order: [['id', 'DESC']] });
+  };
+
+  Post.findByEmailMessageId = EmailMessageId => {
+    return Post.findOne({ where: { EmailMessageId }, order: [['version', 'DESC']] });
   };
 
   /**
@@ -168,22 +174,25 @@ module.exports = (sequelize, DataTypes) => {
       return;
     }
 
-    let EmailThreadId, parentPost;
+    let parentPost;
     if (ParentPostId) {
       parentPost = await models.Post.findOne({ where: { PostId: ParentPostId, status: 'PUBLISHED' } });
-    } else if (email['In-Reply-To']) {
-      // if it's a reply to a thread
-      EmailThreadId = email['In-Reply-To'];
-      parentPost = await models.Post.findByEmailThreadId(EmailThreadId);
     } else {
-      EmailThreadId = email['Message-Id'];
+      if (email['In-Reply-To']) {
+        // if it's a reply to a thread
+        const inReplyToPost = await models.Post.findByEmailMessageId(email['In-Reply-To']);
+        parentPost =
+          inReplyToPost && inReplyToPost.ParentPostId
+            ? await models.Post.findById(inReplyToPost.ParentPostId)
+            : inReplyToPost;
+      }
     }
     const postData = {
       GroupId: group.GroupId,
       title: email.subject,
       html: email['stripped-html'],
       text: email['stripped-text'],
-      EmailThreadId,
+      EmailMessageId: email['Message-Id'],
       ParentPostId: parentPost && parentPost.PostId,
     };
     const post = await user.createPost(postData);
@@ -214,8 +223,7 @@ module.exports = (sequelize, DataTypes) => {
         subscribe: { label: subscribeLabel, data: { UserId: user.id, PostId: post.PostId } },
         unsubscribe: { label: unsubscribeLabel, data: { UserId: user.id, GroupId: group.id } },
       };
-      const cc = [...followers.map(u => u.email), ...recipients.map(r => r.email)];
-      console.log('>>> cc', cc);
+      const cc = followers.map(u => u.email);
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
         from: `${userData.name} <${groupEmail}>`,
@@ -230,7 +238,7 @@ module.exports = (sequelize, DataTypes) => {
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
         from: `${userData.name} <${groupEmail}>`,
-        cc: [...followers.map(u => u.email), ...recipients.map(r => r.email)],
+        cc: followers.map(u => u.email),
         headers,
       });
     }
@@ -254,9 +262,15 @@ module.exports = (sequelize, DataTypes) => {
    * @PRE: recipients: array({ name, email });
    */
   Post.prototype.addFollowers = async function(recipients) {
-    const promises = recipients.map(recipient => models.User.findOrCreate(recipient));
+    const promises = recipients.map(async recipient => {
+      try {
+        return await models.User.findOrCreate(recipient);
+      } catch (e) {
+        console.error(e);
+      }
+    });
     const users = await Promise.all(promises);
-    return Promise.all(users.map(user => user.follow({ PostId: this.PostId })));
+    return Promise.all(users.map(user => user && user.follow({ PostId: this.PostId })));
   };
 
   Post.prototype.getUrl = async function() {

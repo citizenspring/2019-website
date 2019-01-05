@@ -26,21 +26,33 @@ describe('utils', () => {
     parsed = utils.parseEmailAddress('coordination@citizenspring.be');
     expect(parsed).toEqual({
       groupSlug: 'coordination',
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       tags: [],
     });
     parsed = utils.parseEmailAddress('coordination+tag1+tag2@citizenspring.be');
     expect(parsed).toEqual({
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       groupSlug: 'coordination',
       tags: ['tag1', 'tag2'],
     });
     parsed = utils.parseEmailAddress('coordination/13@citizenspring.be');
     expect(parsed).toEqual({
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       groupSlug: 'coordination',
       ParentPostId: 13,
       tags: [],
     });
     parsed = utils.parseEmailAddress('coordination/13/312+tag1@citizenspring.be');
     expect(parsed).toEqual({
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       groupSlug: 'coordination',
       ParentPostId: 13,
       PostId: 312,
@@ -48,12 +60,18 @@ describe('utils', () => {
     });
     parsed = utils.parseEmailAddress('coordination/follow@citizenspring.be');
     expect(parsed).toEqual({
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       groupSlug: 'coordination',
       action: 'follow',
       tags: [],
     });
     parsed = utils.parseEmailAddress('coordination/13/follow@citizenspring.be');
     expect(parsed).toEqual({
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       groupSlug: 'coordination',
       ParentPostId: 13,
       action: 'follow',
@@ -61,6 +79,9 @@ describe('utils', () => {
     });
     parsed = utils.parseEmailAddress('coordination/13/321/follow@citizenspring.be');
     expect(parsed).toEqual({
+      action: undefined,
+      domain: 'citizenspring.be',
+      email: 'coordination@citizenspring.be',
       groupSlug: 'coordination',
       ParentPostId: 13,
       PostId: 321,

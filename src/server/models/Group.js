@@ -99,7 +99,14 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
-  Group.findBySlug = slug => Group.findOne({ where: { slug } });
+  // Get the latest version of the group by slug (and optional status PUBLISHED/ARCHIVED/PENDING)
+  Group.findBySlug = (slug, status) => {
+    const where = { slug };
+    if (status) {
+      where.status = status;
+    }
+    return Group.findOne({ where, order: [['id', 'DESC']] });
+  };
 
   /**
    * Edits a group and saves a new version
@@ -144,7 +151,7 @@ module.exports = (sequelize, DataTypes) => {
   Group.prototype.addMembers = async function(recipients, options = {}) {
     const promises = recipients.map(recipient => models.User.findOrCreate(recipient));
     const users = await Promise.all(promises);
-    return Promise.all(users.map(user => user.join({ GroupId: this.GroupId, ...options })));
+    return Promise.all(users.map(user => user && user.join({ GroupId: this.GroupId, ...options })));
   };
 
   /**

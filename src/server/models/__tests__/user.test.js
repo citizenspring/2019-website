@@ -10,6 +10,14 @@ describe('user model', () => {
   });
   afterAll(db.close);
 
+  it('validates email address', async () => {
+    try {
+      await models.User.create({ email: 'invalidemail' });
+    } catch (e) {
+      expect(e.message).toContain('Email must be valid');
+    }
+  });
+
   it('creates a group and makes the user an ADMIN and FOLLOWER', async () => {
     const roles = await models.Member.findAll({
       attributes: ['role'],

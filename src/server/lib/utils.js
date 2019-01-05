@@ -20,7 +20,7 @@ export const isEmpty = str => {
   return (str || '').trim() === '';
 };
 
-export const pluralize = (singular, n, pluralForm) => {
+export const pluralize = (n, singular, pluralForm) => {
   if (n === 1) return singular;
   return pluralForm || `${singular}s`;
 };
@@ -51,7 +51,7 @@ export const extractNamesAndEmailsFromString = str => {
  * Parses components of an email address
  * @param {*} emailAddress
  * @PRE: :groupSlug/(:ParentPostId)?/(:PostId)?/(:action)?+tag1+tag2@domain.tld
- * @POST: { inbox, ParentPostId, PostId, tags[] }
+ * @POST: { groupSlug, ParentPostId, PostId, tags[], domain, email: (canonical email) }
  */
 export const parseEmailAddress = emailAddress => {
   const emailTokens = emailAddress.match(/([^\+]*)(\+(.*))?@.*/);
@@ -65,6 +65,9 @@ export const parseEmailAddress = emailAddress => {
     groupSlug: get(parts, '[0]'),
     tags: emailTokens[3] ? emailTokens[3].toLowerCase().split('+') : [],
   };
+
+  parsed.domain = emailAddress.substr(emailAddress.indexOf('@') + 1);
+  parsed.email = `${parsed.groupSlug}@${parsed.domain}`;
 
   if (isNaN(get(parts, '[1]'))) {
     parsed.action = get(parts, '[1]');

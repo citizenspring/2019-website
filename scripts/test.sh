@@ -27,5 +27,5 @@ fi
 
 echo ""
 echo "Running tests with jest"
-jest -w 1 --verbose false --detectOpenHandles --testMatch **/__tests__/**/*.test.js
+jest -w 1 --verbose false --detectOpenHandles --testMatch **/__tests__/**/*.test.js --testPathIgnorePatterns build/
 echo ""

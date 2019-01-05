@@ -119,12 +119,18 @@ libemail.parseHeaders = function(email) {
     throw new Error('libemail.parseHeaders: invalid email object');
   }
   const sender = email.sender.toLowerCase();
-  const recipient = email.recipient || email.recipients; // mailgun's inconsistent api
-  const { groupSlug, tags, ParentPostId, PostId } = parseEmailAddress(recipient);
+  const recipient = (email.recipient || email.recipients || '').toLowerCase(); // mailgun's inconsistent api
+  const parsedSenderEmail = parseEmailAddress(sender);
+  const parsedRecipientEmail = parseEmailAddress(recipient);
   const recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`).filter(r => {
-    return r.email && r.email.toLowerCase() !== sender && r.email.toLowerCase() !== recipient.toLowerCase();
+    if (!r.email) return false;
+    if (r.email === recipient) return false;
+    const parsedEmail = parseEmailAddress(r.email);
+    if (parsedEmail.email === parsedRecipientEmail.email) return false;
+    if (parsedEmail.email === parsedSenderEmail.email) return false;
+    return true;
   });
-  return { sender, groupSlug, tags, recipients, ParentPostId, PostId };
+  return { sender, ...parsedRecipientEmail, recipients };
 };
 
 /**
@@ -149,14 +155,14 @@ libemail.sendTemplate = async function(template, data, to, options = {}) {
     if (email.substr(email.indexOf('@') + 1) === get(config, 'server.domain')) {
       const { groupSlug } = parseEmailAddress(email);
       if (to.substr(0, to.indexOf('@')) === groupSlug) {
-        console.info(`Skipping ${email}`);
+        console.info(`Skipping ${email} because it's the same inbox than ${to}`);
         return false;
       }
     }
     return true;
   });
   const subject = templates[template].subject(data);
-  debug('Sending', template, 'email to', to, 'cc', cc, subject);
+  debug('Preparing', template, 'email to', to, 'cc', cc, subject);
   if (process.env.DEBUG && process.env.DEBUG.match(/data/)) {
     debug('with data', data);
   }

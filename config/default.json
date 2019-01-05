@@ -12,7 +12,7 @@
     }
   },
   "server": {
-    "domain": "localhost",
+    "domain": "citizenspring.be",
     "baseUrl": "http://localhost:3000",
     "database": {
       "database": "citizenspring",

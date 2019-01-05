@@ -42,7 +42,7 @@ class PostPage extends React.Component {
         <TopBar group={post.group} />
         <Content>
           <TitleWithActions title={post.title} actions={actions} />
-          <Metadata user={post.user.name} createdAt={post.createdAt} followers={post.followers} />
+          <Metadata user={post.user.name} createdAt={post.createdAt} followersCount={post.followers.total} />
           <PostBody dangerouslySetInnerHTML={{ __html: post.html }} />
           {post.replies.nodes.map((post, i) => (
             <Reply post={post} key={i} />

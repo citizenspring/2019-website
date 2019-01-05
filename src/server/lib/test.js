@@ -8,7 +8,7 @@ export const db = {
   reset: async () => {
     try {
       await sequelize.sync({ force: true });
-      console.log(`>>> ${config.server.database.database} db reset`);
+      console.log(`> ${config.server.database.database} db reset`);
       return true;
     } catch (e) {
       console.error(

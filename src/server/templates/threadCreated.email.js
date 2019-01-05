@@ -5,7 +5,7 @@ import Layout from './email.layout';
 import { pluralize } from '../lib/utils';
 
 export const subject = ({ groupSlug, followersCount }) => {
-  return `Message sent to ${groupSlug} (${followersCount} ${pluralize('follower', followersCount)})`;
+  return `Message sent to ${groupSlug} (${followersCount} ${pluralize(followersCount, 'follower')})`;
 };
 
 export const text = ({ groupSlug, followersCount, post }) => {

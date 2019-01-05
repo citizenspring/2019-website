@@ -21,7 +21,6 @@ export default class PostList extends Component {
   };
   render() {
     const { posts } = this.props;
-    console.log('>>> posts', posts);
     if (posts.total === 0) {
       return <div>No thread yet</div>;
     } else if (posts.total > 0) {
