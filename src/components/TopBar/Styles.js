@@ -10,4 +10,6 @@ export const TopBarWrapper = styled.div`
 
 export const TopBarItem = styled.div`
   margin: 0 0.5rem;
+  display: flex;
+  align-items: center;
 `;

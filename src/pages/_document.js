@@ -27,7 +27,7 @@ export default class MyDocument extends Document {
             }
             #nprogress {
               position: absolute;
-              top: 38px;
+              top: 34px;
               left: 0;
               height: 5px;
               width: 100%;

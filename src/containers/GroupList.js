@@ -8,6 +8,7 @@ import Link from '../components/Link';
 const ListWrapper = styled.div`
   margin-left: -1rem;
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const GroupBoxWrapper = styled.div`

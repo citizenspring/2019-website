@@ -34,6 +34,7 @@ export const HowtoWrapper = styled.div``;
 export const HowtoItemWrapper = styled.div`
   display: flex;
   margin: 0.2rem 0;
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.8);
 `;
 
 export const Icon = styled.div`
