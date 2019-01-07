@@ -12,11 +12,11 @@ export const previewText = ({ post }) => {
 };
 
 export const body = data => {
-  const { groupSlug, post, postUrl } = data;
+  const { groupSlug, post, url } = data;
   return (
     <Layout data={data}>
       <p>
-        You are now following the <a href={postUrl}>{post.title}</a> thread. All new replies sent to ${groupSlug}/$
+        You are now following the <a href={url}>{post.title}</a> thread. All new replies sent to ${groupSlug}/$
         {post.PostId}@${get(config, 'server.domain')} will now also be sent to you.
       </p>
       <p>If this is an error, click on the link below to unfollow this thread.</p>

@@ -6,6 +6,7 @@ import config from 'config';
 import { get } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('webhook');
+import { handleIncomingEmail } from './emails';
 
 async function handleFirstTimeUser(email, data) {
   if (!email['message-url']) {
@@ -73,6 +74,7 @@ export default async function webhook(req, res, next) {
     return res.send('ok');
   }
 
-  await models.Post.createFromEmail(email);
+  await handleIncomingEmail(email);
+
   return res.send('ok');
 }

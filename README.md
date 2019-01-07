@@ -1,5 +1,7 @@
 # Open Collective Email
 
+[![Build Status](https://travis-ci.org/citizenspring/citizenspring.be.svg?branch=master)](https://travis-ci.org/citizenspring/citizenspring.be)
+
 The email service for transparent and inclusive open collectives
 
 ## Features

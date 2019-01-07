@@ -1,6 +1,7 @@
 'use strict';
+import config from 'config';
 import slugify from 'limax';
-import { omit } from 'lodash';
+import { get, omit } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('group');
 
@@ -78,6 +79,9 @@ module.exports = (sequelize, DataTypes) => {
       ],
       hooks: {
         beforeValidate: group => {
+          if (!group.slug && !group.name) {
+            throw new Error('Group validation error: need to provide a slug or a name', group);
+          }
           group.slug = group.slug || slugify(group.name);
         },
         afterCreate: async group => {
@@ -108,6 +112,10 @@ module.exports = (sequelize, DataTypes) => {
     return Group.findOne({ where, order: [['id', 'DESC']] });
   };
 
+  Group.prototype.getUrl = async function() {
+    return `${get(config, 'server.baseUrl')}/${this.slug}`;
+  };
+
   /**
    * Edits a group and saves a new version
    */
@@ -116,10 +124,21 @@ module.exports = (sequelize, DataTypes) => {
       ...omit(this.dataValues, ['id']),
       ...groupData,
       version: this.version + 1,
-      status: 'PUBLISHED',
+      status: groupData.status || 'PUBLISHED',
     };
     await this.update({ status: 'ARCHIVED' });
     return await Group.create(newVersionData);
+  };
+
+  /**
+   * publish a given version of a group
+   */
+  Group.prototype.publish = async function() {
+    const currentlyPublishedGroup = await Group.findOne({ where: { GroupId: this.GroupId, status: 'PUBLISHED' } });
+    if (currentlyPublishedGroup) {
+      await currentlyPublishedGroup.update({ status: 'ARCHIVED' });
+    }
+    return await this.update({ status: 'PUBLISHED' });
   };
 
   Group.prototype.getPosts = async function(options = {}) {

@@ -12,8 +12,8 @@ const styles = {
     padding: '10px',
   },
   footer: {
-    background: 'black',
-    color: 'white',
+    background: 'rgb(249,249,249)',
+    color: 'black',
     width: '100%',
     fontFamily: 'Helvetica Neue',
     fontSize: '12px',
@@ -25,7 +25,7 @@ const styles = {
   },
   footerLink: {
     textDecoration: 'none',
-    color: 'white',
+    color: 'black',
   },
   oclogo: {
     backgroundImage: `url('${get(config, 'server.baseUrl')}/static/images/opencollectiveicon-48x48@2x.png')`,

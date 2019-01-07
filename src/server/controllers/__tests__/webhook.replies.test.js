@@ -111,8 +111,8 @@ describe('webhook replies', () => {
       expect(sendEmailSpy.callCount).toEqual(2);
       expect([sendEmailSpy.args[0][4].cc, sendEmailSpy.args[1][4].cc]).toContain(email1.sender);
       expect([sendEmailSpy.args[0][4].cc, sendEmailSpy.args[1][4].cc]).toContain('threadfollower@gmail.com');
-      expect(sendEmailSpy.firstCall.args[2]).toMatch('Click here to stop receiving new replies to this thread');
-      expect(sendEmailSpy.secondCall.args[2]).toMatch('Click here to stop receiving new replies to this thread');
+      expect(sendEmailSpy.firstCall.args[2]).toMatch('unfollow this thread');
+      expect(sendEmailSpy.secondCall.args[2]).toMatch('unfollow this thread');
 
       // Test unsubscribe from thread
       const matches = sendEmailSpy.secondCall.args[2].match(/\/api\/unfollow\?token=([^\s]+)/);

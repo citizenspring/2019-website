@@ -22,7 +22,16 @@ describe('group model', async () => {
     const latestVersion = await models.Group.findBySlug('test');
     expect(latestVersion.description).toEqual('new description');
   });
-
+  it('publishes a pending version', async () => {
+    const group = await models.Group.create({
+      slug: 'test2',
+      UserId: user.id,
+      name: 'test group',
+    });
+    const newVersion = await group.edit({ description: 'new description', status: 'PENDING' });
+    await newVersion.publish();
+    expect(newVersion.status).toEqual('PUBLISHED');
+  });
   describe('followers', async () => {
     let group;
     beforeAll(async () => {

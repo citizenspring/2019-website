@@ -12,11 +12,11 @@ const styles = {
   reactions: {
     marginTop: '2rem',
   },
-  reaction: {
-    fontSize: '22px',
+  emoji: {
+    fontSize: '28px',
     textDecoration: 'none',
     display: 'box',
-    margin: '10px',
+    margin: '13px',
   },
   pickReaction: {
     color: '#555',
@@ -49,7 +49,7 @@ export const Reaction = ({ emoji, threadEmail, subject }) => {
 
   return (
     <TD>
-      <a href={`mailto:${replyEmail(emoji)}`} style={styles.reaction}>
+      <a href={`mailto:${replyEmail(emoji)}`} style={styles.emoji}>
         {emoji}
       </a>
     </TD>
@@ -58,16 +58,25 @@ export const Reaction = ({ emoji, threadEmail, subject }) => {
 
 export const body = withIntl(data => {
   const { groupSlug, post } = data;
-  const threadEmail = `${groupSlug}/${post.ParentPostId || post.PostId}@${get(config, 'server.domain')}`;
+  let threadEmail = `${groupSlug}%2F`;
+  if (post.ParentPostId) {
+    threadEmail += `${post.ParentPostId}%2F${post.PostId}`;
+  } else {
+    threadEmail += post.PostId;
+  }
+  threadEmail += `@${get(config, 'server.domain')}`;
+
   return (
     <Layout data={data}>
       <div dangerouslySetInnerHTML={{ __html: post.html }} />
       <Table style={styles.reactions}>
         <TBody>
           <TR>
-            <TD style={styles.pickReaction}>
+            <TD colSpan={6} style={styles.pickReaction}>
               <FormattedMessage id="emails.post.pickReaction" defaultMessage="Pick a quick reaction (or hit reply)" />
             </TD>
+          </TR>
+          <TR>
             {['👍', '👎', '😄', '😕', '🎉', '❤️'].map((emoji, i) => (
               <Reaction key={i} emoji={emoji} threadEmail={threadEmail} subject={`Re: ${post.title}`} />
             ))}

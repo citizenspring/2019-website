@@ -150,38 +150,6 @@ module.exports = (sequelize, DataTypes) => {
 
     let group = await models.Group.findBySlug(groupSlug);
 
-    if (action === 'follow') {
-      if (!group) {
-        console.error(`Can't follow ${groupSlug}: group not found`);
-        return;
-      }
-      if (PostId) {
-        // Follow thread
-        const post = await models.Post.findById(PostId);
-        if (!post) {
-          console.error(`Can't follow PostId ${PostId}: post not found`);
-          return;
-        }
-        const postUrl = await post.getUrl();
-        const data = {
-          groupSlug,
-          postUrl,
-          post,
-          unsubscribe: { label: 'Unfollow this thread', data: { PostId } },
-        };
-        await libemail.sendTemplate('followThread', data, email.sender);
-        return;
-      } else {
-        // Follow group
-        const data = {
-          groupSlug,
-          unsubscribe: { label: 'Unfollow this group', data: { GroupId: group.GroupId } },
-        };
-        await libemail.sendTemplate('followGroup', data, email.sender);
-        return;
-      }
-    }
-
     // If the group doesn't exist, we create it and add the recipients as admins and followers
     if (!group) {
       group = await user.createGroup({ slug: groupSlug, name: groupSlug, tags });
@@ -249,11 +217,8 @@ module.exports = (sequelize, DataTypes) => {
       data = { groupSlug, followersCount: followers.length, post };
       await libemail.sendTemplate('threadCreated', data, user.email);
       // We send the new post to followers of the group + the recipients
-      const unsubscribeLabel = `Click here to stop receiving new emails sent to ${group.slug}@${get(
-        config,
-        'server.domain',
-      )}`;
-      const subscribeLabel = `Click here to subscribe to replies to this new thread`;
+      const unsubscribeLabel = `unfollow ${group.slug}@${get(config, 'server.domain')}`;
+      const subscribeLabel = `follow this thread`;
       data = {
         groupSlug,
         url: `${get(config, 'server.baseUrl')}/${groupSlug}`,
@@ -271,7 +236,7 @@ module.exports = (sequelize, DataTypes) => {
     } else {
       // if it's part of a thread, we send the post to the followers of the parent post + recipients
       const followers = await thread.getFollowers();
-      const unsubscribeLabel = `Click here to stop receiving new replies to this thread`;
+      const unsubscribeLabel = `unfollow this thread`;
       data = {
         groupSlug,
         url: `${get(config, 'server.baseUrl')}/${groupSlug}/${thread.slug}`,

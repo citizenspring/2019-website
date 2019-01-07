@@ -68,7 +68,7 @@ describe('webhook email', () => {
       expect(sendEmailSpy.secondCall.args[1]).toContain('Message sent to testgroup');
       expect(sendEmailSpy.thirdCall.args[0]).toEqual('testgroup@citizenspring.be');
       expect(sendEmailSpy.thirdCall.args[4].cc).toEqual('firstrecipient@gmail.com');
-      expect(sendEmailSpy.thirdCall.args[2]).toMatch('Click here to stop receiving new emails sent to testgroup@');
+      expect(sendEmailSpy.thirdCall.args[2]).toMatch('unfollow testgroup@');
     });
 
     it('unsubscribes from the group', async () => {

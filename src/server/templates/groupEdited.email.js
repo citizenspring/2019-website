@@ -7,33 +7,51 @@ const domain = get(config, 'server.domain');
 const baseUrl = get(config, 'server.baseUrl');
 
 export const subject = ({ group }) => {
-  return `${group.slug} group info`;
+  return `${group.slug} group edited`;
 };
 
-export const previewText = ({ group, followers, posts }) => {
-  return `${group.slug}@${domain} has ${followers.length} followers and ${posts.total} posts`;
+const getStatusMsg = status => {
+  switch (status) {
+    case 'PENDING':
+      return 'Your modifications are pending approval from one of the group admins.';
+    case 'PUBLISHED':
+      return 'Your modifications have been published.';
+  }
+};
+
+export const previewText = ({ group }) => {
+  return getStatusMsg(group.status);
+};
+
+export const text = ({ url, group }) => {
+  return `${getStatusMsg(group.status)}
+${url}
+`;
 };
 
 export const body = data => {
-  const { group, followers, posts } = data;
+  const { group, followers, posts, url } = data;
   const groupEmail = `${group.slug}@${domain}`;
   const groupUrl = `${baseUrl}/${group.slug}`;
   return (
     <Layout data={data}>
-      <p>About the {group.slug} group:</p>
+      <p>{getStatusMsg(group.status)}</p>
+      <h2>About the {group.slug} group:</h2>
       <h3>{followers.length} followers</h3>
       <div>{followers.map(f => f.name).join(', ')}</div>
-      <h3>Latest posts</h3>
-      <ul>
-        {posts.nodes.map(post => (
-          <li>
-            <a href={`${groupUrl}/${post.PostId}`}>{post.title}</a>
-          </li>
-        ))}
-      </ul>
-      <p>
-        You can view it online on {baseUrl}/{group.slug}. You can also easily manage it right from your email client:
-      </p>
+      {posts && (
+        <div>
+          <h3>Latest posts</h3>
+          <ul>
+            {posts.nodes.map(post => (
+              <li>
+                <a href={`${groupUrl}/${post.PostId}`}>{post.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <p>You can view it online on {url}. You can also easily manage it right from your email client:</p>
       <h3>How to add people?</h3>
       <p>
         Anyone can start following this group by sending an empty email to {groupEmail}. Alternatively, you can also

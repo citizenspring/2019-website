@@ -15,6 +15,7 @@ export default server => {
 
   server.post('/webhook', controllers.webhook);
   server.get('/api/publishEmail', controllers.api.publishEmail);
+  server.get('/api/approve', controllers.api.approve);
   server.get('/api/follow', controllers.api.follow);
   server.get('/api/unfollow', controllers.api.unfollow);
   server.get('/api/reset', controllers.api.reset);

@@ -5,6 +5,7 @@ import request from 'request-promise';
 import { pluralize } from '../lib/utils';
 import models from '../models';
 import { db } from '../lib/test';
+import { handleIncomingEmail } from './emails';
 
 export const retrieveEmail = async ({ mailServer, messageId }) => {
   const requestOptions = {
@@ -47,12 +48,36 @@ export async function publishEmail(req, res, next) {
       return res.send('Unknown error');
     }
   }
-  const post = await models.Post.createFromEmail(email);
-  let redirect = `/${groupSlug}`;
-  if (post) {
-    redirect += `/${post.slug}`;
-  }
+  const redirect = await handleIncomingEmail(email);
+
   return res.redirect(redirect);
+}
+
+/**
+ * Approves an edit
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export async function approve(req, res, next) {
+  let token;
+  try {
+    token = verifyJwt(req.query.token);
+  } catch (e) {
+    if (e && e.name === 'TokenExpiredError') {
+      return res.status(500).send(`The token has expired.`);
+    }
+  }
+  const GroupId = get(token, 'data.group.id');
+  if (!GroupId) {
+    return res.status(500).send(`Invalid token: GroupId missing`);
+  }
+  const group = await models.Group.findById(GroupId);
+  if (!group) {
+    return res.status(500).send(`Cannot approve: GroupId ${GroupId} not found`);
+  }
+  await group.publish();
+  return res.redirect(`/${group.slug}`);
 }
 
 export async function follow(req, res, next) {

@@ -26,7 +26,6 @@ export const body = data => {
   const { groupSlug, followersCount, post } = data;
   const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
   const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
-  const postUrl = `${get(config, 'server.baseUrl')}/${groupSlug}/${post.slug}`;
   return (
     <Layout data={data}>
       <p>
@@ -41,7 +40,7 @@ export const body = data => {
         </p>
       )}
       <p>
-        You can view it online on <a href={postUrl}>{postUrl}</a>.
+        You can view it online on <a href={data.url}>{data.url}</a>.
       </p>
     </Layout>
   );

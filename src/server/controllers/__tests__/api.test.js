@@ -43,14 +43,14 @@ describe('controllers.api', () => {
     };
     const res = {
       redirect: path => {
-        expect(path).toMatch(/^\/testgroup\/.+(-[0-9]+)$/);
+        expect(path).toMatch(/\/testgroup\/.+(-[0-9]+)$/);
       },
     };
     try {
       await publishEmail(req, res);
     } catch (e) {
       console.error(e);
-      expect(e.message).toEqual('');
+      expect(e.message).toBeUndefined();
     }
     const user = await models.User.findOne();
     const post = await models.Post.findOne();

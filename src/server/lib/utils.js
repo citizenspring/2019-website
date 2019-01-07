@@ -54,6 +54,7 @@ export const extractNamesAndEmailsFromString = str => {
  * @POST: { groupSlug, ParentPostId, PostId, tags[], domain, email: (canonical email) }
  */
 export const parseEmailAddress = emailAddress => {
+  if (!emailAddress) return {};
   const emailTokens = emailAddress.match(/([^\+]*)(\+(.*))?@.*/);
   if (!emailTokens) {
     throw new Error('Invalid email address');
