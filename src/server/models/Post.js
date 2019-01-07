@@ -214,14 +214,15 @@ module.exports = (sequelize, DataTypes) => {
     // If it's a new thread,
     if (!parentPost) {
       const followers = await group.getFollowers();
-      data = { groupSlug, followersCount: followers.length, post };
+      const url = await post.getUrl();
+      data = { groupSlug, followersCount: followers.length, post, url };
       await libemail.sendTemplate('threadCreated', data, user.email);
       // We send the new post to followers of the group + the recipients
       const unsubscribeLabel = `unfollow ${group.slug}@${get(config, 'server.domain')}`;
       const subscribeLabel = `follow this thread`;
       data = {
         groupSlug,
-        url: `${get(config, 'server.baseUrl')}/${groupSlug}`,
+        url,
         post: post.dataValues,
         subscribe: { label: subscribeLabel, data: { UserId: user.id, PostId: post.PostId } },
         unsubscribe: { label: unsubscribeLabel, data: { UserId: user.id, GroupId: group.id } },

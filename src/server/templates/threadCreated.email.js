@@ -5,7 +5,7 @@ import Layout from './email.layout';
 import { pluralize } from '../lib/utils';
 
 export const subject = ({ groupSlug, followersCount }) => {
-  return `Message sent to ${groupSlug} (${followersCount} ${pluralize(followersCount, 'follower')})`;
+  return `Message sent to the ${groupSlug} group (${followersCount} ${pluralize(followersCount, 'follower')})`;
 };
 
 export const text = ({ groupSlug, followersCount, post }) => {
@@ -29,18 +29,18 @@ export const body = data => {
   return (
     <Layout data={data}>
       <p>
-        Your message has been sent to the {groupSlug} group.{' '}
+        Your message has been sent to the <a href={groupUrl}>{groupSlug} group</a>{' '}
         {followersCount > 1 && <span>(currently followed by {followersCount} people)</span>}.
       </p>
       {followersCount === 1 && (
         <p>
-          You are the only person following this group at the moment.
+          There is one person following this group at the moment.
           <br />
           Other people can follow this group online on {groupUrl} or by sending an empty email to {groupEmail}.
         </p>
       )}
       <p>
-        You can view it online on <a href={data.url}>{data.url}</a>.
+        Your message has also been posted on <a href={data.url}>{data.url}</a>
       </p>
     </Layout>
   );
