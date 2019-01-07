@@ -21,8 +21,8 @@
         "protocol": "postgres",
         "logging": true,
         "pool": {
-          "min": 10,
-          "max": 50,
+          "min": 8,
+          "max": 18,
           "acquire": 60000
         },
         "dialectOptions": {
