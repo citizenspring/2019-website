@@ -51,10 +51,11 @@ Note: If you'd like to use another identity, we recommend that you send your ema
 `;
 };
 
-export const body = ({ groupSlug, confirmationUrl, post, action }) => {
+export const body = data => {
+  const { groupSlug, confirmationUrl, post, action } = data;
   const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>Hi there! 👋</p>
       <p>
         Since this is the first time you that are sending an email to the {get(config, 'collective.name')} collective,

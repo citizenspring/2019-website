@@ -11,11 +11,12 @@ export const previewText = ({ group, followers, posts }) => {
   return `${group.slug}@${get(config, 'server.domain')} has ${followers.length} followers and ${posts.total} posts`;
 };
 
-export const body = ({ group, followers, posts }) => {
+export const body = data => {
+  const { group, followers, posts } = data;
   const groupEmail = `${group.slug}@${get(config, 'server.domain')}`;
   const groupUrl = `${get(config, 'server.baseUrl')}/${group.slug}`;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>About the {group.slug} group:</p>
       <h3>{followers.length} followers</h3>
       <div>{followers.map(f => f.name).join(', ')}</div>

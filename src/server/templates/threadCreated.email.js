@@ -22,12 +22,13 @@ Other people can follow this group online on ${groupUrl} or by sending an empty 
   return msg;
 };
 
-export const body = ({ groupSlug, followersCount, post }) => {
+export const body = data => {
+  const { groupSlug, followersCount, post } = data;
   const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
   const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
   const postUrl = `${get(config, 'server.baseUrl')}/${groupSlug}/${post.slug}`;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>
         Your message has been sent to the {groupSlug} group.{' '}
         {followersCount > 1 && <span>(currently followed by {followersCount} people)</span>}.

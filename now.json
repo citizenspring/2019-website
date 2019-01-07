@@ -1,0 +1,24 @@
+{
+  "env": {
+    "NODE_ENV": "production",
+    "DOMAIN": "citizenspring.be",
+    "BASE_URL": "https://citizenspring.be",
+    "DEBUG": "webhook,email",
+    "MAILGUN_USER": "postmaster@citizenspring.be",
+    "MAILGUN_API_KEY": "@mailgun_api_key",
+    "MAILGUN_PASSWORD": "@mailgun_password",
+    "PG_URL": "@pg_url",
+    "PG_DATABASE": "@pg_database",
+    "PG_HOST": "@pg_host",
+    "PG_USERNAME": "@pg_username",
+    "PG_PASSWORD": "@pg_password"
+  },
+  "version": 1,
+  "alias": ["citizenspring.be", "www.citizenspring.be"],
+  "scale": {
+    "bru1": {
+      "min": 1,
+      "max": 1
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import graphqlSchema from './graphql/schema';
-import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { maxAge } from './middlewares/caching';
 import { authenticateUser } from './middlewares/authentication';
@@ -19,6 +18,7 @@ export default server => {
   server.get('/api/follow', controllers.api.follow);
   server.get('/api/unfollow', controllers.api.unfollow);
   server.get('/api/reset', controllers.api.reset);
+  server.get('/emails/:template', controllers.emails.renderTemplate);
 
   server.get('/favicon.*', maxAge(300000), (req, res) => {
     return res.sendFile(path.join(__dirname, '../static/images/favicon.png'));

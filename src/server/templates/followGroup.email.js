@@ -11,10 +11,10 @@ export const previewText = ({ groupSlug }) => {
   return `You will now receive all new emails sent to the ${groupSlug}@${get(config, 'server.domain')} mailing list`;
 };
 
-export const body = ({ groupSlug }) => {
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+export const body = data => {
+  const { groupSlug } = data;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>
         You are now following the <a href={`${get(config, 'server.baseUrl')}/${groupSlug}`}>{groupSlug}</a> group of the
         ${get(config, 'collective.name')} collective. All new emails sent to {groupSlug}@{get(config, 'server.domain')}{' '}

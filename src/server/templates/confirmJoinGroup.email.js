@@ -32,10 +32,11 @@ export const previewText = ({ groupSlug }) => {
   return `You are one click away from joining the ${groupSlug}@${get(config, 'server.domain')} mailing list`;
 };
 
-export const body = ({ groupSlug, confirmationUrl }) => {
+export const body = data => {
+  const { groupSlug, confirmationUrl } = data;
   const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>
         Before you join, please make sure that you read the <a href={settings.code_of_conduct}>Code Of Conduct</a>. All
         emails sent to this group are published on <a href={groupUrl}>{groupUrl}</a>.

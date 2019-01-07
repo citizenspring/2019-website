@@ -11,10 +11,10 @@ export const previewText = ({ post }) => {
   return `You will now receive all new replies to ${post.title}`;
 };
 
-export const body = ({ groupSlug, post, postUrl }) => {
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+export const body = data => {
+  const { groupSlug, post, postUrl } = data;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>
         You are now following the <a href={postUrl}>{post.title}</a> thread. All new replies sent to ${groupSlug}/$
         {post.PostId}@${get(config, 'server.domain')} will now also be sent to you.

@@ -34,10 +34,11 @@ Anyone can send an empty email to the group ${groupEmail} to receive the latest 
 `;
 };
 
-export const body = ({ group, followers }) => {
+export const body = data => {
+  const { group, followers } = data;
   const groupEmail = `${group.slug}@${get(config, 'server.domain')}`;
   return (
-    <Layout>
+    <Layout data={data}>
       <p>Welcome to your new email group {groupEmail}.</p>
       {followers.length > 1 && (
         <div>

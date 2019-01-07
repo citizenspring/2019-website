@@ -255,6 +255,8 @@ module.exports = (sequelize, DataTypes) => {
       )}`;
       const subscribeLabel = `Click here to subscribe to replies to this new thread`;
       data = {
+        groupSlug,
+        url: `${get(config, 'server.baseUrl')}/${groupSlug}`,
         post: post.dataValues,
         subscribe: { label: subscribeLabel, data: { UserId: user.id, PostId: post.PostId } },
         unsubscribe: { label: unsubscribeLabel, data: { UserId: user.id, GroupId: group.id } },
@@ -270,7 +272,12 @@ module.exports = (sequelize, DataTypes) => {
       // if it's part of a thread, we send the post to the followers of the parent post + recipients
       const followers = await thread.getFollowers();
       const unsubscribeLabel = `Click here to stop receiving new replies to this thread`;
-      data = { post: post.dataValues, unsubscribe: { label: unsubscribeLabel, data: { PostId: thread.PostId } } };
+      data = {
+        groupSlug,
+        url: `${get(config, 'server.baseUrl')}/${groupSlug}/${thread.slug}`,
+        post: post.dataValues,
+        unsubscribe: { label: unsubscribeLabel, data: { PostId: thread.PostId } },
+      };
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
         from: `${userData.name} <${groupEmail}>`,

@@ -9,9 +9,10 @@ export const subject = ({ shortcode }) => {
   return `Signing in to ${get(config, 'collective.name')}`;
 };
 
-export const body = ({ shortcode }) => {
+export const body = data => {
+  const { shortcode } = data;
   return (
-    <Layout preview={`Your short code is ${shortcode}`}>
+    <Layout data={data}>
       <div>
         Your short code is
         <div style={{ fontSize: '22px', fontWeight: 'bold' }}>{shortcode}</div>

@@ -1,5 +1,3 @@
-import React from 'react';
-import Oy from 'oy-vey';
 import debugLib from 'debug';
 const debug = debugLib('email');
 import { get, uniq } from 'lodash';
@@ -9,74 +7,13 @@ import { parseEmailAddress, extractNamesAndEmailsFromString } from '../lib/utils
 import { createJwt } from '../lib/auth';
 import path from 'path';
 import fs from 'fs';
-
-import * as shortcode from '../templates/shortcode.email.js';
-import * as confirmEmail from '../templates/confirmEmail.email.js';
-import * as confirmJoinGroup from '../templates/confirmJoinGroup.email.js';
-import * as followGroup from '../templates/followGroup.email.js';
-import * as followThread from '../templates/followThread.email.js';
-import * as groupCreated from '../templates/groupCreated.email.js';
-import * as groupInfo from '../templates/groupInfo.email.js';
-import * as threadCreated from '../templates/threadCreated.email.js';
-import * as post from '../templates/post.email.js';
 import models from '../models';
 
-const templates = {
-  shortcode,
-  confirmEmail,
-  confirmJoinGroup,
-  followGroup,
-  followThread,
-  threadCreated,
-  post,
-  groupCreated,
-  groupInfo,
-};
+import { render } from '../templates';
 
 const libemail = {};
 
 console.log(`> Using mailgun account ${get(config, 'email.mailgun.user')}`);
-
-const generateCustomTemplate = (options, data) => {
-  let subscribeSnippet = '',
-    unsubscribeSnippet = '',
-    previewText = '';
-  if (data.subscribe) {
-    subscribeSnippet = `
-      <div class="footer" style="margin-top: 2rem; font-size: 12px; text-decoration: none;">
-        <a href="${data.subscribe.url}">
-          ${data.subscribe.label}
-        </a>
-      </div>`;
-  }
-  if (data.unsubscribe) {
-    unsubscribeSnippet = `
-      <div class="footer" style="margin-top: 2rem; font-size: 12px; text-decoration: none;">
-        <a href="${data.unsubscribe.url}">
-          ${data.unsubscribe.label}
-        </a>
-      </div>`;
-  }
-  if (options.previewText) {
-    previewText = `<span style="display:none;color:#FFFFFF;margin:0;padding:0;font-size:1px;line-height:1px;">
-      ${options.previewText}
-    </span>`;
-  }
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        <title>${options.title}</title>
-      </head>
-      <body>
-      ${previewText}
-      ${options.bodyContent}
-      ${subscribeSnippet}
-      ${unsubscribeSnippet}
-      </body>
-    </html>
-  `;
-};
 
 libemail.generateUnsubscribeUrl = async function(email, where) {
   const user = await models.User.findByEmail(email);
@@ -138,9 +75,6 @@ libemail.parseHeaders = function(email) {
  * @pre: recipients: array(email)
  */
 libemail.sendTemplate = async function(template, data, to, options = {}) {
-  if (!templates[template]) {
-    throw new Error(`Template ${template} not found`);
-  }
   if ((options.exclude || []).includes(to)) {
     throw new Error(`Recipient is in the exclude list (${to})`);
   }
@@ -161,13 +95,10 @@ libemail.sendTemplate = async function(template, data, to, options = {}) {
     }
     return true;
   });
-  const subject = templates[template].subject(data);
-  debug('Preparing', template, 'email to', to, 'cc', cc, subject);
+  debug('Preparing', template, 'email to', to, 'cc', cc);
   if (process.env.DEBUG && process.env.DEBUG.match(/data/)) {
     debug('with data', data);
   }
-
-  const templateComponent = React.createElement(templates[template].body, data);
 
   const prepareEmailForRecipient = async function(recipientEmailAddr) {
     // we generate a unique unsubscribe url per recipient
@@ -177,16 +108,11 @@ libemail.sendTemplate = async function(template, data, to, options = {}) {
     if (get(data, 'subscribe.data')) {
       data.subscribe.url = await libemail.generateSubscribeUrl(recipientEmailAddr, data.subscribe.data);
     }
-    const previewText = templates[template].previewText && templates[template].previewText(data);
-    const text = templates[template].text && templates[template].text(data);
-    const html = Oy.renderTemplate(templateComponent, { title: subject, previewText }, opts =>
-      generateCustomTemplate(opts, data),
-    );
-    return { text, html };
+    return render(template, data);
   };
 
   const sendEmailWithIndividualUnsubscribeUrl = async function(to, cc, email) {
-    const { text, html } = await prepareEmailForRecipient(email);
+    const { subject, text, html } = await prepareEmailForRecipient(email);
     const emailOpts = {
       ...options,
       template,
