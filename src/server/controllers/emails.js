@@ -1,4 +1,4 @@
-import config from 'config';
+import env from '../env';
 import templates, { render } from '../../server/templates';
 import models from '../models';
 import { parseEmailAddress } from '../lib/utils';
@@ -105,7 +105,7 @@ export async function edit(email, GroupId, PostId, data) {
       [type]: { id: editedTarget.id },
     };
     const token = createJwt('approveEdit', { data: tokenData }, '14d');
-    templateData.confirmationUrl = `${config.server.baseUrl}/api/approve?token=${token}`;
+    templateData.confirmationUrl = `${env.BASE_URL}/api/approve?token=${token}`;
 
     await libemail.sendTemplate(`approveGroupEdit`, templateData, admin.email);
   }

@@ -1,8 +1,8 @@
-import config from 'config';
+import env from '../env';
 import React from 'react';
-import Oy from 'oy-vey';
 import Layout from './email.layout';
 import { get } from 'lodash';
+import settings from '../../../settings.json';
 
 const styles = {
   btn: {
@@ -28,16 +28,16 @@ export const subject = () => {
 };
 
 export const previewText = ({ groupSlug }) => {
-  return `Please confirm sending your email to ${groupSlug}@${get(config, 'server.domain')}`;
+  return `Please confirm sending your email to ${groupSlug}@${env.DOMAIN}`;
 };
 
 export const text = ({ groupSlug, confirmationUrl, post, action }) => {
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+  const groupUrl = `${env.BASE_URL}/${groupSlug}`;
   return `Hi there! 👋<
 
 Since this is the first time you that are sending an email to the ${get(
-    config,
-    'collective.name',
+    settings,
+    'name',
   )} collective, we ask you to kindly confirm that you are a human ☺️ We also want to make sure that you understand that all emails sent to this email address are published publicly on ${groupUrl}
 
 To ${action.label.toLowerCase()}, click on the link below:
@@ -53,13 +53,13 @@ Note: If you'd like to use another identity, we recommend that you send your ema
 
 export const body = data => {
   const { groupSlug, confirmationUrl, post, action } = data;
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+  const groupUrl = `${env.BASE_URL}/${groupSlug}`;
   return (
     <Layout data={data}>
       <p>Hi there! 👋</p>
       <p>
-        Since this is the first time you that are sending an email to the {get(config, 'collective.name')} collective,
-        we ask you to kindly confirm that you are a human ☺️🤖
+        Since this is the first time you that are sending an email to the {get(settings, 'name')} collective, we ask you
+        to kindly confirm that you are a human ☺️🤖
       </p>
       <p>
         We also want to make sure that you understand that all emails sent to this email address are published publicly

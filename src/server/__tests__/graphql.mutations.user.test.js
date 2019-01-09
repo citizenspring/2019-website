@@ -36,7 +36,7 @@ describe('user', () => {
       await waitForCondition(() => sendEmailSpy.callCount > 0);
       expect(sendEmailSpy.callCount).toEqual(1);
       expect(sendEmailSpy.firstCall.args[0]).toEqual(userData.email);
-      expect(sendEmailSpy.firstCall.args[1]).toEqual('Signing in to Citizen Spring 🌱');
+      expect(sendEmailSpy.firstCall.args[1]).toContain('Signing in to Citizen Spring');
       expect(sendEmailSpy.firstCall.args[3]).toMatch(/[1-9][0-9]{4}/);
       const user = await models.User.findOne();
       expect(user.email).toEqual(userData.email);

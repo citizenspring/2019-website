@@ -1,4 +1,4 @@
-import config from 'config';
+import env from '../env';
 import { verifyJwt } from '../lib/auth';
 import { get } from 'lodash';
 import request from 'request-promise';
@@ -12,10 +12,10 @@ export const retrieveEmail = async ({ mailServer, messageId }) => {
     json: true,
     auth: {
       user: 'api',
-      pass: get(config, 'email.mailgun.apiKey'),
+      pass: env.MAILGUN_PASSWORD,
     },
   };
-  const url = `https://${mailServer}.api.mailgun.net/v3/domains/${get(config, 'server.domain')}/messages/${messageId}`;
+  const url = `https://${mailServer}.api.mailgun.net/v3/domains/${env.DOMAIN}/messages/${messageId}`;
   return await request.get(url, requestOptions);
 };
 
@@ -32,9 +32,7 @@ export async function publishEmail(req, res, next) {
     token = verifyJwt(req.query.token);
   } catch (e) {
     if (e && e.name === 'TokenExpiredError') {
-      throw new Error(
-        `The token has expired. Please resend your email to ${groupSlug}@${get(config, 'server.domain')}`,
-      );
+      throw new Error(`The token has expired. Please resend your email to ${groupSlug}@${env.DOMAIN}`);
     }
   }
   let email;
@@ -86,9 +84,7 @@ export async function follow(req, res, next) {
     token = verifyJwt(req.query.token);
   } catch (e) {
     if (e && e.name === 'TokenExpiredError') {
-      throw new Error(
-        `The token has expired. Please resend your email to ${req.query.groupSlug}@${get(config, 'server.domain')}`,
-      );
+      throw new Error(`The token has expired. Please resend your email to ${req.query.groupSlug}@${env.DOMAIN}`);
     }
   }
   let member = await models.Member.findOne({ where: token.data });
@@ -113,9 +109,7 @@ export async function unfollow(req, res, next) {
     token = verifyJwt(req.query.token);
   } catch (e) {
     if (e && e.name === 'TokenExpiredError') {
-      throw new Error(
-        `The token has expired. Please resend your email to ${req.query.groupSlug}@${get(config, 'server.domain')}`,
-      );
+      throw new Error(`The token has expired. Please resend your email to ${req.query.groupSlug}@${env.DOMAIN}`);
     }
   }
   const member = await models.Member.findById(token.data.MemberId);

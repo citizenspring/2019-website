@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from './email.layout';
 import { get } from 'lodash';
-import config from 'config';
+import env from '../env';
 import Oy from 'oy-vey';
 import withIntl from '../../lib/withIntl';
 import { FormattedMessage } from 'react-intl';
@@ -64,7 +64,7 @@ export const body = withIntl(data => {
   } else {
     threadEmail += post.PostId;
   }
-  threadEmail += `@${get(config, 'server.domain')}`;
+  threadEmail += `@${env.DOMAIN}`;
 
   return (
     <Layout data={data}>

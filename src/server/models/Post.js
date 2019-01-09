@@ -1,5 +1,5 @@
 'use strict';
-import config from 'config';
+import env from '../env';
 import slugify from 'limax';
 import { omit, get } from 'lodash';
 import libemail from '../lib/email';
@@ -144,7 +144,7 @@ module.exports = (sequelize, DataTypes) => {
    */
   Post.createFromEmail = async email => {
     const { groupSlug, tags, recipients, action, ParentPostId, PostId } = libemail.parseHeaders(email);
-    const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
+    const groupEmail = `${groupSlug}@${env.DOMAIN}`;
     const userData = extractNamesAndEmailsFromString(email.From)[0];
     const user = await models.User.findOrCreate(userData);
 
@@ -205,9 +205,9 @@ module.exports = (sequelize, DataTypes) => {
     await thread.addFollowers(recipients);
 
     const headers = {
-      'Message-Id': `${groupSlug}/${thread.PostId}/${post.PostId}@${get(config, 'server.domain')}`,
-      References: `${groupSlug}/${thread.PostId}@${get(config, 'server.domain')}`,
-      'Reply-To': `${groupEmail} <${groupSlug}/${thread.PostId}/${post.PostId}@${get(config, 'server.domain')}>`,
+      'Message-Id': `${groupSlug}/${thread.PostId}/${post.PostId}@${env.DOMAIN}`,
+      References: `${groupSlug}/${thread.PostId}@${env.DOMAIN}`,
+      'Reply-To': `${groupEmail} <${groupSlug}/${thread.PostId}/${post.PostId}@${env.DOMAIN}>`,
     };
 
     let data;
@@ -218,7 +218,7 @@ module.exports = (sequelize, DataTypes) => {
       data = { groupSlug, followersCount: followers.length, post, url };
       await libemail.sendTemplate('threadCreated', data, user.email);
       // We send the new post to followers of the group + the recipients
-      const unsubscribeLabel = `unfollow ${group.slug}@${get(config, 'server.domain')}`;
+      const unsubscribeLabel = `unfollow ${group.slug}@${env.DOMAIN}`;
       const subscribeLabel = `follow this thread`;
       data = {
         groupSlug,
@@ -240,7 +240,7 @@ module.exports = (sequelize, DataTypes) => {
       const unsubscribeLabel = `unfollow this thread`;
       data = {
         groupSlug,
-        url: `${get(config, 'server.baseUrl')}/${groupSlug}/${thread.slug}`,
+        url: `${env.BASE_URL}/${groupSlug}/${thread.slug}`,
         post: post.dataValues,
         unsubscribe: { label: unsubscribeLabel, data: { PostId: thread.PostId } },
       };
@@ -292,7 +292,7 @@ module.exports = (sequelize, DataTypes) => {
         this.path = `/${group.slug}/${this.slug}`;
       }
     }
-    return `${get(config, 'server.baseUrl')}${this.path}`;
+    return `${env.BASE_URL}${this.path}`;
   };
 
   Post.associate = m => {

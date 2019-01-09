@@ -1,14 +1,15 @@
-import config from 'config';
+import env from '../env';
 import React from 'react';
 import Layout from './email.layout';
 import { get } from 'lodash';
+import settings from '../../../settings.json';
 
 export const subject = ({ groupSlug }) => {
-  return `You are now following ${groupSlug}@${get(config, 'server.domain')}`;
+  return `You are now following ${groupSlug}@${env.DOMAIN}`;
 };
 
 export const previewText = ({ groupSlug }) => {
-  return `You will now receive all new emails sent to the ${groupSlug}@${get(config, 'server.domain')} mailing list`;
+  return `You will now receive all new emails sent to the ${groupSlug}@${env.DOMAIN} mailing list`;
 };
 
 export const body = data => {
@@ -16,9 +17,9 @@ export const body = data => {
   return (
     <Layout data={data}>
       <p>
-        You are now following the <a href={`${get(config, 'server.baseUrl')}/${groupSlug}`}>{groupSlug}</a> group of the
-        ${get(config, 'collective.name')} collective. All new emails sent to {groupSlug}@{get(config, 'server.domain')}{' '}
-        will now also be sent to you.
+        You are now following the <a href={`${env.BASE_URL}/${groupSlug}`}>{groupSlug}</a> group of the $
+        {get(settings, 'name')} collective. All new emails sent to {groupSlug}@{env.DOMAIN} will now also be sent to
+        you.
       </p>
       <p>
         Please note that in order to preserve your inbox, you will only receive replies to threads that you have replied

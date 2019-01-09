@@ -1,5 +1,3 @@
-import { get } from 'lodash';
-import config from 'config';
 import React from 'react';
 import Oy from 'oy-vey';
 

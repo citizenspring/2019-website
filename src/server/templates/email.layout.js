@@ -1,7 +1,8 @@
-import config from 'config';
+import env from '../env';
 import React from 'react';
 import Oy from 'oy-vey';
 import { get } from 'lodash';
+import settings from '../../../settings.json';
 
 const { Table, TBody, TR, TD } = Oy;
 
@@ -28,7 +29,7 @@ const styles = {
     color: 'black',
   },
   oclogo: {
-    backgroundImage: `url('${get(config, 'server.baseUrl')}/static/images/opencollectiveicon-48x48@2x.png')`,
+    backgroundImage: `url('${env.BASE_URL}/static/images/opencollectiveicon-48x48@2x.png')`,
     backgroundSize: '22px 22px',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
@@ -59,8 +60,8 @@ const layout = ({ children, data }) => {
               </a>
             )}
             {!data.url && (
-              <a style={styles.footerLink} href={get(config, 'server.baseUrl')}>
-                {get(config, 'collective.name')}
+              <a style={styles.footerLink} href={env.BASE_URL}>
+                {get(settings, 'name')}
               </a>
             )}
           </TD>

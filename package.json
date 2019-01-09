@@ -65,7 +65,6 @@
     "babel-plugin-node": "^2.1.0",
     "body-parser": "^1.18.3",
     "clean-tag": "^2.0.2",
-    "config": "^3.0.1",
     "cross-fetch": "^3.0.0",
     "debug": "^4.1.0",
     "dotenv": "^6.2.0",

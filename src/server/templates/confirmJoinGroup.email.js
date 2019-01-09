@@ -1,6 +1,5 @@
-import config from 'config';
+import env from '../env';
 import React from 'react';
-import Oy from 'oy-vey';
 import Layout from './email.layout';
 import { get } from 'lodash';
 import settings from '../../../settings.json';
@@ -29,12 +28,12 @@ export const subject = ({ groupSlug }) => {
 };
 
 export const previewText = ({ groupSlug }) => {
-  return `You are one click away from joining the ${groupSlug}@${get(config, 'server.domain')} mailing list`;
+  return `You are one click away from joining the ${groupSlug}@${env.DOMAIN} mailing list`;
 };
 
 export const body = data => {
   const { groupSlug, confirmationUrl } = data;
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+  const groupUrl = `${env.BASE_URL}/${groupSlug}`;
   return (
     <Layout data={data}>
       <p>

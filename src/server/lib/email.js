@@ -2,7 +2,7 @@ import debugLib from 'debug';
 const debug = debugLib('email');
 import { get, uniq } from 'lodash';
 import nodemailer from 'nodemailer';
-import config from 'config';
+import env from '../env';
 import { parseEmailAddress, extractNamesAndEmailsFromString } from '../lib/utils';
 import { createJwt } from '../lib/auth';
 import path from 'path';
@@ -13,7 +13,7 @@ import { render } from '../templates';
 
 const libemail = {};
 
-console.log(`> Using mailgun account ${get(config, 'email.mailgun.user')}`);
+console.log(`> Using mailgun account ${env.MAILGUN_USER}`);
 
 libemail.generateUnsubscribeUrl = async function(email, where) {
   const user = await models.User.findByEmail(email);
@@ -32,7 +32,7 @@ libemail.generateUnsubscribeUrl = async function(email, where) {
     data: { MemberId: member.id },
   };
   const token = createJwt('unfollow', tokenData, '7d');
-  return `${config.server.baseUrl}/api/unfollow?token=${token}`;
+  return `${env.BASE_URL}/api/unfollow?token=${token}`;
 };
 
 libemail.generateSubscribeUrl = async function(email, memberData) {
@@ -44,7 +44,7 @@ libemail.generateSubscribeUrl = async function(email, memberData) {
   memberData.role = 'FOLLOWER';
   memberData.UserId = user.id;
   const token = createJwt('follow', { data: memberData }, '7d');
-  return `${config.server.baseUrl}/api/follow?token=${token}`;
+  return `${env.BASE_URL}/api/follow?token=${token}`;
 };
 
 /**
@@ -86,7 +86,7 @@ libemail.sendTemplate = async function(template, data, to, options = {}) {
 
     // If for some reason the sender sends an email to the group and cc the group as well,
     // we ignore this user error
-    if (email.substr(email.indexOf('@') + 1) === get(config, 'server.domain')) {
+    if (email.substr(email.indexOf('@') + 1) === env.DOMAIN) {
       const { groupSlug } = parseEmailAddress(email);
       if (to.substr(0, to.indexOf('@')) === groupSlug) {
         console.info(`Skipping ${email} because it's the same inbox than ${to}`);
@@ -147,12 +147,12 @@ libemail.send = async function(to, subject, text, html, options = {}) {
       ignoreTLS: true,
       port: 1025,
     };
-  } else if (get(config, 'email.mailgun.password')) {
+  } else if (env.MAILGUN_PASSWORD) {
     transport = {
       service: 'Mailgun',
       auth: {
-        user: get(config, 'email.mailgun.user'),
-        pass: get(config, 'email.mailgun.password'),
+        user: env.MAILGUN_USER,
+        pass: env.MAILGUN_PASSWORD,
       },
     };
   }
@@ -170,13 +170,13 @@ libemail.send = async function(to, subject, text, html, options = {}) {
 
   const mailgun = nodemailer.createTransport(transport);
 
-  const from = options.from || config.email.from;
+  const from = options.from || env.FROM_EMAIL;
   const cc = options.cc;
   const bcc = options.bcc;
   const attachments = options.attachments;
 
   // only attach tag in production to keep data clean
-  const tag = config.env === 'production' ? options.tag : 'internal';
+  const tag = env.NODE_ENV === 'production' ? options.tag : 'internal';
   const headers = { 'X-Mailgun-Tag': tag, 'X-Mailgun-Dkim': 'yes', ...options.headers };
   debug('send from:', from, 'to:', to, 'cc:', cc, JSON.stringify(headers));
   return await mailgun.sendMail({

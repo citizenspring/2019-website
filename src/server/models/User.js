@@ -2,7 +2,6 @@
 
 import * as auth from '../lib/auth';
 import libemail from '../lib/email';
-import config from 'config';
 
 module.exports = (sequelize, DataTypes) => {
   const { models, Op } = sequelize;

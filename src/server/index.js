@@ -1,13 +1,11 @@
-import '../env';
-import config from 'config';
-import path from 'path';
+import './env';
 
+import path from 'path';
 import express from 'express';
 import next from 'next';
-import { get } from 'lodash';
 import logger from '../logger';
 
-const { PORT } = process.env;
+const { PORT, PG_PORT, PG_HOST, PG_DATABASE, NODE_ENV } = process.env;
 
 const port = parseInt(PORT, 10) || 3000;
 import routes from './routes';
@@ -17,7 +15,7 @@ import { nextConfig } from '../next.config';
 
 const nextApp = next({
   dir: path.dirname(__dirname),
-  dev: process.env.NODE_ENV !== 'production',
+  dev: NODE_ENV !== 'production',
   conf: nextConfig,
 });
 const pagesHandler = pages.getRequestHandler(nextApp);
@@ -30,11 +28,7 @@ nextApp.prepare().then(() => {
     if (err) {
       throw err;
     }
-    logger.info(
-      `> Connecting to pgsql://${config.server.database.options.host}:${config.server.database.port || 5432}/${
-        config.server.database.database
-      }`,
-    );
+    logger.info(`> Connecting to pgsql://${PG_HOST}:${PG_PORT || 5432}/${PG_DATABASE}`);
     logger.info(`> GraphQL server ready on http://localhost:${port}/graphql/v1`);
     logger.info(`> Web server ready on http://localhost:${port}`);
   });

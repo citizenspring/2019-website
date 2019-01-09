@@ -1,6 +1,6 @@
 import React from 'react';
 import { get } from 'lodash';
-import config from 'config';
+import env from '../env';
 import Layout from './email.layout';
 import { pluralize } from '../lib/utils';
 
@@ -9,8 +9,8 @@ export const subject = ({ groupSlug, followersCount }) => {
 };
 
 export const text = ({ groupSlug, followersCount, post }) => {
-  const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+  const groupEmail = `${groupSlug}@${env.DOMAIN}`;
+  const groupUrl = `${env.BASE_URL}/${groupSlug}`;
   let msg = `Your message has been sent to the ${groupSlug} group.
 You can view it online on ${groupUrl}/${post.slug}\n`;
   if (followersCount === 1) {
@@ -24,8 +24,8 @@ Other people can follow this group online on ${groupUrl} or by sending an empty 
 
 export const body = data => {
   const { groupSlug, followersCount, post } = data;
-  const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
-  const groupUrl = `${get(config, 'server.baseUrl')}/${groupSlug}`;
+  const groupEmail = `${groupSlug}@${env.DOMAIN}`;
+  const groupUrl = `${env.BASE_URL}/${groupSlug}`;
   return (
     <Layout data={data}>
       <p>

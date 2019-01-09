@@ -1,4 +1,4 @@
-import config from 'config';
+import env from '../env';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 
@@ -12,7 +12,7 @@ export const TOKEN_EXPIRATION_SESSION = daysToSeconds(90);
 
 /** Generate a JWToken with the received parameters */
 export function createJwt(subject, payload, expiresIn) {
-  return jwt.sign(payload, config.server.jwtSecret, {
+  return jwt.sign(payload, env.JWT_SECRET, {
     expiresIn,
     subject,
   });
@@ -20,5 +20,5 @@ export function createJwt(subject, payload, expiresIn) {
 
 /** Verify JWToken */
 export function verifyJwt(token) {
-  return jwt.verify(token, config.server.jwtSecret);
+  return jwt.verify(token, env.JWT_SECRET);
 }

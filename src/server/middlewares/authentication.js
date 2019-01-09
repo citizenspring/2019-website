@@ -1,5 +1,5 @@
 import { get, contains } from 'lodash';
-import config from 'config';
+import env from '../env';
 import jwt from 'jsonwebtoken';
 import models from '../models';
 import errors from '../lib/errors';
@@ -9,7 +9,7 @@ const { User } = models;
 
 const { BadRequest, CustomError, Unauthorized } = errors;
 
-const { secret } = config.server.jwtSecret;
+const { secret } = env.JWT_SECRET;
 
 /**
  * Middleware related to authentication.

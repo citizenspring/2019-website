@@ -1,4 +1,4 @@
-import config from 'config';
+import env from '../env';
 import React from 'react';
 import Layout from './email.layout';
 import { get } from 'lodash';
@@ -8,17 +8,15 @@ export const subject = () => {
 };
 
 export const previewText = ({ group, followers }) => {
-  return `${group.slug}@${get(config, 'server.domain')} currently has ${followers.length} followers`;
+  return `${group.slug}@${env.DOMAIN} currently has ${followers.length} followers`;
 };
 
 export const text = ({ group, followers }) => {
-  const groupEmail = `${group.slug}@${get(config, 'server.domain')}`;
+  const groupEmail = `${group.slug}@${env.DOMAIN}`;
   return `Welcome to your new email group ${groupEmail}.
 ${followers.length > 1 ? `\nFollowers:\n${followers.map(follower => `- ${follower.name}\n`)}` : ''}
 
-You can view it online on ${get(config, 'server.baseUrl')}/${
-    group.slug
-  }. You can also easily manage it right from your email client:
+You can view it online on ${env.BASE_URL}/${group.slug}. You can also easily manage it right from your email client:
 
 # How to add people?
 
@@ -36,7 +34,7 @@ Anyone can send an empty email to the group ${groupEmail} to receive the latest 
 
 export const body = data => {
   const { group, followers } = data;
-  const groupEmail = `${group.slug}@${get(config, 'server.domain')}`;
+  const groupEmail = `${group.slug}@${env.DOMAIN}`;
   return (
     <Layout data={data}>
       <p>Welcome to your new email group {groupEmail}.</p>
@@ -51,8 +49,8 @@ export const body = data => {
         </div>
       )}
       <p>
-        You can view it online on {get(config, 'server.baseUrl')}/{group.slug}. You can also easily manage it right from
-        your email client:
+        You can view it online on {env.BASE_URL}/{group.slug}. You can also easily manage it right from your email
+        client:
       </p>
       <h3>How to add people?</h3>
       <p>

@@ -1,5 +1,5 @@
 'use strict';
-import config from 'config';
+import env from '../env';
 import slugify from 'limax';
 import { get, omit } from 'lodash';
 import debugLib from 'debug';
@@ -113,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Group.prototype.getUrl = async function() {
-    return `${get(config, 'server.baseUrl')}/${this.slug}`;
+    return `${env.BASE_URL}/${this.slug}`;
   };
 
   /**

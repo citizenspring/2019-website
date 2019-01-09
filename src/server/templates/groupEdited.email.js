@@ -1,10 +1,10 @@
-import config from 'config';
+import env from '../env';
 import React from 'react';
 import Layout from './email.layout';
 import { get } from 'lodash';
 
-const domain = get(config, 'server.domain');
-const baseUrl = get(config, 'server.baseUrl');
+const domain = env.DOMAIN;
+const baseUrl = env.BASE_URL;
 
 export const subject = ({ group }) => {
   return `${group.slug} group edited`;

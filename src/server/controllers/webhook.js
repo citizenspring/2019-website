@@ -2,8 +2,7 @@ import libemail from '../lib/email';
 import { parseEmailAddress, extractEmailsFromString, isEmpty } from '../lib/utils';
 import { createJwt } from '../lib/auth';
 import models from '../models';
-import config from 'config';
-import { get } from 'lodash';
+import env from '../env';
 import debugLib from 'debug';
 const debug = debugLib('webhook');
 import { handleIncomingEmail } from './emails';
@@ -18,7 +17,7 @@ async function handleFirstTimeUser(email, data) {
 
   const tokenData = { messageId, mailServer };
   const token = createJwt('emailConfirmation', tokenData, '1h');
-  data.confirmationUrl = `${config.server.baseUrl}/api/publishEmail?groupSlug=${data.groupSlug}&token=${token}`;
+  data.confirmationUrl = `${env.BASE_URL}/api/publishEmail?groupSlug=${data.groupSlug}&token=${token}`;
 
   if (isEmpty(email['stripped-text'])) {
     return await libemail.sendTemplate('confirmJoinGroup', data, email.sender);
@@ -39,10 +38,10 @@ export default async function webhook(req, res) {
   debug('receiving email from:', email.sender, 'to:', email.recipient, 'subject:', email.subject);
 
   const { groupSlug, ParentPostId, PostId, action } = parseEmailAddress(email.recipient);
-  const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`.toLowerCase();
+  const groupEmail = `${groupSlug}@${env.DOMAIN}`.toLowerCase();
 
   // Ignore emails coming from ourselves (since we send emails to the group and cc recipients)
-  const defaultEmailFrom = extractEmailsFromString(get(config, 'email.from'))[0];
+  const defaultEmailFrom = extractEmailsFromString(env.FROM_EMAIL)[0];
   if (email.sender === groupEmail || email.sender === defaultEmailFrom) {
     console.info('Receiving email sent from the group to the group, discarding');
     return res.send('ok');

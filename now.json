@@ -2,8 +2,10 @@
   "env": {
     "NODE_ENV": "production",
     "DOMAIN": "citizenspring.be",
+    "FROM_EMAIL": "CitizenSpring <info@citizenspring.be>",
     "BASE_URL": "https://citizenspring.be",
     "DEBUG": "webhook,email",
+    "JWT_SECRET": "@jwt_secret",
     "MAILGUN_USER": "postmaster@citizenspring.be",
     "MAILGUN_API_KEY": "@mailgun_api_key",
     "MAILGUN_PASSWORD": "@mailgun_password",
@@ -24,7 +26,7 @@
   "routes": [
     { "src": "/webhook", "methods": ["POST"], "dest": "/build/server/controllers/webhook.js" },
     { "src": "/static/(.*)", "methods": ["GET"], "dest": "/build/static/$1" },
-    { "src": "(.*)", "methods": ["GET"], "dest": "/build/server/index.js" }
+    { "src": "/.*", "methods": ["GET"], "dest": "/build/server/index.js" }
   ],
   "regions": ["bru"]
 }

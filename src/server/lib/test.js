@@ -2,19 +2,16 @@ import { graphql } from 'graphql';
 import schema from '../graphql/schema';
 import debug from 'debug';
 import { sequelize } from '../models';
-import config from 'config';
+import env from '../env';
 
 export const db = {
   reset: async () => {
     try {
       await sequelize.sync({ force: true });
-      console.log(`> ${config.server.database.database} db reset`);
+      console.log(`> ${env.PG_DATABASE} db reset`);
       return true;
     } catch (e) {
-      console.error(
-        `lib/test.js> cannot reset ${config.server.database.database} db in ${process.env.NODE_ENV} env.`,
-        e,
-      );
+      console.error(`lib/test.js> cannot reset ${env.PG_DATABASE} db in ${env.NODE_ENV} env.`, e);
       process.exit(1);
     }
   },
