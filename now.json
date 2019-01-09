@@ -13,12 +13,18 @@
     "PG_USERNAME": "@pg_username",
     "PG_PASSWORD": "@pg_password"
   },
-  "version": 1,
+  "public": true,
+  "version": 2,
   "alias": ["citizenspring.be", "www.citizenspring.be"],
-  "scale": {
-    "bru1": {
-      "min": 1,
-      "max": 1
-    }
-  }
+  "builds": [
+    { "src": "build/server/controllers/webhook.js", "use": "@now/node" },
+    { "src": "build/server/index.js", "use": "@now/node-server" },
+    { "src": "build/static/**", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/webhook", "methods": ["POST"], "dest": "/build/server/controllers/webhook.js" },
+    { "src": "/static/(.*)", "methods": ["GET"], "dest": "/build/static/$1" },
+    { "src": "(.*)", "methods": ["GET"], "dest": "/build/server/index.js" }
+  ],
+  "regions": ["bru"]
 }

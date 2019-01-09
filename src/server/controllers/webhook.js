@@ -31,7 +31,7 @@ async function handleFirstTimeUser(email, data) {
   }
 }
 
-export default async function webhook(req, res, next) {
+export default async function webhook(req, res) {
   const email = req.body;
   if (!email.recipient) {
     throw new Error('Invalid webhook payload: missing "recipient"');

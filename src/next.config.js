@@ -1,6 +1,15 @@
-import withCSS from '@zeit/next-css';
 import webpack from 'webpack';
-import { server } from 'config';
+
+if (!process.env.DOMAIN) {
+  throw new Error('Missing process.env.DOMAIN');
+}
+
+const { PHASE_PRODUCTION_SERVER } =
+  process.env.NODE_ENV === 'development'
+    ? {}
+    : !process.env.NOW_REGION
+    ? require('next/constants')
+    : require('next-server/constants');
 
 const images = require('remark-images');
 const emoji = require('remark-emoji');
@@ -19,8 +28,8 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     // Will be available on both server and client
-    DOMAIN: server.domain,
-    GRAPHQL_URL: `${server.baseUrl}/graphql/v1`,
+    DOMAIN: process.env.DOMAIN,
+    GRAPHQL_URL: `${process.env.BASE_URL}/graphql/v1`,
   },
   webpack: config => {
     config.plugins.push(
@@ -106,9 +115,14 @@ const nextConfig = {
   },
 };
 
-module.exports = withCSS(
-  withMDX({
-    pageExtensions: ['js', 'jsx', 'mdx'],
-    nextConfig,
-  }),
-);
+module.exports = (phase, { defaultConfig }) => {
+  if (phase === PHASE_PRODUCTION_SERVER) {
+    // Config used to run in production.
+    return nextConfig;
+  }
+
+  // ✅ Put the require call here.
+  const withCSS = require('@zeit/next-css');
+
+  return withCSS(nextConfig);
+};
