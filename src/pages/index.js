@@ -1,6 +1,4 @@
 import React from 'react';
-import settings from '../../settings.json';
-import { get } from 'lodash';
 import TopBar from '../components/TopBar/index.js';
 import Footer from '../components/Footer/index.js';
 import GroupsWithData from '../components/Groups/withData.js';
@@ -9,6 +7,8 @@ import TitleWithActions from '../components/TitleWithActions';
 import env from '../env.frontend';
 import StyledLink from '../components/StyledLink';
 import styled from 'styled-components';
+import settings from '../../settings.json';
+import { mailto } from '../lib/utils';
 
 const H2 = props => <h2 style={{ fontWeight: 300 }} {...props} />;
 
@@ -32,7 +32,8 @@ Proptip: you can cc the people that you want to add to the group`,
 const actions = [
   {
     label: '+ Create a Group',
-    mailto: `?subject=${encodeURIComponent(instructions.subject)}&body=${encodeURIComponent(instructions.body)}`,
+    mailto: mailto('', instructions.subject, instructions.body),
+    style: 'standard',
   },
 ];
 
@@ -43,16 +44,29 @@ export default () => (
       <Title>{settings.name}</Title>
       <H2>{settings.description}</H2>
       <p>{settings.longDescription}</p>
+
       <Buttons>
-        {get(settings, 'home.buttons', []).map(button => (
-          <ButtonItem>
-            <StyledLink href={button.url} buttonStyle="standard" buttonSize="small">
-              {button.label}
-            </StyledLink>
-          </ButtonItem>
-        ))}
+        <ButtonItem>
+          <StyledLink href="https://goo.gl/forms/r2R8vFzcwrpKJaUp1" buttonStyle="primary" buttonSize="medium">
+            Join as a volunteer!
+          </StyledLink>
+        </ButtonItem>
+        <ButtonItem>
+          <StyledLink
+            href={mailto(
+              'newsletter/follow@citizenspring.be',
+              'Subscribe to the Citizen Spring newsletter',
+              'Just send this email to subscribe to the Citizen Spring newsletter and stay up to date with our latest news and progress!',
+            )}
+            buttonStyle="standard"
+            buttonSize="medium"
+          >
+            Subscribe to our newsletter
+          </StyledLink>
+        </ButtonItem>
       </Buttons>
-      <TitleWithActions title="Working Groups" actions={actions} />
+
+      <TitleWithActions subtitle="Join a working group" actions={actions} />
       <GroupsWithData />
     </Content>
     <Footer />

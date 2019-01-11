@@ -3,6 +3,7 @@ import React from 'react';
 import Oy from 'oy-vey';
 import Layout from './email.layout';
 import { get } from 'lodash';
+import { quoteEmail } from '../lib/email';
 
 const styles = {
   btn: {
@@ -47,7 +48,7 @@ ${confirmationUrl}
 Note: If you'd like to use another identity, we recommend that you send your email from a different email address.
 
 
-> ${post.text.split('\n').join('\n> ')}
+${quoteEmail(post)}
 `;
 };
 
@@ -75,8 +76,8 @@ export const body = data => {
         Note: If you'd like to use another identity, we recommend that you send your email from a different email
         address.
       </p>
-      <hr />
-      <div dangerouslySetInnerHTML={{ __html: post.html }} />
+
+      {quoteEmail(post, 'html')}
     </Layout>
   );
 };

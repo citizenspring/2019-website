@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from '../../lib/propTypes';
 import { FooterWrapper, FooterTitle, FooterSubtitle } from './Styles';
-import Icon from '../Icon';
 import Link from '../Link';
 import settings from '../../../settings.json';
-import Howto from './Howto';
-import { Content } from '../../styles/layout';
+import Links from './Links';
 
 class Footer extends Component {
   static propTypes = {
@@ -31,7 +29,7 @@ class Footer extends Component {
             </Link>
           </FooterSubtitle>
         )}
-        <Howto groupSlug={groupSlug} PostId={PostId} />
+        <Links groupSlug={groupSlug} PostId={PostId} />
       </FooterWrapper>
     );
   }

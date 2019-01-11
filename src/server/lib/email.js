@@ -192,4 +192,18 @@ libemail.send = async function(to, subject, text, html, options = {}) {
   });
 };
 
+export const quoteEmail = ({ html, text }, format = 'text') => {
+  switch (format) {
+    case 'text':
+      return text ? `> ${text.split('\n').join('\n> ')}` : '';
+    case 'html':
+      return (
+        <div>
+          <hr />
+          <div dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
+      );
+  }
+};
+
 export default libemail;

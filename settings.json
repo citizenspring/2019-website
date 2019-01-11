@@ -1,7 +1,7 @@
 {
   "name": "#CitizenSpring🌱",
-  "description": "Citizens coming together to offer an alternative to political parties in the upcoming elections in Belgium",
-  "longDescription": "This is the global coordination group at the Belgian level. Join the movement!",
+  "description": "This spring, citizens are waking up for the planet.",
+  "longDescription": "We are coming together to offer alternatives to our current political, economic, education system, one citizen initiative at a time.",
   "website": "https://citizenspring.be",
   "logo": "/static/images/icon.png",
   "background": "/static/images/background.jpg",
@@ -18,10 +18,6 @@
       }
     ],
     "buttons": [
-      {
-        "label": "Join us!",
-        "url": "https://goo.gl/forms/r2R8vFzcwrpKJaUp1"
-      },
       {
         "label": "Join our Facebook Group",
         "url": "https://www.facebook.com/groups/418364505368961/"

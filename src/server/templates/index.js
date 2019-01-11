@@ -15,6 +15,7 @@ import * as postEdited from './postEdited.email.js';
 import * as approveGroupEdit from './approveGroupEdit.email.js';
 import * as threadCreated from './threadCreated.email.js';
 import * as post from './post.email.js';
+import * as error from './error.email.js';
 
 const templates = {
   shortcode,
@@ -24,6 +25,7 @@ const templates = {
   followThread,
   threadCreated,
   post,
+  error,
   groupCreated,
   groupInfo,
   groupEdited,

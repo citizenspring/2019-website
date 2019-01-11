@@ -3,7 +3,7 @@ import PropTypes from '../lib/propTypes';
 import StyledLink from './StyledLink';
 import styled from 'styled-components';
 import Link from './Link';
-import { Title } from '../styles/layout';
+import { Title, Subtitle } from '../styles/layout';
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,10 +17,11 @@ const Action = styled.div`
   margin: 0.5rem;
 `;
 
-export default function TitleWithActions({ title, actions }) {
+export default function TitleWithActions({ title, subtitle, actions }) {
   return (
     <Wrapper>
-      <Title>{title}</Title>
+      {title && <Title>{title}</Title>}
+      {subtitle && <Subtitle>{subtitle}</Subtitle>}
       <Actions>
         {actions.map((action, i) => (
           <Action key={i}>

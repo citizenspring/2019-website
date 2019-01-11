@@ -133,6 +133,15 @@ module.exports = (sequelize, DataTypes) => {
     return await this.save();
   };
 
+  User.prototype.isAdmin = async function(group) {
+    const membership = await models.Member.count({
+      logging: console.log,
+      where: { UserId: this.id, GroupId: group.id, role: 'ADMIN' },
+    });
+    console.log('>>> isAdmin', membership, 'UserId', this.id, 'GroupId', group.id);
+    return membership === 1;
+  };
+
   /**
    * Create a group and add this user as ADMIN and FOLLOWER
    */

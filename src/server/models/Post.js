@@ -5,6 +5,7 @@ import { omit, get } from 'lodash';
 import libemail from '../lib/email';
 import { extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
 import debugLib from 'debug';
+import { mailto } from '../../lib/utils';
 const debug = debugLib('post');
 
 module.exports = (sequelize, DataTypes) => {
@@ -213,6 +214,19 @@ module.exports = (sequelize, DataTypes) => {
     let data;
     // If it's a new thread,
     if (!parentPost) {
+      // if the group is of type announcements, only the admins can create new threads
+      if (get(group, 'settings.type') === 'announcements') {
+        const isAdmin = await user.isAdmin(group);
+        if (!isAdmin) {
+          data = {
+            subject: 'Cannot send email to group (must be an admin)',
+            body: 'Only the administrators can post a new message to this group.',
+            email: { html: postData.html, text: postData.text },
+          };
+          await libemail.sendTemplate('error', data, user.email);
+          return;
+        }
+      }
       const followers = await group.getFollowers();
       const url = await post.getUrl();
       data = { groupSlug, followersCount: followers.length, post, url };

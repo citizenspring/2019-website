@@ -121,6 +121,8 @@ export async function handleIncomingEmail(email) {
 
   switch (action) {
     case 'follow':
+    case 'join':
+    case 'subscribe':
       return follow(email.sender, group, PostId);
     case 'edit':
       const data = { html: email['stripped-html'], text: email['stripped-text'] };

@@ -1,27 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from '../Link';
-import { HowtoWrapper } from './Styles';
-import HowtoItem from './HowtoItem';
+import StyledLink from '../StyledLink';
+import { LinksWrapper } from './Styles';
+import LinkItem from './LinkItem';
 import env from '../../env.frontend';
+import settings from '../../../settings.json';
+import { get } from 'lodash';
 
 export default function Howto({ groupSlug, PostId }) {
   const threadEmail = `${groupSlug}/${PostId}@${env.DOMAIN}`;
   const groupEmail = `${groupSlug}@${env.DOMAIN}`;
   return (
-    <HowtoWrapper>
+    <LinksWrapper>
       {PostId && (
-        <HowtoItem icon="↵">
+        <LinkItem icon="↵">
           Reply to this thread by sending an email to <Link mailto={threadEmail}>{threadEmail}</Link>
-        </HowtoItem>
+        </LinkItem>
       )}
       {groupSlug && (
-        <HowtoItem icon="✉️">
+        <LinkItem icon="✉️">
           Start a new thread by sending an email to <Link mailto={groupEmail}>{groupEmail}</Link>
-        </HowtoItem>
+        </LinkItem>
       )}
-      <HowtoItem icon="oc">Start a new group by sending an email to :newgroup@{env.DOMAIN}</HowtoItem>
-    </HowtoWrapper>
+
+      <LinkItem icon="oc">Start a new group by sending an email to :newgroup@{env.DOMAIN}</LinkItem>
+      {get(settings, 'home.buttons', []).map(button => (
+        <LinkItem>
+          <Link href={button.url} color="black">
+            {button.label}
+          </Link>
+        </LinkItem>
+      ))}
+    </LinksWrapper>
   );
 }
 

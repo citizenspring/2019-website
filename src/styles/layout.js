@@ -13,3 +13,10 @@ export const Title = styled.h1`
   margin-top: 4rem;
   padding-top: 3rem;
 `;
+
+export const Subtitle = styled.h1`
+  font-size: 2rem;
+  margin-right: 1rem;
+  margin-top: 4rem;
+  padding-top: 3rem;
+`;

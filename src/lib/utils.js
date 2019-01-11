@@ -6,3 +6,13 @@ export const requireAttributes = (obj, attributes, getErrorMsg) => {
   });
   return true;
 };
+
+/**
+ * Generate the mailto value for href
+ * @param {*} to
+ * @param {*} subject
+ * @param {*} body
+ */
+export const mailto = (to, subject, body) => {
+  return `mailto:${to.replace('/', '%2F')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};

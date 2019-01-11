@@ -7,7 +7,6 @@ import libemail from '../../lib/email';
 import models from '../../models';
 
 import email1 from '../../mocks/mailgun.email1.json';
-import { inspect } from 'util';
 
 const req = { body: email1 };
 const res = { send: () => {} };
@@ -26,26 +25,10 @@ describe('webhook email', () => {
 
   afterAll(() => sandbox.restore());
 
-  describe('sending first email in a thread', async () => {
-    beforeAll(async () => {
-      sendEmailSpy.resetHistory();
-    });
-
+  describe('sending first email in a thread', () => {
     beforeAll(async () => {
       sendEmailSpy.resetHistory();
       await webhook(req, res);
-    });
-
-    it('creates a post', async () => {
-      const post = await models.Post.findOne();
-      expect(post.EmailMessageId).toEqual(email1['Message-Id']);
-      expect(post.html).toEqual(email1['stripped-html']);
-      expect(post.text).toEqual(email1['stripped-text']);
-    });
-    it('creates users for all persons cced', async () => {
-      const users = await models.User.findAll({ order: [['email', 'ASC']] });
-      expect(users.length).toEqual(2);
-      expect(users.map(u => u.email)).toContain('firstrecipient@gmail.com');
     });
 
     it('creates the group and add creator and all persons cced as ADMIN and FOLLOWER of the group and the post', async () => {
@@ -60,12 +43,24 @@ describe('webhook email', () => {
       expect(admins.length).toEqual(2);
     });
 
+    it('creates a post', async () => {
+      const post = await models.Post.findOne();
+      expect(post.EmailMessageId).toEqual(email1['Message-Id']);
+      expect(post.html).toEqual(email1['stripped-html']);
+      expect(post.text).toEqual(email1['stripped-text']);
+    });
+    it('creates users for all persons cced', async () => {
+      const users = await models.User.findAll({ order: [['email', 'ASC']] });
+      expect(users.length).toEqual(2);
+      expect(users.map(u => u.email)).toContain('firstrecipient@gmail.com');
+    });
+
     it('sends the email to all followers of the group', async () => {
       expect(sendEmailSpy.callCount).toEqual(3);
       expect(sendEmailSpy.firstCall.args[0]).toEqual('firstsender@gmail.com');
       expect(sendEmailSpy.firstCall.args[1]).toEqual('New group email created');
       expect(sendEmailSpy.secondCall.args[0]).toEqual('firstsender@gmail.com');
-      expect(sendEmailSpy.secondCall.args[1]).toContain('Message sent to testgroup');
+      expect(sendEmailSpy.secondCall.args[1]).toContain('Message sent to the testgroup');
       expect(sendEmailSpy.thirdCall.args[0]).toEqual('testgroup@citizenspring.be');
       expect(sendEmailSpy.thirdCall.args[4].cc).toEqual('firstrecipient@gmail.com');
       expect(sendEmailSpy.thirdCall.args[2]).toMatch('unfollow testgroup@');

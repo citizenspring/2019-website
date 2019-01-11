@@ -29,9 +29,9 @@ export const FooterLink = styled.a.attrs({
   margin: 0px 3px;
 `;
 
-export const HowtoWrapper = styled.div``;
+export const LinksWrapper = styled.div``;
 
-export const HowtoItemWrapper = styled.div`
+export const LinkItemWrapper = styled.div`
   display: flex;
   margin: 0.2rem 0;
   text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.8);
