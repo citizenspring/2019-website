@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-PG_DATABASE="opencollective-email-test"
 
 # Only run migrations automatically on staging and production
 if [ "$SEQUELIZE_ENV" = "staging" ] || [ "$SEQUELIZE_ENV" = "production" ]; then
@@ -12,14 +11,6 @@ fi
 # On any other environment, first let's check if postgres is installed
 if command -v psql > /dev/null; then
   echo "✓ Postgres installed"
-
-  if psql -lqt | cut -d \| -f 1 | grep -qw $PG_DATABASE; then
-    echo "✓ $PG_DATABASE database exists"
-    # dropdb $PG_DATABASE
-    else
-      echo "- creating $PG_DATABASE database";
-      createdb $PG_DATABASE
-  fi
 else
   echo "𐄂 psql command doesn't exist. Make sure you have Postgres installed ($> brew install postgres)"
 fi

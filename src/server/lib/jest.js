@@ -1,3 +1,10 @@
+if (['circleci', 'test', 'development'].includes(process.env.NODE_ENV)) {
+  const dbname = `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
+  process.env.PG_DATABASE = dbname;
+  console.log('> creating db', process.env.PG_DATABASE);
+  execSync(`createdb ${dbname}`);
+}
+
 import { graphql } from 'graphql';
 import schema from '../graphql/schema';
 import debug from 'debug';
@@ -5,10 +12,6 @@ import { sequelize } from '../models';
 import config from 'config';
 import { execSync } from 'child_process';
 
-const dbname = `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
-process.env.PG_DATABASE = dbname;
-console.log('> creating db', process.env.PG_DATABASE);
-execSync(`createdb ${dbname}`);
 export const db = {
   reset: async () => {
     try {
