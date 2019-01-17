@@ -1,4 +1,4 @@
-import { db, inspectSpy } from '../../lib/test';
+import { db, inspectSpy } from '../../lib/jest';
 import { edit } from '../emails';
 
 import sinon from 'sinon';

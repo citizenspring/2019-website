@@ -1,4 +1,4 @@
-import { db, inspectSpy } from '../../lib/test';
+import { db, inspectSpy } from '../../lib/jest';
 import webhook from '../webhook';
 
 import sinon from 'sinon';
@@ -38,14 +38,12 @@ describe('webhook email', () => {
       await webhook(req, res);
       expect(sendEmailSpy.firstCall.args[0]).toEqual(email1.sender);
       expect(sendEmailSpy.firstCall.args[1]).toEqual('Cannot send email to group (must be an admin)');
-      inspectSpy(sendEmailSpy, 3);
     });
     it.only('successfully creates a new thread if sender is an admin', async () => {
       await group.addMembers([{ email: email1.sender }], { role: 'ADMIN' });
       await webhook(req, res);
       expect(sendEmailSpy.firstCall.args[0]).toEqual(email1.sender);
       expect(sendEmailSpy.firstCall.args[1]).toContain('Message sent to the testgroup group');
-      inspectSpy(sendEmailSpy, 5);
     });
   });
 });

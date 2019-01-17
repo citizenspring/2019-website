@@ -1,6 +1,6 @@
 import { publishEmail } from '../api';
 import { createJwt } from '../../lib/auth';
-import { db } from '../../lib/test';
+import { db } from '../../lib/jest';
 import models from '../../models';
 
 import nock from 'nock';

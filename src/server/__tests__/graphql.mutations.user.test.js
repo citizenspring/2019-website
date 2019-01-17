@@ -1,4 +1,4 @@
-import { graphqlQuery, db, inspectSpy, waitForCondition } from '../lib/test';
+import { graphqlQuery, db, inspectSpy, waitForCondition } from '../lib/jest';
 import sinon from 'sinon';
 import libemail from '../lib/email';
 import models from '../models';

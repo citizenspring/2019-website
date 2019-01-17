@@ -43,7 +43,36 @@ export default () => (
     <Content>
       <Title>{settings.name}</Title>
       <H2>{settings.description}</H2>
-      <p>{settings.longDescription}</p>
+      <p>
+        We are millions of citizens who are tired of watching passively climate change and social unrest happening
+        around us. We want to do something about it.
+      </p>
+      <p>
+        But how can we work together in a coordinated fashion?
+        <br />
+        Let's start by splitting ourselves into small working groups or collectives that will offer one service to one
+        another. It could be anything: skill based (a collective of designers, of video editors, translators,
+        facilitators, etc.), service based (offering facilitation for meetings, special service for immigrants or low
+        income people, etc.) or event based (offering space, catering, event organizing, ...). Whatever your skills are
+        or whatever you have access to, you have something to contribute to this human organization. Each contribution
+        matters. Each contribution is a piece of the chain that we need to face the challenges of our time.
+      </p>
+      <p>
+        To make this work, each collective or group will share the same basic structure:
+        <ul>
+          <li>one email address to reach out to them (groupname@citizenspring.be)</li>
+          <li>one dedicated page (https://citizenspring.be/groupname)</li>
+        </ul>
+        They will all be open, transparent and inclusive. Anyone can join and participate or make a request.
+        <br />
+        This way, it will be easy to have an overview of all the different citizen collectives, see what they are up to,
+        see what they have to offer to the community and have a standard way to reach out to them.
+      </p>
+      <p>
+        Create your group or your collective and let's explore how we can create together an open organization to
+        address the challenges of our time wherever we are.
+      </p>
+      <p>We can do great things together! Let's do it! 🙌</p>
 
       <Buttons>
         <ButtonItem>

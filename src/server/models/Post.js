@@ -5,7 +5,6 @@ import { omit, get } from 'lodash';
 import libemail from '../lib/email';
 import { extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
 import debugLib from 'debug';
-import { mailto } from '../../lib/utils';
 const debug = debugLib('post');
 
 module.exports = (sequelize, DataTypes) => {
@@ -84,6 +83,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       html: DataTypes.TEXT,
       text: DataTypes.TEXT,
+      email: DataTypes.JSON,
     },
     {
       paranoid: true,
@@ -100,6 +100,11 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         beforeValidate: post => {
           post.slug = post.slug || slugify(post.title);
+        },
+        beforeCreate: post => {
+          if (post.ParentPostId) {
+            post.html = libemail.removeEmailResponse(post.html);
+          }
         },
         afterCreate: async post => {
           let action = 'CREATE';
@@ -198,6 +203,7 @@ module.exports = (sequelize, DataTypes) => {
       html: email['stripped-html'],
       text: email['stripped-text'],
       EmailMessageId: email['Message-Id'],
+      email,
       ParentPostId: parentPost && parentPost.PostId,
     };
     const post = await user.createPost(postData);

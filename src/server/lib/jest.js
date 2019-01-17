@@ -3,7 +3,12 @@ import schema from '../graphql/schema';
 import debug from 'debug';
 import { sequelize } from '../models';
 import config from 'config';
+import { execSync } from 'child_process';
 
+const dbname = `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
+process.env.PG_DATABASE = dbname;
+console.log('> creating db', process.env.PG_DATABASE);
+execSync(`createdb ${dbname}`);
 export const db = {
   reset: async () => {
     try {
@@ -12,13 +17,17 @@ export const db = {
       return true;
     } catch (e) {
       console.error(
-        `lib/test.js> cannot reset ${config.server.database.database} db in ${process.env.NODE_ENV} env.`,
+        `lib/jest.js> cannot reset ${config.server.database.database} db in ${process.env.NODE_ENV} env.`,
         e,
       );
-      process.exit(1);
+      process.exit(0);
     }
   },
-  close: () => sequelize.close(),
+  close: () => {
+    console.log(`> dropping ${dbname}`);
+    execSync(`dropdb ${dbname}`);
+    sequelize.close();
+  },
 };
 
 export const graphqlQuery = async (query, variables, remoteUser) => {

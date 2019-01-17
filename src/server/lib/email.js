@@ -15,6 +15,17 @@ const libemail = {};
 
 console.log(`> Using mailgun account ${get(config, 'email.mailgun.user')}`);
 
+/**
+ * Remove the quoted email
+ */
+libemail.removeEmailResponse = function(html) {
+  if (!html || typeof html !== 'string') throw new Error('libemail.removeEmailResponse error: html should be a string');
+
+  if (html.indexOf('gmail_quote') === -1) return html;
+
+  return html.substr(0, html.indexOf('<div class="gmail_quote">'));
+};
+
 libemail.generateUnsubscribeUrl = async function(email, where) {
   const user = await models.User.findByEmail(email);
   if (!user) {

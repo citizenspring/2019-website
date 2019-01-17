@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import request from 'request-promise';
 import { pluralize } from '../lib/utils';
 import models from '../models';
-import { db } from '../lib/test';
+import { db } from '../lib/jest';
 import { handleIncomingEmail } from './emails';
 
 export const retrieveEmail = async ({ mailServer, messageId }) => {

@@ -1,5 +1,5 @@
 import models from '../';
-import { db } from '../../lib/test';
+import { db } from '../../lib/jest';
 let user;
 describe('group model', async () => {
   beforeAll(db.reset);
