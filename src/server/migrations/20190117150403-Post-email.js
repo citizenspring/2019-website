@@ -2,10 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('Post', 'email', { type: Sequelize.JSON });
+    return queryInterface.addColumn('Posts', 'email', { type: Sequelize.JSON });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('Post', 'email');
+    return queryInterface.removeColumn('Posts', 'email');
   },
 };
