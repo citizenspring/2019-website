@@ -4,6 +4,7 @@ import styled from 'styled-components';
 // import Spinner from 'react-spinkit';
 import GroupBox from '../components/Groups/GroupBox';
 import Link from '../components/Link';
+import { get } from 'lodash';
 
 const ListWrapper = styled.div`
   margin-left: -1rem;
@@ -29,16 +30,17 @@ export default class PostList extends Component {
 
   render() {
     const { groups } = this.props;
-    const errorMessage = groups.total === 0 ? 'No group' : 'Loading';
-    if (groups.total > 0) {
-      return this.renderList(groups);
+    const visibleGroups = groups.nodes.filter(g => !get(g, 'settings.hidden', false));
+    const errorMessage = visibleGroups.length === 0 ? 'No group' : 'Loading';
+    if (visibleGroups.length > 0) {
+      return this.renderList(visibleGroups);
     } else return <LoadingWrapper>{errorMessage}</LoadingWrapper>;
   }
 
   renderList(groups) {
     return (
       <ListWrapper>
-        {groups.nodes.map((group, i) => (
+        {groups.map((group, i) => (
           <GroupBoxWrapper key={i}>
             <Link href={`/${group.slug}`}>
               <GroupBox group={group} />

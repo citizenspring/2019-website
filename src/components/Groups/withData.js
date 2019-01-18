@@ -12,7 +12,6 @@ class GroupsWithData extends React.Component {
   render() {
     const groups = this.props.data.allGroups;
     if (!groups) return <div>Loading</div>;
-
     return (
       <div>
         <GroupList groups={groups} />
@@ -34,6 +33,7 @@ const getDataQuery = gql`
           followers {
             total
           }
+          settings
           posts {
             total
             nodes {

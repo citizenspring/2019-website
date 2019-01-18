@@ -7,6 +7,7 @@ import {
   GraphQLObjectType,
   GraphQLEnumType,
 } from 'graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 import models, { Op } from '../models';
 import { get, has, sortBy } from 'lodash';
@@ -348,6 +349,12 @@ export const GroupType = new GraphQLObjectType({
         type: GraphQLString,
         resolve(group) {
           return group.color;
+        },
+      },
+      settings: {
+        type: GraphQLJSON,
+        resolve(group) {
+          return group.settings;
         },
       },
     };
