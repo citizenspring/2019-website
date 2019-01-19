@@ -38,6 +38,11 @@ export default async function webhook(req, res, next) {
   }
   debug('receiving email from:', email.sender, 'to:', email.recipient, 'subject:', email.subject);
 
+  // when replying from gmail to "testgroup@citizenspring.be" <testgroup/28/29@citizenspring.be>,
+  // the email.recipient becomes testgroup/28/29@citizenspring.be, testgroup@citizenspring.be
+  if (email.recipient.indexOf(', ') !== -1) {
+    email.recipient = email.recipient.split(', ')[0];
+  }
   const { groupSlug, ParentPostId, PostId, action } = parseEmailAddress(email.recipient);
   const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`.toLowerCase();
 

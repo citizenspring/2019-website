@@ -55,6 +55,7 @@ export const extractNamesAndEmailsFromString = str => {
  */
 export const parseEmailAddress = emailAddress => {
   if (!emailAddress) return {};
+  if (!isValidEmail(emailAddress)) throw new Error(`parseEmailAddress error: Invalid email address: ${emailAddress}`);
   const emailTokens = emailAddress.match(/([^\+]*)(\+(.*))?@.*/);
   if (!emailTokens) {
     throw new Error('Invalid email address');

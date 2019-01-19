@@ -30,4 +30,25 @@ describe('email', () => {
       recipients: [{ name: 'Carlos', email: 'cc@gmail.com' }],
     });
   });
+
+  it('cleans the HTML', () => {
+    const email = {
+      'body-plain':
+        'Hello world\r\n\r\nThis is a test with multiple paragraphs. \r\n\r\nAnother one. Line 1. New line.\r\nLine 2 of same paragraph. \r\n\r\nNew paragraph. ',
+      'stripped-html':
+        '<p>Hello world\r\n\r\nThis is a test with multiple paragraphs. \r\n\r\nAnother one. Line 1. New line.\r\nLine 2 of same paragraph. \r\n\r\nNew paragraph.</p>',
+      'stripped-text':
+        'Hello world\r\n\r\nThis is a test with multiple paragraphs. \r\n\r\nAnother one. Line 1. New line.\r\nLine 2 of same paragraph. \r\n\r\nNew paragraph.',
+    };
+    const html = libemail.getHTML(email);
+    expect(html).toEqual(`<p>Hello world</p>
+
+<p>This is a test with multiple paragraphs. </p>
+
+<p>Another one. Line 1. New line.<br />
+Line 2 of same paragraph. </p>
+
+<p>New paragraph.</p>
+`);
+  });
 });

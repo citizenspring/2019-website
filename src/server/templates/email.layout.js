@@ -36,6 +36,16 @@ const styles = {
 };
 
 const layout = ({ children, data }) => {
+  const viewOnline = {
+    href: get(config, 'server.baseUrl'),
+    label: get(config, 'collective.name'),
+  };
+  if (data.url) {
+    viewOnline.href = data.url;
+    const displayUrl = data.url && data.url.replace(/^https?:\/\/(www\.)?/i, '');
+    viewOnline.label = displayUrl.length < 30 ? displayUrl : 'view online';
+  }
+
   return (
     <Table width="100%" maxwidth="600px">
       <TBody>
@@ -53,16 +63,9 @@ const layout = ({ children, data }) => {
           <TD width={5} />
           <TD width={28} style={styles.oclogo} />
           <TD align="left">
-            {data.url && (
-              <a style={styles.footerLink} href={data.url}>
-                {data.url.replace(/^https?:\/\/(www\.)?/i, '')}
-              </a>
-            )}
-            {!data.url && (
-              <a style={styles.footerLink} href={get(config, 'server.baseUrl')}>
-                {get(config, 'collective.name')}
-              </a>
-            )}
+            <a style={styles.footerLink} href={viewOnline.href}>
+              {viewOnline.label}
+            </a>
           </TD>
           <TD align="right">
             <Table>

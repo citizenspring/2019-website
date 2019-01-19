@@ -200,7 +200,7 @@ module.exports = (sequelize, DataTypes) => {
     const postData = {
       GroupId: group.GroupId,
       title: email.subject,
-      html: email['stripped-html'],
+      html: libemail.getHTML(email),
       text: email['stripped-text'],
       EmailMessageId: email['Message-Id'],
       email,

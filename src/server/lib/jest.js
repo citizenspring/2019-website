@@ -1,10 +1,3 @@
-if (['circleci', 'test', 'development'].includes(process.env.NODE_ENV)) {
-  const dbname = `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
-  process.env.PG_DATABASE = dbname;
-  console.log('> creating db', process.env.PG_DATABASE);
-  execSync(`createdb ${dbname}`);
-}
-
 import { graphql } from 'graphql';
 import schema from '../graphql/schema';
 import debug from 'debug';
@@ -19,17 +12,14 @@ export const db = {
       console.log(`> ${config.server.database.database} db reset`);
       return true;
     } catch (e) {
-      console.error(
-        `lib/jest.js> cannot reset ${config.server.database.database} db in ${process.env.NODE_ENV} env.`,
-        e,
-      );
+      console.log(`lib/jest.js> cannot reset ${config.server.database.database} db in ${process.env.NODE_ENV} env.`, e);
       process.exit(0);
     }
   },
-  close: () => {
-    console.log(`> dropping ${dbname}`);
-    execSync(`dropdb ${dbname}`);
-    sequelize.close();
+  close: async () => {
+    console.log(`> dropping ${config.server.database.database}`);
+    await sequelize.close();
+    execSync(`dropdb ${config.server.database.database}`);
   },
 };
 

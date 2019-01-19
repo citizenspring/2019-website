@@ -26,6 +26,22 @@ libemail.removeEmailResponse = function(html) {
   return html.substr(0, html.indexOf('<div class="gmail_quote">'));
 };
 
+libemail.getHTML = function(email) {
+  let html = email['stripped-html'];
+
+  // iPhone doesn't provide a correct html version of the email if there is no formatting
+  // the email is wrapped within <p></p> and new lines are \r\n
+  const trimmedHtml = html.substring(3, html.lastIndexOf('</p>')).trim();
+  if (trimmedHtml === email['body-plain'].trim()) {
+    const paragraphs = trimmedHtml.split('\r\n\r\n');
+    html = '<p>' + paragraphs.join('</p>\n\n<p>') + '</p>\n';
+    const newlines = html.split('\r\n');
+    html = newlines.join('<br />\n');
+    return html;
+  }
+  return html;
+};
+
 libemail.generateUnsubscribeUrl = async function(email, where) {
   const user = await models.User.findByEmail(email);
   if (!user) {
@@ -106,6 +122,10 @@ libemail.sendTemplate = async function(template, data, to, options = {}) {
     }
     return true;
   });
+  if (template === 'post' && cc.length === 0) {
+    console.warn('libemail.sendTemplate> template is', template, 'and cc is empty, skipping send email');
+    return;
+  }
   debug('Preparing', template, 'email to', to, 'cc', cc);
   if (process.env.DEBUG && process.env.DEBUG.match(/data/)) {
     debug('with data', data);
