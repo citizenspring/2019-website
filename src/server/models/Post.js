@@ -238,7 +238,7 @@ module.exports = (sequelize, DataTypes) => {
       data = { groupSlug, followersCount: followers.length, post, url };
       await libemail.sendTemplate('threadCreated', data, user.email);
       // We send the new post to followers of the group + the recipients
-      const unsubscribeLabel = `unfollow ${group.slug}@${get(config, 'server.domain')}`;
+      const unsubscribeLabel = `unfollow this group`;
       const subscribeLabel = `follow this thread`;
       data = {
         groupSlug,

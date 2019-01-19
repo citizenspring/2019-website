@@ -27,6 +27,9 @@ const styles = {
     textDecoration: 'none',
     color: 'black',
   },
+  separator: {
+    color: '#555',
+  },
   oclogo: {
     backgroundImage: `url('${get(config, 'server.baseUrl')}/static/images/opencollectiveicon-48x48@2x.png')`,
     backgroundSize: '22px 22px',
@@ -43,7 +46,7 @@ const layout = ({ children, data }) => {
   if (data.url) {
     viewOnline.href = data.url;
     const displayUrl = data.url && data.url.replace(/^https?:\/\/(www\.)?/i, '');
-    viewOnline.label = displayUrl.length < 30 ? displayUrl : 'view online';
+    viewOnline.label = displayUrl.length < 30 ? displayUrl : 'view thread online';
   }
 
   return (
@@ -78,6 +81,7 @@ const layout = ({ children, data }) => {
                       </a>
                     </TD>
                   )}
+                  {data.subscribe && data.unsubscribe && <TD style={styles.separator}>&nbsp;|&nbsp;</TD>}
                   {data.unsubscribe && (
                     <TD>
                       <a style={styles.footerLink} href={data.unsubscribe.url}>

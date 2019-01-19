@@ -20,3 +20,8 @@ echo ""
 echo "Running tests with jest"
 jest --verbose false --detectOpenHandles --testMatch **/__tests__/**/*.test.js --testPathIgnorePatterns build/
 echo ""
+if [ "$NODE_ENV" = "test" ] || [ -z "$NODE_ENV" ]; then
+  echo "Cleaning"
+  FILES=`psql -l | sed 's/|.*//' | grep citizenspring-test- || true`
+  for DB in $FILES; do echo "dropdb $DB"; dropdb $DB; done;
+fi
