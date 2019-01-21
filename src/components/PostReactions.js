@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import emojis from '../constants/emojis';
 import { mailto } from '../lib/utils';
+import env from '../env.frontend';
 
 const Wrapper = styled.div`
   margin: 1rem 0;
@@ -19,13 +20,13 @@ const Actions = styled.div`
 
 export default function PostReactions({ group, thread, reply, size }) {
   if (!thread) return <div />;
-  const postEmailPath = `${group.slug}/${reply ? `${thread.PostId}/${reply.PostId}` : thread.PostId}`;
+  const postEmail = `${group.slug}/${reply ? `${thread.PostId}/${reply.PostId}` : thread.PostId}@${env.DOMAIN}`;
   const subject = `Re: ${thread.title}`;
   return (
     <Wrapper>
       {emojis.map((emoji, i) => (
         <Emoji key={i} size={size}>
-          <a href={mailto(postEmailPath, null, subject, emoji)}>{emoji}</a>
+          <a href={mailto(postEmail, null, subject, emoji)}>{emoji}</a>
         </Emoji>
       ))}
     </Wrapper>

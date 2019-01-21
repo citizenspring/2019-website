@@ -30,15 +30,15 @@ class ThreadPage extends React.Component {
     if (!post) {
       return <div>Loading</div>;
     }
-    const postEmailPath = `${post.group.slug}/${post.PostId}`;
+    const postEmail = `${post.group.slug}/${post.PostId}@${env.DOMAIN}`;
     const followEmail = mailto(
-      postEmailPath,
+      postEmail,
       'follow',
       `Follow ${post.title}`,
       'Just send this email to start following this thread',
     );
     const replyEmail = mailto(
-      postEmailPath,
+      postEmail,
       null,
       `Re: ${post.title}`,
       'Enter your reply here.\n(please remove this text and your email signature if any)',
@@ -54,7 +54,7 @@ class ThreadPage extends React.Component {
           <TitleWithActions title={post.title} actions={actions} />
           <Metadata user={post.user.name} createdAt={post.createdAt} followersCount={post.followers.total} />
           <PostBody>
-            <EditableText mailto={mailto(postEmailPath, 'edit', post.title, post.text)}>
+            <EditableText mailto={mailto(postEmail, 'edit', post.title, post.text)}>
               <div dangerouslySetInnerHTML={{ __html: post.html }} />
             </EditableText>
           </PostBody>

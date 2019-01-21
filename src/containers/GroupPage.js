@@ -28,19 +28,19 @@ class GroupPage extends React.Component {
   render() {
     const group = this.props.data.Group;
     if (!group) return <div>Loading</div>;
-
+    const groupEmail = `${group.slug}@${env.DOMAIN}`;
     const actions = [
       {
         label: 'join',
         mailto: mailto(
-          group.slug,
+          groupEmail,
           'join',
           `Join ${group.name}`,
           'Please present yourself to the group in a few words.',
         ),
         style: 'standard',
       },
-      { label: '+ New Thread', mailto: mailto(group.slug) },
+      { label: '+ New Thread', mailto: mailto(groupEmail) },
     ];
 
     return (
@@ -49,7 +49,7 @@ class GroupPage extends React.Component {
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
           <Description>
-            <EditableText mailto={mailto(group.slug, 'edit', group.name, group.description)}>
+            <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)}>
               {group.description || (
                 <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
               )}
