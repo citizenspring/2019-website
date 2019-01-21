@@ -7,10 +7,13 @@ import PostList from './PostList';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 
-import { Content } from '../styles/layout';
+import { Content, Description } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
+import EditableText from '../components/EditableText';
+import { mailto } from '../lib/utils';
 
 import env from '../env.frontend';
+import { FormattedMessage } from 'react-intl';
 
 class GroupPage extends React.Component {
   static propTypes = {
@@ -25,14 +28,19 @@ class GroupPage extends React.Component {
   render() {
     const group = this.props.data.Group;
     if (!group) return <div>Loading</div>;
-    const groupEmail = `${group.slug}@${env.DOMAIN}`;
-    const joinGroupEmail = `${group.slug}/follow@${env.DOMAIN}?subject=${encodeURIComponent(
-      `Follow ${group.name}`,
-    )}&body=${encodeURIComponent('Just send this email to start following this group')}`;
 
     const actions = [
-      { label: 'follow', mailto: joinGroupEmail, style: 'standard' },
-      { label: '+ New Thread', mailto: groupEmail },
+      {
+        label: 'join',
+        mailto: mailto(
+          group.slug,
+          'join',
+          `Join ${group.name}`,
+          'Please present yourself to the group in a few words.',
+        ),
+        style: 'standard',
+      },
+      { label: '+ New Thread', mailto: mailto(group.slug) },
     ];
 
     return (
@@ -40,6 +48,13 @@ class GroupPage extends React.Component {
         <TopBar group={group} />
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
+          <Description>
+            <EditableText mailto={mailto(group.slug, 'edit', group.name, group.description)}>
+              {group.description || (
+                <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
+              )}
+            </EditableText>
+          </Description>
           <PostList groupSlug={group.slug} posts={group.posts} />
         </Content>
         <Footer group={group} />
@@ -54,6 +69,7 @@ const getDataQuery = gql`
       id
       slug
       name
+      description
       posts {
         total
         nodes {

@@ -32,7 +32,7 @@ Proptip: you can cc the people that you want to add to the group`,
 const actions = [
   {
     label: '+ Create a Group',
-    mailto: mailto('', instructions.subject, instructions.body),
+    mailto: mailto('', null, instructions.subject, instructions.body),
     style: 'standard',
   },
 ];
@@ -83,7 +83,8 @@ export default () => (
         <ButtonItem>
           <StyledLink
             href={mailto(
-              'newsletter/follow@citizenspring.be',
+              'newsletter@citizenspring.be',
+              'follow',
               'Subscribe to the Citizen Spring newsletter',
               'Just send this email to subscribe to the Citizen Spring newsletter and stay up to date with our latest news and progress!',
             )}

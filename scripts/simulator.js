@@ -1,7 +1,6 @@
 process.env.NODE_ENV = 'test';
 
-const util = require('util');
-const spawn = require('child_process').spawn;
+const config = require('config');
 const prompts = require('prompts');
 const sinon = require('sinon');
 const sequelize = require('../src/server/models');
@@ -47,10 +46,11 @@ function getChoices(array) {
 }
 
 async function processResponses(responses) {
-  let config = {};
   const fromUser = users.find(u => u.email === responses.fromEmail);
   const fromUsername = fromUser ? fromUser.name : responses.fromEmail.substr(0, responses.fromEmail.indexOf('@'));
   const from = `${fromUsername} <${responses.fromEmail}>`;
+  const recipient =
+    responses.recipient.indexOf('@') !== -1 ? responses.recipient : `${responses.recipient}@${config.server.domain}`;
   const req = {
     body: {
       ...email1,
@@ -58,8 +58,8 @@ async function processResponses(responses) {
       'Reply-To': responses.fromEmail,
       from,
       From: from,
-      recipient: responses.recipient,
-      To: responses.recipient,
+      recipient,
+      To: recipient,
       Cc: responses.cc,
       subject: responses.subject,
       'stripped-text': responses.body,

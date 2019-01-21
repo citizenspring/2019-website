@@ -10,11 +10,14 @@ import Footer from '../components/Footer';
 import { Content } from '../styles/layout';
 import { PostBody } from '../styles/Post';
 import TitleWithActions from '../components/TitleWithActions';
+import PostReactions from '../components/PostReactions';
 import env from '../env.frontend';
+import { mailto } from '../lib/utils';
+import EditableText from '../components/EditableText';
 
-class PostPage extends React.Component {
+class ThreadPage extends React.Component {
   static propTypes = {
-    postSlug: PropTypes.string.isRequired,
+    threadSlug: PropTypes.string.isRequired,
     intl: PropTypes.object.isRequired,
   };
 
@@ -27,12 +30,19 @@ class PostPage extends React.Component {
     if (!post) {
       return <div>Loading</div>;
     }
-    const followEmail = `${post.group.slug}/${post.PostId}/follow@${env.DOMAIN}?subject=${encodeURIComponent(
+    const postEmailPath = `${post.group.slug}/${post.PostId}`;
+    const followEmail = mailto(
+      postEmailPath,
+      'follow',
       `Follow ${post.title}`,
-    )}&body=${encodeURIComponent('Just send this email to start following this thread')}`;
-    const replyEmail = `${post.group.slug}/${post.PostId}@${env.DOMAIN}?subject=${encodeURIComponent(
+      'Just send this email to start following this thread',
+    );
+    const replyEmail = mailto(
+      postEmailPath,
+      null,
       `Re: ${post.title}`,
-    )}&body=${encodeURIComponent('Enter your reply here.\n(please remove this text and your email signature if any)')}`;
+      'Enter your reply here.\n(please remove this text and your email signature if any)',
+    );
     const actions = [
       { label: 'follow', mailto: followEmail, style: 'standard' },
       { label: 'reply', mailto: replyEmail },
@@ -43,9 +53,14 @@ class PostPage extends React.Component {
         <Content>
           <TitleWithActions title={post.title} actions={actions} />
           <Metadata user={post.user.name} createdAt={post.createdAt} followersCount={post.followers.total} />
-          <PostBody dangerouslySetInnerHTML={{ __html: post.html }} />
-          {post.replies.nodes.map((post, i) => (
-            <Reply post={post} key={i} />
+          <PostBody>
+            <EditableText mailto={mailto(postEmailPath, 'edit', post.title, post.text)}>
+              <div dangerouslySetInnerHTML={{ __html: post.html }} />
+            </EditableText>
+          </PostBody>
+          <PostReactions group={post.group} thread={post} size={24} />
+          {post.replies.nodes.map((reply, i) => (
+            <Reply key={i} group={post.group} thread={post} reply={reply} />
           ))}
         </Content>
         <Footer group={post.group} post={post} />
@@ -61,6 +76,7 @@ const getDataQuery = gql`
       slug
       title
       html
+      text
       createdAt
       group {
         id
@@ -86,7 +102,9 @@ const getDataQuery = gql`
           ... on Post {
             id
             PostId
+            title
             html
+            text
             createdAt
             user {
               id
@@ -105,7 +123,7 @@ export const addData = graphql(getDataQuery, {
   options(props) {
     return {
       variables: {
-        postSlug: props.postSlug,
+        postSlug: props.threadSlug,
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
       },
@@ -132,4 +150,4 @@ export const addData = graphql(getDataQuery, {
   }),
 });
 
-export default withIntl(addData(PostPage));
+export default withIntl(addData(ThreadPage));

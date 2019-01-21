@@ -11,10 +11,10 @@ import debug from 'debug';
 const config = server.database;
 
 if (['circleci', 'test', 'development'].includes(process.env.NODE_ENV)) {
-  const dbname = `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
+  const dbname = process.env.PG_DATABASE || `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
   config.database = dbname;
   console.log('> creating db', dbname);
-  execSync(`createdb ${dbname}`);
+  execSync(`createdb ${dbname} || true`);
 }
 
 // this is needed to prevent sequelize from converting integers to strings, when model definition isn't clear

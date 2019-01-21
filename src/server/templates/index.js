@@ -13,6 +13,7 @@ import * as groupInfo from './groupInfo.email.js';
 import * as groupEdited from './groupEdited.email.js';
 import * as postEdited from './postEdited.email.js';
 import * as approveGroupEdit from './approveGroupEdit.email.js';
+import * as approvePostEdit from './approvePostEdit.email.js';
 import * as threadCreated from './threadCreated.email.js';
 import * as post from './post.email.js';
 import * as error from './error.email.js';
@@ -31,6 +32,7 @@ const templates = {
   groupEdited,
   postEdited,
   approveGroupEdit,
+  approvePostEdit,
 };
 
 export default templates;

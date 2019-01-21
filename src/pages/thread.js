@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withIntl from '../lib/withIntl';
 
-import Post from '../containers/PostPage';
+import Thread from '../containers/ThreadPage';
 
-class PostPage extends React.Component {
+class ThreadPage extends React.Component {
   static getInitialProps({ req, res, query }) {
     if (res && req && req.locale == 'en') {
       res.setHeader('Cache-Control', 's-maxage=300');
     }
 
-    return { postSlug: query && query.postSlug, query };
+    return { threadSlug: query && query.threadSlug, query };
   }
 
   static propTypes = {
-    postSlug: PropTypes.string, // from getInitialProps
+    threadSlug: PropTypes.string, // from getInitialProps
     query: PropTypes.object, // from getInitialProps
     data: PropTypes.object.isRequired, // from withData
   };
@@ -27,8 +27,8 @@ class PostPage extends React.Component {
   async componentDidMount() {}
 
   render() {
-    return <Post postSlug={this.props.postSlug} />;
+    return <Thread threadSlug={this.props.threadSlug} />;
   }
 }
 
-export default withIntl(PostPage);
+export default withIntl(ThreadPage);

@@ -1,6 +1,5 @@
 import config from 'config';
 import React from 'react';
-import Oy from 'oy-vey';
 import Layout from './email.layout';
 import { get } from 'lodash';
 import settings from '../../../settings.json';

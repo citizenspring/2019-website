@@ -5,6 +5,8 @@ import config from 'config';
 import Oy from 'oy-vey';
 import withIntl from '../../lib/withIntl';
 import { FormattedMessage } from 'react-intl';
+import emojis from '../../constants/emojis';
+import { mailto } from '../../lib/utils';
 
 const { Table, TBody, TR, TD } = Oy;
 
@@ -43,13 +45,9 @@ ${unsubscribeTxt}
 };
 
 export const Reaction = ({ emoji, threadEmail, subject }) => {
-  const replyEmail = body => {
-    return `${threadEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
-
   return (
     <TD>
-      <a href={`mailto:${replyEmail(emoji)}`} style={styles.emoji}>
+      <a href={`mailto:${mailto(threadEmail, null, subject, emoji)}`} style={styles.emoji}>
         {emoji}
       </a>
     </TD>
@@ -77,7 +75,7 @@ export const body = withIntl(data => {
             </TD>
           </TR>
           <TR>
-            {['👍', '👎', '😄', '😕', '🎉', '❤️'].map((emoji, i) => (
+            {emojis.map((emoji, i) => (
               <Reaction key={i} emoji={emoji} threadEmail={threadEmail} subject={`Re: ${post.title}`} />
             ))}
           </TR>

@@ -2,7 +2,7 @@ import config from 'config';
 import { verifyJwt } from '../lib/auth';
 import { get } from 'lodash';
 import request from 'request-promise';
-import { pluralize } from '../lib/utils';
+import { pluralize, capitalize } from '../lib/utils';
 import models from '../models';
 import { db } from '../lib/jest';
 import { handleIncomingEmail } from './emails';
@@ -54,7 +54,8 @@ export async function publishEmail(req, res, next) {
 }
 
 /**
- * Approves an edit
+ * Approves an edit to a Group or to a Post
+ * Expects a req.query.token with data { type: 'post' or 'group', TargetId, always: Boolean }
  * @param {*} req
  * @param {*} res
  * @param {*} next
@@ -68,16 +69,20 @@ export async function approve(req, res, next) {
       return res.status(500).send(`The token has expired.`);
     }
   }
-  const GroupId = get(token, 'data.group.id');
-  if (!GroupId) {
-    return res.status(500).send(`Invalid token: GroupId missing`);
+  const TargetId = get(token, 'data.TargetId');
+  if (!TargetId) {
+    return res.status(500).send(`Invalid token: TargetId missing`);
   }
-  const group = await models.Group.findById(GroupId);
-  if (!group) {
-    return res.status(500).send(`Cannot approve: GroupId ${GroupId} not found`);
+  const target = await models[capitalize(get(token, 'data.type'))].findById(TargetId);
+  if (!target) {
+    return res.status(500).send(`Cannot approve: TargetId ${TargetId} not found`);
   }
-  await group.publish();
-  return res.redirect(`/${group.slug}`);
+  await target.publish();
+  if (get(token, 'data.always') === true) {
+    target.addAdmin(target.UserId);
+  }
+  const path = await target.getPath();
+  return res.redirect(path);
 }
 
 export async function follow(req, res, next) {

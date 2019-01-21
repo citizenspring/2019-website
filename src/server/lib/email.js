@@ -32,7 +32,7 @@ libemail.getHTML = function(email) {
   // iPhone doesn't provide a correct html version of the email if there is no formatting
   // the email is wrapped within <p></p> and new lines are \r\n
   const trimmedHtml = html.substring(3, html.lastIndexOf('</p>')).trim();
-  if (trimmedHtml === email['body-plain'].trim()) {
+  if (trimmedHtml === (email['body-plain'] || '').trim()) {
     const paragraphs = trimmedHtml.split('\r\n\r\n');
     html = '<p>' + paragraphs.join('</p>\n\n<p>') + '</p>\n';
     const newlines = html.split('\r\n');

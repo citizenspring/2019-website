@@ -69,11 +69,9 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
       indexes: [
         {
-          unique: true,
           fields: ['slug', 'status'],
         },
         {
-          unique: true,
           fields: ['GroupId', 'status'],
         },
       ],
@@ -126,8 +124,18 @@ module.exports = (sequelize, DataTypes) => {
       version: this.version + 1,
       status: groupData.status || 'PUBLISHED',
     };
-    await this.update({ status: 'ARCHIVED' });
+    if (newVersionData.status === 'PUBLISHED') {
+      await this.update({ status: 'ARCHIVED' });
+    }
     return await Group.create(newVersionData);
+  };
+
+  Group.prototype.addAdmin = async function(UserId) {
+    return await models.Member.create({
+      UserId,
+      GroupId: this.GroupId,
+      role: 'ADMIN',
+    });
   };
 
   /**
@@ -139,6 +147,10 @@ module.exports = (sequelize, DataTypes) => {
       await currentlyPublishedGroup.update({ status: 'ARCHIVED' });
     }
     return await this.update({ status: 'PUBLISHED' });
+  };
+
+  Group.prototype.getPath = async function() {
+    return `/${this.slug}`;
   };
 
   Group.prototype.getPosts = async function(options = {}) {

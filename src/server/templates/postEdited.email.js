@@ -1,8 +1,8 @@
 import React from 'react';
 import Layout from './email.layout';
 
-export const subject = ({ post }) => {
-  return `${post.title} post edited`;
+export const subject = ({ currentVersion }) => {
+  return `${currentVersion.title} post edited`;
 };
 
 const getStatusMsg = status => {
@@ -14,15 +14,15 @@ const getStatusMsg = status => {
   }
 };
 
-export const previewText = ({ post }) => {
-  return getStatusMsg(post.status);
+export const previewText = ({ newVersion }) => {
+  return getStatusMsg(newVersion.status);
 };
 
 export const body = data => {
-  const { post } = data;
+  const { newVersion } = data;
   return (
     <Layout data={data}>
-      <p>{getStatusMsg(post.status)}</p>
+      <p>{getStatusMsg(newVersion.status)}</p>
     </Layout>
   );
 };

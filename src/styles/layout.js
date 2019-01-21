@@ -20,3 +20,8 @@ export const Subtitle = styled.h1`
   margin-top: 4rem;
   padding-top: 3rem;
 `;
+
+export const Description = styled.p`
+  font-size: 1.6rem;
+  color: #555;
+`;

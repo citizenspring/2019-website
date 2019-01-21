@@ -27,7 +27,7 @@ export default Page => {
     };
 
     static defaultProps = {
-      locale: 'en',
+      locale: 'fr',
     };
 
     // Note: when adding withIntl to a child component, getInitialProps doesn't get called

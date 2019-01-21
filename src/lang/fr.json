@@ -1,0 +1,9 @@
+{
+  "group.description.empty": "pas de description du groupe",
+  "emails.approvePostEdit.firstLine": "{user} a modifié le poste \"{title}\". Veuillez vérifier les changements ci-dessous. Vous pouvez soit les approuver ou les ignorer.",
+  "emails.approvePostEdit.currentVersion.title": "version actuelle",
+  "emails.approvePostEdit.newVersion.title": "changement proposé",
+  "emails.approvePostEdit.approveEditBtn": "approuver ce changement",
+  "emails.approvePostEdit.alwaysApproveEditBtn": "toujours approuver les changements de {user}",
+  "emails.post.pickReaction": "Choisis une réaction (ou répond à cet email)"
+}

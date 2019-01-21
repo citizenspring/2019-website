@@ -60,11 +60,11 @@ export default async function webhook(req, res, next) {
   } else {
     data.action.label = `post my email to the ${groupSlug} group`;
   }
-  if (action === 'follow') {
+  if (['follow', 'join', 'subscribe'].includes(action)) {
     if (PostId) {
-      data.action.label = `follow this thread`;
+      data.action.label = `${action} this thread`;
     } else {
-      data.action.label = `follow this group`;
+      data.action.label = `${action} this group`;
     }
   }
 
@@ -79,7 +79,21 @@ export default async function webhook(req, res, next) {
     return res.send('ok');
   }
 
-  await handleIncomingEmail(email);
+  try {
+    await handleIncomingEmail(email);
+  } catch (e) {
+    await libemail.sendTemplate(
+      'error',
+      {
+        subject: e.message.indexOf('>') !== -1 ? e.message.replace(/^[^ ]+> /, '') : e.message,
+        body: `An error occured. Please try again or contact support@${get(config, 'server.domain')}`,
+        email,
+      },
+      user.email,
+    );
+    console.error(e);
+    return res.send('ok');
+  }
 
   return res.send('ok');
 }

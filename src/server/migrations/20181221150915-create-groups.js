@@ -70,16 +70,8 @@ module.exports = {
           paranoid: true,
         },
       )
-      .then(() =>
-        queryInterface.addIndex('Groups', ['slug', 'status'], {
-          indicesType: 'UNIQUE',
-        }),
-      )
-      .then(() =>
-        queryInterface.addIndex('Groups', ['GroupId', 'status'], {
-          indicesType: 'UNIQUE',
-        }),
-      );
+      .then(() => queryInterface.addIndex('Groups', ['slug', 'status']))
+      .then(() => queryInterface.addIndex('Groups', ['GroupId', 'status']));
   },
   down: (queryInterface, DataTypes) => {
     return queryInterface.dropTable('Groups');

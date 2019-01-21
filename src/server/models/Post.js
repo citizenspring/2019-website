@@ -89,11 +89,9 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
       indexes: [
         {
-          unique: true,
           fields: ['slug', 'status'],
         },
         {
-          unique: true,
           fields: ['PostId', 'status'],
         },
       ],
@@ -163,8 +161,8 @@ module.exports = (sequelize, DataTypes) => {
       await group.addFollowers(recipients);
       const followers = await group.getFollowers();
       await libemail.sendTemplate('groupCreated', { group, followers }, user.email);
-      // if the email is the default email, we don't create the post
-      if (email.subject === 'Create a new working group') {
+      // if the email is empty or is the default email, we don't create the post
+      if (email.subject === 'Create a new working group' || isEmpty(email.subject) || isEmpty(email['stripped-text'])) {
         return;
       }
     } else {
@@ -280,9 +278,12 @@ module.exports = (sequelize, DataTypes) => {
     const newVersionData = {
       ...omit(this.dataValues, ['id']),
       ...postData,
+      status: postData.status || 'PUBLISHED',
       version: this.version + 1,
     };
-    await this.update({ status: 'ARCHIVED' });
+    if (newVersionData.status === 'PUBLISHED') {
+      await this.update({ status: 'ARCHIVED' });
+    }
     return await Post.create(newVersionData);
   };
 
@@ -300,6 +301,35 @@ module.exports = (sequelize, DataTypes) => {
     });
     const users = await Promise.all(promises);
     return Promise.all(users.map(user => user && user.follow({ PostId: this.PostId })));
+  };
+
+  Post.prototype.addAdmin = async function(UserId) {
+    return await models.Member.create({
+      UserId,
+      PostId: this.PostId,
+      role: 'ADMIN',
+    });
+  };
+
+  /**
+   * publish a given version of a Post
+   */
+  Post.prototype.publish = async function() {
+    const currentlyPublishedPost = await Post.findOne({ where: { PostId: this.PostId, status: 'PUBLISHED' } });
+    if (currentlyPublishedPost) {
+      await currentlyPublishedPost.update({ status: 'ARCHIVED' });
+    }
+    return await this.update({ status: 'PUBLISHED' });
+  };
+
+  Post.prototype.getPath = async function() {
+    const group = await models.Group.findOne({ where: { GroupId: this.GroupId } });
+    if (this.ParentPostId) {
+      const thread = await models.Post.findOne({ where: { PostId: this.ParentPostId } });
+      return `/${group.slug}/${thread.slug}#${this.PostId}`;
+    } else {
+      return `/${group.slug}/${this.slug}`;
+    }
   };
 
   Post.prototype.getUrl = async function() {

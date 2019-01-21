@@ -25,6 +25,11 @@ export const pluralize = (n, singular, pluralForm) => {
   return pluralForm || `${singular}s`;
 };
 
+export const capitalize = str => {
+  if (!str) return '';
+  return `${str.substr(0, 1).toUpperCase()}${str.substr(1)}`;
+};
+
 /**
  * Extracts names and emails from a string with multiple names and emails
  * @param {*} str eg. "Xavier <xavier@gmail.com>, email2@hotmail.com,"

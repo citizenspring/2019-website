@@ -1,7 +1,7 @@
 import config from 'config';
 import templates, { render } from '../../server/templates';
 import models from '../models';
-import { parseEmailAddress } from '../lib/utils';
+import { parseEmailAddress, capitalize } from '../lib/utils';
 import libemail from '../lib/email';
 import { createJwt } from '../lib/auth';
 
@@ -17,13 +17,65 @@ const defaultData = {
       label: 'unsubscribe from this thread',
     },
   },
-  groupEdited: {
-    url: 'https://www.citizenspring.be/communication',
-    group: {
+  postEdited: {
+    currentVersion: {
+      title: 'title v1',
+      text: 'Text v1',
+      html: '<p>Text <b>v1</b></p>',
+      status: 'ARCHIVED',
+    },
+    newVersion: {
+      title: 'title v2',
+      text: 'Text v2',
+      html: '<p>Text <b>v2</b></p>',
+      status: 'PUBLISHED',
+    },
+    user: { name: 'Xavier' },
+  },
+  approvePostEdit: {
+    currentVersion: {
+      title: 'title v1',
+      text: 'Text v1',
+      html: '<p>Text <b>v1</b></p>',
+      status: 'PUBLISHED',
+    },
+    newVersion: {
+      title: 'title v2',
+      text: 'Text v2',
+      html: '<p>Text <b>v2</b></p>',
       status: 'PENDING',
+    },
+    user: { name: 'Pia' },
+  },
+  approveGroupEdit: {
+    url: 'https://www.citizenspring.be/communication',
+    user: { name: 'Pia' },
+    currentVersion: {
+      status: 'PUBLISHED',
       slug: 'communication',
       name: 'communication',
       description: 'description of the group',
+    },
+    newVersion: {
+      status: 'PENDING',
+      slug: 'communication',
+      name: 'new name',
+      description: 'new description of the group',
+    },
+  },
+  groupEdited: {
+    url: 'https://www.citizenspring.be/communication',
+    currentVersion: {
+      status: 'PUBLISHED',
+      slug: 'communication',
+      name: 'communication',
+      description: 'description of the group',
+    },
+    newVersion: {
+      status: 'PENDING',
+      slug: 'communication',
+      name: 'new name',
+      description: 'new description of the group',
     },
     posts: {
       total: 2,
@@ -74,7 +126,7 @@ export async function follow(email, group, PostId) {
     return;
   }
 }
-export async function edit(email, GroupId, PostId, data) {
+export async function edit(senderEmail, GroupId, PostId, data) {
   let target, type;
   if (PostId) {
     target = await models.Post.findById(PostId);
@@ -83,7 +135,7 @@ export async function edit(email, GroupId, PostId, data) {
     target = await models.Group.findById(GroupId);
     type = 'group';
   }
-  const user = await models.User.findByEmail(email);
+  const user = await models.User.findByEmail(senderEmail);
   const status = user.id === target.UserId ? 'PUBLISHED' : 'PENDING';
   const editedTarget = await target.edit({ ...data, status });
   const url = await target.getUrl();
@@ -92,22 +144,39 @@ export async function edit(email, GroupId, PostId, data) {
     url,
     type,
     user,
-    [type]: editedTarget,
+    currentVersion: target,
+    newVersion: editedTarget,
     followers,
   };
-  await libemail.sendTemplate(`${type}Edited`, templateData, email.sender);
-  if (user.id !== target.UserId && type === 'group') {
-    // TODO: add support for edit Post
+  await libemail.sendTemplate(`${type}Edited`, templateData, senderEmail);
+  if (user.id !== target.UserId) {
     const admin = await models.User.findById(target.UserId);
 
-    const tokenData = {
-      type,
-      [type]: { id: editedTarget.id },
-    };
-    const token = createJwt('approveEdit', { data: tokenData }, '14d');
-    templateData.confirmationUrl = `${config.server.baseUrl}/api/approve?token=${token}`;
+    const token = createJwt(
+      'approveEdit',
+      {
+        data: {
+          type,
+          TargetId: editedTarget.id,
+        },
+      },
+      '14d',
+    );
+    const token2 = createJwt(
+      'alwaysApproveEdit',
+      {
+        data: {
+          type,
+          TargetId: editedTarget.id,
+          always: true,
+        },
+      },
+      '14d',
+    );
+    templateData.approveUrl = `${config.server.baseUrl}/api/approve?token=${token}`;
+    templateData.alwaysApproveUrl = `${config.server.baseUrl}/api/approve?token=${token2}`;
 
-    await libemail.sendTemplate(`approveGroupEdit`, templateData, admin.email);
+    await libemail.sendTemplate(`approve${capitalize(type)}Edit`, templateData, admin.email);
   }
   return editedTarget;
 }
@@ -115,18 +184,31 @@ export async function edit(email, GroupId, PostId, data) {
 export async function handleIncomingEmail(email) {
   const { groupSlug, ParentPostId, PostId, action } = parseEmailAddress(email.recipient || email.recipients);
   if (!groupSlug) {
-    throw new Error(`cannot handle incoming email: invalid email recipient ${email.recipient}`);
+    throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email recipient ${email.recipient}`);
   }
   const group = await models.Group.findBySlug(groupSlug);
 
-  switch (action) {
-    case 'follow':
-    case 'join':
-    case 'subscribe':
-      return follow(email.sender, group, PostId);
-    case 'edit':
-      const data = { html: email['stripped-html'], text: email['stripped-text'] };
-      return edit(email.sender, group.id, PostId, data);
+  if (action) {
+    if (!group) {
+      throw new Error(`handleIncomingEmail> group ${groupSlug} not found`);
+    }
+    const data = {};
+    switch (action) {
+      case 'follow':
+      case 'join':
+      case 'subscribe':
+        return follow(email.sender, group, PostId);
+      case 'edit':
+        if (ParentPostId) {
+          data.title = email.subject;
+          data.html = libemail.getHTML(email);
+          data.text = email['stripped-text'];
+        } else {
+          data.name = email.subject;
+          data.description = email['stripped-text'];
+        }
+        return edit(email.sender, group.id, PostId || ParentPostId, data);
+    }
   }
 
   const post = await models.Post.createFromEmail(email);

@@ -1,0 +1,9 @@
+{
+  "group.description.empty": "no group description",
+  "emails.approvePostEdit.firstLine": "{user} has edited the post \"{title}\". Please review the changes below and approve or ignore.",
+  "emails.approvePostEdit.currentVersion.title": "current",
+  "emails.approvePostEdit.newVersion.title": "proposed change",
+  "emails.approvePostEdit.approveEditBtn": "approve edit",
+  "emails.approvePostEdit.alwaysApproveEditBtn": "always approve edits from {user}",
+  "emails.post.pickReaction": "Pick a quick reaction (or hit reply)"
+}

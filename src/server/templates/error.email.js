@@ -10,7 +10,7 @@ export const subject = ({ subject }) => {
 export const text = ({ body, email }) => {
   return `${body}
 
-${quoteEmail(email)}
+${email && quoteEmail(email)}
 `;
 };
 
@@ -18,7 +18,7 @@ export const body = withIntl(data => {
   return (
     <Layout data={data}>
       <p>{data.body}</p>
-      {quoteEmail(data.email, 'html')}
+      {data.email && quoteEmail(data.email, 'html')}
     </Layout>
   );
 });

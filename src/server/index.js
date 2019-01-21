@@ -6,6 +6,8 @@ import express from 'express';
 import next from 'next';
 import { get } from 'lodash';
 import logger from '../logger';
+import accepts from 'accepts';
+import { getLocaleDataScript, getMessages, languages } from './intl';
 
 const { PORT } = process.env;
 
@@ -24,6 +26,16 @@ const pagesHandler = pages.getRequestHandler(nextApp);
 
 nextApp.prepare().then(() => {
   const server = express();
+  server.use((req, res, next) => {
+    const accept = accepts(req);
+    const locale = accept.language(languages) || 'en';
+    logger.debug('url %s locale %s', req.url, locale);
+    req.locale = locale;
+    req.localeDataScript = getLocaleDataScript(locale);
+    req.messages = getMessages(locale);
+    // req.messages = dev ? {} : getMessages(locale)
+    next();
+  });
   routes(server);
   server.get('*', pagesHandler);
   server.listen(port, err => {

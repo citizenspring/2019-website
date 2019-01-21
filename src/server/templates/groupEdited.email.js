@@ -6,37 +6,39 @@ import { get } from 'lodash';
 const domain = get(config, 'server.domain');
 const baseUrl = get(config, 'server.baseUrl');
 
-export const subject = ({ group }) => {
-  return `${group.slug} group edited`;
+export const subject = ({ currentVersion }) => {
+  return `${currentVersion.slug} group edited`;
 };
 
-const getStatusMsg = status => {
-  switch (status) {
+const getStatusMsg = data => {
+  switch (data.newVersion.status) {
     case 'PENDING':
       return 'Your modifications are pending approval from one of the group admins.';
     case 'PUBLISHED':
-      return 'Your modifications have been published.';
+      return `Your modifications have been published.\n\nTitle: ${data.newVersion.name}\n\nDescription:\n${
+        data.newVersion.description
+      }\n`;
   }
 };
 
-export const previewText = ({ group }) => {
-  return getStatusMsg(group.status);
+export const previewText = data => {
+  return getStatusMsg(data);
 };
 
-export const text = ({ url, group }) => {
-  return `${getStatusMsg(group.status)}
-${url}
+export const text = data => {
+  return `${getStatusMsg(data)}
+${data.url}
 `;
 };
 
 export const body = data => {
-  const { group, followers, posts, url } = data;
-  const groupEmail = `${group.slug}@${domain}`;
-  const groupUrl = `${baseUrl}/${group.slug}`;
+  const { currentVersion, followers, posts, url } = data;
+  const groupEmail = `${currentVersion.slug}@${domain}`;
+  const groupUrl = `${baseUrl}/${currentVersion.slug}`;
   return (
     <Layout data={data}>
-      <p>{getStatusMsg(group.status)}</p>
-      <h2>About the {group.slug} group:</h2>
+      <p>{getStatusMsg(data)}</p>
+      <h2>About the {currentVersion.slug} group:</h2>
       <h3>{followers.length} followers</h3>
       <div>{followers.map(f => f.name).join(', ')}</div>
       {posts && (
