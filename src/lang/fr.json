@@ -1,5 +1,11 @@
 {
+  "post.reactions.title": "Choisissez une réaction",
   "group.description.empty": "pas de description du groupe",
+  "thread.follow.btn": "suivre",
+  "thread.follow.email.body": "Envoyez juste cet email pour recevoir les futures réponses par email",
+  "thread.reply.btn": "répondre",
+  "thread.reply.email.body": "Entrez votre réponse ici.\n(merci de supprimer ce texte et votre signature automatique si vous en avez une)",
+  "loading": "chargement",
   "emails.approvePostEdit.firstLine": "{user} a modifié le poste \"{title}\". Veuillez vérifier les changements ci-dessous. Vous pouvez soit les approuver ou les ignorer.",
   "emails.approvePostEdit.currentVersion.title": "version actuelle",
   "emails.approvePostEdit.newVersion.title": "changement proposé",

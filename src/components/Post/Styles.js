@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-export const ReplyWrapper = styled.div`
+export const PostWrapper = styled.div`
   background-color: white;
   display: flex;
   margin: 3rem 0 1rem 0;
 `;
 
 export const ContentWrapper = styled.div`
-  margin-left: 1rem;
+  margin-left: 0rem;
   font-size: 1.5rem;
 `;
 
@@ -31,12 +31,20 @@ export const Title = styled.a`
   }
 `;
 
-export const MetadataWrapper = styled.div`
+export const PostHeaderWrapper = styled.div`
   padding: 0px;
   font-size: 1.2rem;
   line-height: 36px;
   color: #828282;
   margin: 0 0 1rem 0;
+  display: flex;
+`;
+
+export const Metadata = styled.div`
+  margin-left: 0.5rem;
+`;
+export const Reaction = styled.div`
+  font-size: 2rem;
 `;
 
 export const FooterLink = styled.a.attrs({

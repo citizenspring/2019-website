@@ -37,7 +37,19 @@ libemail.getHTML = function(email) {
     html = '<p>' + paragraphs.join('</p>\n\n<p>') + '</p>\n';
     const newlines = html.split('\r\n');
     html = newlines.join('<br />\n');
-    return html;
+  }
+
+  // convert <div><br></div> to new paragraphs
+  if (html.indexOf('</div><div>') > -1) {
+    html =
+      '<p>' +
+      html
+        .split('</div><div>')
+        .filter(l => !l.match(/^(<[a-z]+>)?(<[a-z]+>)?<br( \/)?>(<\/[a-z]+>)?(<\/[a-z]+>)?$/)) // we remove empty paragraphs <div><br></div>, <div><b><br /></b></div>
+        .join('</p><p>')
+        .trim() +
+      '</p>';
+    html = html.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim();
   }
   return html;
 };

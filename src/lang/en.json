@@ -1,5 +1,11 @@
 {
+  "post.reactions.title": "Pick a reaction",
   "group.description.empty": "no group description",
+  "thread.follow.btn": "follow",
+  "thread.follow.email.body": "Just send this email to start following this thread",
+  "thread.reply.btn": "reply",
+  "thread.reply.email.body": "Enter your reply here.\n(please remove this text and your email signature if any)",
+  "loading": "loading",
   "emails.approvePostEdit.firstLine": "{user} has edited the post \"{title}\". Please review the changes below and approve or ignore.",
   "emails.approvePostEdit.currentVersion.title": "current",
   "emails.approvePostEdit.newVersion.title": "proposed change",

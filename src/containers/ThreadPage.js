@@ -4,16 +4,15 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import withIntl from '../lib/withIntl';
 import Metadata from '../components/PostItem/Metadata';
-import Reply from '../components/Reply/ReplyItem';
+import Post from '../components/Post/Post';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 import { Content } from '../styles/layout';
-import { PostBody } from '../styles/Post';
 import TitleWithActions from '../components/TitleWithActions';
-import PostReactions from '../components/PostReactions';
 import env from '../env.frontend';
 import { mailto } from '../lib/utils';
-import EditableText from '../components/EditableText';
+import { capitalize } from '../server/lib/utils';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 class ThreadPage extends React.Component {
   static propTypes = {
@@ -23,39 +22,59 @@ class ThreadPage extends React.Component {
 
   constructor(props) {
     super(props);
+    this.messages = defineMessages({
+      follow: { id: 'thread.follow.btn', defaultMessage: 'follow' },
+      'follow.body': {
+        id: 'thread.follow.email.body',
+        defaultMessage: 'Just send this email to start following this thread',
+      },
+      reply: { id: 'thread.reply.btn', defaultMessage: 'reply' },
+      'reply.body': {
+        id: 'thread.reply.email.body',
+        defaultMessage: 'Enter your reply here.\n(please remove this text and your email signature if any)',
+      },
+    });
   }
 
   render() {
-    const post = this.props.data.Post;
-    if (!post) {
-      return <div>Loading</div>;
+    const thread = this.props.data.Post;
+    if (!thread) {
+      return (
+        <div>
+          <FormattedMessage id="loading" defaultMessage="loading" />
+        </div>
+      );
     }
-    const postEmail = `${post.group.slug}/${post.PostId}@${env.DOMAIN}`;
+    const { intl } = this.props;
+    const threadEmail = `${thread.group.slug}/${thread.PostId}@${env.DOMAIN}`;
     const followEmail = mailto(
-      postEmail,
+      threadEmail,
       'follow',
-      `Follow ${post.title}`,
-      'Just send this email to start following this thread',
+      `${capitalize(intl.formatMessage(this.messages['follow']))} ${thread.title}`,
+      intl.formatMessage(this.messages['follow.body']),
     );
     const replyEmail = mailto(
-      postEmail,
+      threadEmail,
       null,
-      `Re: ${post.title}`,
-      'Enter your reply here.\n(please remove this text and your email signature if any)',
+      `Re: ${thread.title}`,
+      intl.formatMessage(this.messages['reply.body']),
     );
-    const actions = [{ label: 'follow', href: followEmail, style: 'standard' }, { label: 'reply', href: replyEmail }];
+    const actions = [
+      { label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' },
+      { label: intl.formatMessage(this.messages['reply']), href: replyEmail },
+    ];
     return (
       <div>
-        <TopBar group={post.group} />
+        <TopBar group={thread.group} />
         <Content>
-          <TitleWithActions title={post.title} actions={actions} />
-          <Metadata user={post.user.name} createdAt={post.createdAt} followersCount={post.followers.total} />
-          <Reply group={post.group} thread={post} reply={post} />
-          {post.replies.nodes.map((reply, i) => (
-            <Reply key={i} group={post.group} thread={post} reply={reply} />
+          <TitleWithActions title={thread.title} actions={actions} />
+          <Metadata user={thread.user.name} createdAt={thread.createdAt} followersCount={thread.followers.total} />
+          <Post group={thread.group} thread={thread} post={thread} />
+          {thread.replies.nodes.map((post, i) => (
+            <Post key={i} group={thread.group} thread={thread} post={post} />
           ))}
         </Content>
-        <Footer group={post.group} post={post} />
+        <Footer group={thread.group} post={thread} />
       </div>
     );
   }

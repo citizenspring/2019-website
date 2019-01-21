@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import emojis from '../constants/emojis';
 import { mailto } from '../lib/utils';
 import env from '../env.frontend';
+import withIntl from '../lib/withIntl';
+import { defineMessages } from 'react-intl';
 
 const Wrapper = styled.div`
   margin: 1rem 0;
@@ -14,21 +16,30 @@ const Emoji = styled.div`
   font-size: ${({ size }) => `${size}px`};
 `;
 
-const Actions = styled.div`
-  display: flex;
+const Label = styled.div`
+  color: #666;
+  margin-right: 0.5rem;
 `;
 
-export default function PostReactions({ group, thread, reply, size }) {
+function PostReactions({ intl, group, thread, reply, size }) {
   if (!thread) return <div />;
+  const messages = defineMessages({
+    title: { id: 'post.reactions.title', defaultMessage: 'Pick a reaction' },
+  });
   const postEmail = `${group.slug}/${reply ? `${thread.PostId}/${reply.PostId}` : thread.PostId}@${env.DOMAIN}`;
   const subject = `Re: ${thread.title}`;
   return (
     <Wrapper>
+      <Label>{intl.formatMessage(messages.title)}: </Label>
       {emojis.map((emoji, i) => (
         <Emoji key={i} size={size}>
-          <a href={mailto(postEmail, null, subject, emoji)}>{emoji}</a>
+          <a href={mailto(postEmail, null, subject, emoji)} title={intl.formatMessage(messages.title)}>
+            {emoji}
+          </a>
         </Emoji>
       ))}
     </Wrapper>
   );
 }
+
+export default withIntl(PostReactions);

@@ -46,7 +46,7 @@ describe('webhook email', () => {
     it('creates a post', async () => {
       const post = await models.Post.findOne();
       expect(post.EmailMessageId).toEqual(email1['Message-Id']);
-      expect(post.html).toEqual(email1['stripped-html']);
+      expect(post.html).toEqual(libemail.getHTML(email1));
       expect(post.text).toEqual(email1['stripped-text']);
     });
     it('creates users for all persons cced', async () => {

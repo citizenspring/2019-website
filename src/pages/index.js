@@ -2,15 +2,13 @@ import React from 'react';
 import TopBar from '../components/TopBar/index.js';
 import Footer from '../components/Footer/index.js';
 import GroupsWithData from '../components/Groups/withData.js';
-import { Title, Content } from '../styles/layout';
+import { Title, Subtitle, Content } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
 import env from '../env.frontend';
 import StyledLink from '../components/StyledLink';
 import styled from 'styled-components';
 import settings from '../../settings.json';
 import { mailto } from '../lib/utils';
-
-const H2 = props => <h2 style={{ fontWeight: 300 }} {...props} />;
 
 const Buttons = styled.div`
   display: flex;
@@ -42,7 +40,7 @@ export default () => (
     <TopBar />
     <Content>
       <Title>#CitizenSpring🌱</Title>
-      <H2>March 21-24 2019, meet the citizens that are taking initiatives! 🙋🏻‍♀️🙋🏼‍♂️🙋🏽‍♀️🙋🏿‍♂️🙋🏼‍♀️🙋🏾‍♀️🙋🏻‍♂️</H2>
+      <Subtitle>March 21-24 2019, meet the citizens that are taking initiatives! 🙋🏻‍♀️🙋🏼‍♂️🙋🏽‍♀️🙋🏿‍♂️🙋🏼‍♀️🙋🏾‍♀️🙋🏻‍♂️</Subtitle>
       <p>
         We have a day of the industry where we visit the old economy. It's about time that we also have a day of the
         citizens where we can discover the new economy and all the amazing things that citizens can do when they get

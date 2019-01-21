@@ -10,6 +10,7 @@
     "db:migrate": "sh ./scripts/sequelize.sh db:migrate",
     "db:migrate:dev": "sh ./scripts/sequelize.sh -l db:migrate",
     "db:migrate:dev:undo": "sh ./scripts/sequelize.sh -l db:migrate:undo",
+    "db:copy:prod": "sh ./scripts/db_copy_prod.sh",
     "start": "NODE_ENV=production node build/server",
     "build:clean": "rm -rf build",
     "build:server": "babel --copy-files ./src --out-dir ./build --ignore src/**/__tests__/*,src/.next/*",

@@ -51,4 +51,15 @@ Line 2 of same paragraph. </p>
 <p>New paragraph.</p>
 `);
   });
+
+  it('creates paragraphs', () => {
+    const email = {
+      'stripped-html':
+        '<div>We will gather</div><div><br></div><div>Let me know <a href="mailto:info@citizenspring.be">info@citizenspring.be</a></div><div><b><br></b></div><div><b>French</b></div>',
+    };
+    const html = libemail.getHTML(email);
+    expect(html).toEqual(
+      '<p>We will gather</p><p>Let me know <a href="mailto:info@citizenspring.be">info@citizenspring.be</a></p><p><b>French</b></p>',
+    );
+  });
 });
