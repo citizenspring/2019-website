@@ -50,12 +50,7 @@ class ThreadPage extends React.Component {
         <Content>
           <TitleWithActions title={post.title} actions={actions} />
           <Metadata user={post.user.name} createdAt={post.createdAt} followersCount={post.followers.total} />
-          <PostBody>
-            <EditableText mailto={mailto(postEmail, 'edit', post.title, post.text)}>
-              <div dangerouslySetInnerHTML={{ __html: post.html }} />
-            </EditableText>
-          </PostBody>
-          <PostReactions group={post.group} thread={post} size={24} />
+          <Reply group={post.group} thread={post} reply={post} />
           {post.replies.nodes.map((reply, i) => (
             <Reply key={i} group={post.group} thread={post} reply={reply} />
           ))}

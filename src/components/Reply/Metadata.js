@@ -8,7 +8,7 @@ export default function Footer(props) {
   const timestamp = new Date(Number(props.createdAt));
   return (
     <MetadataWrapper>
-      {props.user} replied <Moment fromNow>{timestamp}</Moment>
+      {props.user} commented <Moment fromNow>{timestamp}</Moment>
     </MetadataWrapper>
   );
 }

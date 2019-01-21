@@ -8,6 +8,7 @@ export const ReplyWrapper = styled.div`
 
 export const ContentWrapper = styled.div`
   margin-left: 1rem;
+  font-size: 1.5rem;
 `;
 
 export const HeaderWrapper = styled.div`
