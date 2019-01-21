@@ -41,38 +41,38 @@ export default () => (
   <div className="home">
     <TopBar />
     <Content>
-      <Title>{settings.name}</Title>
-      <H2>{settings.description}</H2>
+      <Title>#CitizenSpring🌱</Title>
+      <H2>March 21-24, meet the citizens that are taking initiatives!</H2>
       <p>
-        We are millions of citizens who are tired of watching passively climate change and social unrest happening
-        around us. We want to do something about it.
+        We have a day of the industry where we visit the old economy. It's about time that we also have a day of the
+        citizens where we can discover the new economy and all the amazing things that citizens can do when they get
+        together!
       </p>
       <p>
-        But how can we work together in a coordinated fashion?
-        <br />
-        Let's start by splitting ourselves into small working groups or collectives that will offer one service to one
-        another. It could be anything: skill based (a collective of designers, of video editors, translators,
-        facilitators, etc.), service based (offering facilitation for meetings, special service for immigrants or low
-        income people, etc.) or event based (offering space, catering, event organizing, ...). Whatever your skills are
-        or whatever you have access to, you have something to contribute to this human organization. Each contribution
-        matters. Each contribution is a piece of the chain that we need to face the challenges of our time.
+        During those 4 days, we will all open our doors, present what we do, how we got started and how can citizens
+        contribute!
       </p>
       <p>
-        To make this work, each collective or group will share the same basic structure:
+        It will be totally decentralized. We will publish on this website all the activities happening across the
+        country.
+      </p>
+      <p>
+        We are still figuring out the details. But please save the date and stay in the loop!
         <ul>
-          <li>one email address to reach out to them (groupname@citizenspring.be)</li>
-          <li>one dedicated page (https://citizenspring.be/groupname)</li>
+          <li>
+            If you are a citizen initiative, join the <a href="/citizeninitiatives">Citizen Initiatives Group</a>.
+          </li>
+          <li>
+            If you want to become a local coordinator, join the <a href="/coordinators">Coordinators Group</a>.
+          </li>
+          <li>
+            If you want to volunteer to organize this event, join the <a href="/volunteers">Volunteers Group</a>.
+          </li>
+          <li>
+            If you just want to stay in the loop, join our <a href="/newsletter">newsletter</a>.
+          </li>
         </ul>
-        They will all be open, transparent and inclusive. Anyone can join and participate or make a request.
-        <br />
-        This way, it will be easy to have an overview of all the different citizen collectives, see what they are up to,
-        see what they have to offer to the community and have a standard way to reach out to them.
       </p>
-      <p>
-        Create your group or your collective and let's explore how we can create together an open organization to
-        address the challenges of our time wherever we are.
-      </p>
-      <p>We can do great things together! Let's do it! 🙌</p>
 
       <Buttons>
         <ButtonItem>

@@ -121,6 +121,15 @@ module.exports = (sequelize, DataTypes) => {
   /**
    * Instance Methods
    */
+  User.prototype.setName = async function(name) {
+    const tokens = name.split(' ');
+    this.firstName = tokens[0];
+    if (tokens.length > 1) {
+      this.lastName = tokens.slice(1).join(' ');
+    }
+    return await this.save();
+  };
+
   User.prototype.generateToken = async function(redirect) {
     const data = { id: this.id, _salt: Math.floor(Math.random() * 9999999999) };
     this.token = auth.createJwt('login', data, auth.TOKEN_EXPIRATION_SESSION);
