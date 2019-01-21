@@ -32,15 +32,10 @@ class GroupPage extends React.Component {
     const actions = [
       {
         label: 'join',
-        mailto: mailto(
-          groupEmail,
-          'join',
-          `Join ${group.name}`,
-          'Please present yourself to the group in a few words.',
-        ),
+        href: mailto(groupEmail, 'join', `Join ${group.name}`, 'Please present yourself to the group in a few words.'),
         style: 'standard',
       },
-      { label: '+ New Thread', mailto: mailto(groupEmail) },
+      { label: '+ New Thread', href: mailto(groupEmail) },
     ];
 
     return (

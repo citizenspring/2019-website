@@ -25,7 +25,7 @@ export default function TitleWithActions({ title, subtitle, actions }) {
       <Actions>
         {actions.map((action, i) => (
           <Action key={i}>
-            <Link mailto={action.mailto}>
+            <Link href={action.href}>
               <StyledLink buttonStyle={action.style || 'primary'} buttonSize="small">
                 {action.label}
               </StyledLink>

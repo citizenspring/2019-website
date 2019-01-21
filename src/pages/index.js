@@ -32,7 +32,7 @@ Proptip: you can cc the people that you want to add to the group`,
 const actions = [
   {
     label: '+ Create a Group',
-    mailto: mailto('', null, instructions.subject, instructions.body),
+    href: mailto('', null, instructions.subject, instructions.body),
     style: 'standard',
   },
 ];
