@@ -5,7 +5,7 @@ import { PostWrapper, ContentWrapper } from './Styles';
 import PostHeader from './PostHeader';
 import PostReactions from '../PostReactions';
 import EditableText from '../EditableText';
-import { mailto } from '../../lib/utils';
+import { mailto, keepAnchorsShort } from '../../lib/utils';
 import env from '../../env.frontend';
 
 class Post extends Component {
@@ -21,6 +21,7 @@ class Post extends Component {
     if (post.text.length === 2) {
       reaction = post.text;
     }
+    const html = keepAnchorsShort(post.html);
     return (
       <PostWrapper>
         <ContentWrapper>
@@ -37,7 +38,7 @@ class Post extends Component {
                   post.text,
                 )}
               >
-                <div dangerouslySetInnerHTML={{ __html: post.html }} />
+                <div dangerouslySetInnerHTML={{ __html: html }} />
               </EditableText>
               {post.html.length > 14 && <PostReactions group={group} thread={thread} post={post} size={16} />}
             </div>
