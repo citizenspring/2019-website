@@ -42,22 +42,22 @@ export default () => (
     <TopBar />
     <Content>
       <Title>#CitizenSpring🌱</Title>
-      <H2>March 21-24, meet the citizens that are taking initiatives!</H2>
+      <H2>March 21-24 2019, meet the citizens that are taking initiatives! 🙋🏻‍♀️🙋🏼‍♂️🙋🏽‍♀️🙋🏿‍♂️🙋🏼‍♀️🙋🏾‍♀️🙋🏻‍♂️</H2>
       <p>
         We have a day of the industry where we visit the old economy. It's about time that we also have a day of the
         citizens where we can discover the new economy and all the amazing things that citizens can do when they get
-        together!
+        together! 🤟
       </p>
       <p>
-        During those 4 days, we will all open our doors, present what we do, how we got started and how can citizens
-        contribute!
+        During those 4 days, we will all open our doors, present what we do, how we got started and how citizens can
+        contribute! 🙌
       </p>
       <p>
         It will be totally decentralized. We will publish on this website all the activities happening across the
-        country.
+        country. 🇧🇪
       </p>
       <p>
-        We are still figuring out the details. But please save the date and stay in the loop!
+        We are still working on some the details. But please save the date 🗓 and stay in the loop! ♾
         <ul>
           <li>
             If you are a citizen initiative, join the <a href="/citizeninitiatives">Citizen Initiatives Group</a>.
