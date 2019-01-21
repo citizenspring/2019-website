@@ -48,7 +48,7 @@ const queries = {
     resolve: async (_, args) => {
       const PostId = args.PostId || (await getIdFromSlug('Post', args.postSlug));
       const post = await models.Post.findOne({
-        where: { PostId: PostId },
+        where: { PostId: PostId, status: 'PUBLISHED' },
       });
       return post;
     },
@@ -62,7 +62,7 @@ const queries = {
       },
     },
     resolve: async (_, args) => {
-      return await models.Group.findBySlug(args.groupSlug);
+      return await models.Group.findBySlug(args.groupSlug, 'PUBLISHED');
     },
   },
 

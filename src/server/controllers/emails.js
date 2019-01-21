@@ -186,7 +186,7 @@ export async function handleIncomingEmail(email) {
   if (!groupSlug) {
     throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email recipient ${email.recipient}`);
   }
-  const group = await models.Group.findBySlug(groupSlug);
+  const group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
 
   if (action) {
     if (!group) {

@@ -53,7 +53,7 @@ export default async function webhook(req, res, next) {
     return res.send('ok');
   }
 
-  const group = await models.Group.findBySlug(groupSlug);
+  const group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
   let data = { groupSlug, action: {} };
   if (!group) {
     data.action.label = `create the ${groupSlug} group`;
