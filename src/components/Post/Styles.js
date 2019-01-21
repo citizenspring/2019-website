@@ -43,6 +43,7 @@ export const PostHeaderWrapper = styled.div`
 export const Metadata = styled.div`
   margin-left: 0.5rem;
 `;
+
 export const Reaction = styled.div`
   font-size: 2rem;
 `;

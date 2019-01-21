@@ -17,14 +17,16 @@ const queries = {
   allPosts: {
     type: NodeListType,
     args: {
-      groupSlug: { type: new GraphQLNonNull(GraphQLString) },
+      groupSlug: { type: GraphQLString },
       limit: { type: GraphQLInt },
       offset: { type: GraphQLInt },
     },
     async resolve(_, args) {
-      const query = { where: {} };
-      const GroupId = await getIdFromSlug('Group', args.groupSlug);
-      query.where.GroupId = GroupId;
+      const query = { where: { status: 'PUBLISHED' } };
+      if (args.groupSlug) {
+        const GroupId = await getIdFromSlug('Group', args.groupSlug);
+        query.where.GroupId = GroupId;
+      }
       query.limit = args.limit || 20;
       query.offset = args.offset || 0;
       query.order = [['createdAt', 'DESC']];

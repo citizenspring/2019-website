@@ -4,6 +4,7 @@ import styled from 'styled-components';
 // import Spinner from 'react-spinkit';
 
 import PostListItem from '../components/PostItem';
+import { FormattedMessage } from 'react-intl';
 
 const Wrapper = styled.div`
   margin: 0px;
@@ -21,14 +22,19 @@ export default class PostList extends Component {
   };
   render() {
     const { posts } = this.props;
+
     if (posts.total === 0) {
-      return <div>No thread yet</div>;
+      return (
+        <div>
+          <FormattedMessage id="postlist.empty" defaultMessage="No thread yet" />
+        </div>
+      );
     } else if (posts.total > 0) {
       return this.renderList(posts);
     } else
       return (
         <LoadingWrapper>
-          loading
+          <FormattedMessage id="loading" defaultMessage="loading" />
           {/* <Spinner name="ball-grid-pulse" fadeIn="none" /> */}
         </LoadingWrapper>
       );

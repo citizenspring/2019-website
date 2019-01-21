@@ -2,12 +2,13 @@ import React from 'react';
 import TopBar from '../components/TopBar/index.js';
 import Footer from '../components/Footer/index.js';
 import GroupsWithData from '../components/Groups/withData.js';
+import PostsWithData from '../components/Posts/withData.js';
 import { Title, Subtitle, Content } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
 import env from '../env.frontend';
 import StyledLink from '../components/StyledLink';
 import styled from 'styled-components';
-import settings from '../../settings.json';
+import { FormattedMessage } from 'react-intl';
 import { mailto } from '../lib/utils';
 
 const Buttons = styled.div`
@@ -108,6 +109,10 @@ export default () => (
         </ButtonItem>
       </Buttons>
 
+      <Subtitle>
+        <FormattedMessage id="homepage.latestPosts" defaultMessage="Latest posts" />
+      </Subtitle>
+      <PostsWithData limit={5} />
       <TitleWithActions subtitle="Join a working group" actions={actions} />
       <GroupsWithData />
     </Content>

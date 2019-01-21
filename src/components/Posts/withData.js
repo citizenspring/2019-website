@@ -2,17 +2,17 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import withIntl from '../../lib/withIntl';
-import GroupList from '../../containers/GroupList';
+import PostList from '../../containers/PostList';
 import { FormattedMessage } from 'react-intl';
 
-class GroupsWithData extends React.Component {
+class PostsWithData extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const groups = this.props.data.allGroups;
-    if (!groups)
+    const posts = this.props.data.allPosts;
+    if (!posts)
       return (
         <div>
           <FormattedMessage id="loading" defaultMessage="loading" />
@@ -20,35 +20,34 @@ class GroupsWithData extends React.Component {
       );
     return (
       <div>
-        <GroupList groups={groups} />
+        <PostList posts={posts} />
       </div>
     );
   }
 }
 
 const getDataQuery = gql`
-  query allGroups {
-    allGroups {
+  query allPosts($limit: Int, $offset: Int) {
+    allPosts(limit: $limit, offset: $offset) {
       total
       nodes {
         id
-        ... on Group {
-          name
-          color
+        ... on Post {
+          title
+          createdAt
           slug
+          group {
+            slug
+          }
+          user {
+            id
+            name
+          }
           followers {
             total
           }
-          settings
-          posts {
+          replies {
             total
-            nodes {
-              ... on Post {
-                replies {
-                  total
-                }
-              }
-            }
           }
         }
       }
@@ -56,15 +55,14 @@ const getDataQuery = gql`
   }
 `;
 
-const GROUPS_PER_PAGE = 20;
+const POSTS_PER_PAGE = 20;
 
 export const addData = graphql(getDataQuery, {
   options(props) {
     return {
       variables: {
-        groupSlug: props.groupSlug,
         offset: 0,
-        limit: props.limit || GROUPS_PER_PAGE * 2,
+        limit: props.limit || POSTS_PER_PAGE * 2,
       },
     };
   },
@@ -73,14 +71,14 @@ export const addData = graphql(getDataQuery, {
     fetchMore: () => {
       return data.fetchMore({
         variables: {
-          offset: data.allGroups.nodes.length,
-          limit: GROUPS_PER_PAGE,
+          offset: data.allPosts.nodes.length,
+          limit: POSTS_PER_PAGE,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) {
             return previousResult;
           }
-          previousResult.allGroups.nodes = [...previousResult.allGroups.nodes, fetchMoreResult.allGroups.nodes];
+          previousResult.allPosts.nodes = [...previousResult.allPosts.nodes, fetchMoreResult.allPosts.nodes];
           console.log('>>> updateQuery previousResult', previousResult, 'fetchMoreResult', fetchMoreResult);
           return previousResult;
         },
@@ -89,4 +87,4 @@ export const addData = graphql(getDataQuery, {
   }),
 });
 
-export default withIntl(addData(GroupsWithData));
+export default withIntl(addData(PostsWithData));

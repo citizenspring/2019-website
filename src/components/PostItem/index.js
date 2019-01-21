@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { get } from 'lodash';
 import { ListItemWrapper } from './Styles';
 import Title from './Title';
 import Metadata from './Metadata';
@@ -15,7 +15,11 @@ class PostListItem extends Component {
 
   render() {
     const { groupSlug, post, followersCount, repliesCount } = this.props;
-    const path = `/${groupSlug}/${post.slug}`;
+    const path = `/${groupSlug || get(post, 'group.slug')}/${post.slug}`;
+    if (!post.user) {
+      console.error('PostItem> Invalid post: missing post.user', post);
+      return <div />;
+    }
     return (
       <ListItemWrapper>
         <Title title={post.title} path={path} createdAt={post.createdAt} />
