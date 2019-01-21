@@ -30,18 +30,25 @@ libemail.removeEmailSignature = function(html) {
   if (!html || typeof html !== 'string')
     throw new Error('libemail.removeEmailSignature error: html should be a string');
 
-  if (html.indexOf('gmail_signature') === -1) return html;
+  let res = html;
+  if (html.indexOf('gmail_signature') !== -1) {
+    res = html.substr(0, html.indexOf('<div class="gmail_signature"'));
+    res = res.replace(/--+ *(<br( \/)?>)?$/, '') + '</body></html>';
+  }
 
-  let res = html.substr(0, html.indexOf('<div class="gmail_signature"'));
-  res = res.replace(/--+ *(<br( \/)?>)?$/, '');
-  return res + '</body></html>';
+  if (html.indexOf('id="AppleMailSignature"') !== -1) {
+    res = html.substr(0, html.indexOf('<div id="AppleMailSignature"'));
+    res = res.replace(/(<br( \/)?>)*$/, '') + '</body></html>';
+  }
+  return res;
 };
 
 libemail.getHTML = function(email) {
   let html = email['stripped-html'];
   html = libemail.removeEmailResponse(html);
   html = libemail.removeEmailSignature(html);
-  html = html.replace(/(<\/?html>|<\/?head>|<\/?body>)/g, '');
+  html = html.replace(/<head>.*<\/head>/i, '');
+  html = html.replace(/(<\/?html>|<\/?head>|<\/?body[^>]*>)/g, '');
   // iPhone doesn't provide a correct html version of the email if there is no formatting
   // the email is wrapped within <p></p> and new lines are \r\n
   const trimmedHtml = html.substring(3, html.lastIndexOf('</p>')).trim();

@@ -10,11 +10,15 @@ const Wrapper = styled.div`
     font-size: 1.4rem;
     display: inline-block;
     margin-left: 0.5rem;
-    visibility: hidden;
   }
-  &:hover {
+  @media (min-width: 600px) {
     .edit {
-      visibility: visible;
+      visibility: hidden;
+    }
+    &:hover {
+      .edit {
+        visibility: visible;
+      }
     }
   }
 `;

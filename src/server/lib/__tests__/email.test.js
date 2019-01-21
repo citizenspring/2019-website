@@ -60,6 +60,11 @@ Line 2 of same paragraph. </p>
       `<p>Hello Citizens,<br></p><p>A small question, would it be feasible and/or useful to associate with this platform:&#160;<a href="https://www.callup.io/">https://www.callup.io/</a> ?</p><p>One of it's goal is to list all the citizens and transitions initiatives.</p>`,
     );
   });
+  it('removes signature from AppleMail', () => {
+    const html = `<html><head><meta content="text/html; charset=utf-8" http-equiv="content-type"></head><body dir="auto">Hello now I got the newsletter 14 times!<div>Greetings&#160;</div><div>Hadewig<br><br><div id="AppleMailSignature" dir="ltr">Verstuurd vanaf mijn iPhone</div></div></body></html>`;
+    const res = libemail.getHTML({ 'stripped-html': html });
+    expect(res).toEqual(`<p>Hello now I got the newsletter 14 times!Greetings&#160;</p><p>Hadewig</p>`);
+  });
 
   it('creates paragraphs', () => {
     const email = {

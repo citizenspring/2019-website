@@ -8,6 +8,8 @@ import { FormattedMessage } from 'react-intl';
 
 const Wrapper = styled.div`
   margin: 0px;
+  display: flex;
+  flex-direction: column;
 `;
 const LoadingWrapper = styled.div`
   display: flex;
