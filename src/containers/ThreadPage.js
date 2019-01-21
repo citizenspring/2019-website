@@ -43,10 +43,7 @@ class ThreadPage extends React.Component {
       `Re: ${post.title}`,
       'Enter your reply here.\n(please remove this text and your email signature if any)',
     );
-    const actions = [
-      { label: 'follow', mailto: followEmail, style: 'standard' },
-      { label: 'reply', mailto: replyEmail },
-    ];
+    const actions = [{ label: 'follow', href: followEmail, style: 'standard' }, { label: 'reply', href: replyEmail }];
     return (
       <div>
         <TopBar group={post.group} />

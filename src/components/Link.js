@@ -18,7 +18,7 @@ export default function Link({ href, mailto, color, children }) {
       </StyledA>
     );
   }
-  if (href.match(/^https?:\/\//i)) {
+  if (href.match(/^https?:\/\//i) || href.match(/^mailto:/)) {
     return (
       <StyledA color={color} href={href}>
         {children}
