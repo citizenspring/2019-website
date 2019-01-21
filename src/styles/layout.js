@@ -5,7 +5,7 @@ export const Content = styled.div`
   width: 100%;
   padding: 2rem 1rem;
   margin: 0 auto;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 `;
 
 export const Title = styled.h1`

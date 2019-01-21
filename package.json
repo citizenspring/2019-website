@@ -15,7 +15,7 @@
     "build:clean": "rm -rf build",
     "build:server": "babel --copy-files ./src --out-dir ./build --ignore src/**/__tests__/*,src/.next/*",
     "build:next": "next build build",
-    "build:langs": "rm -rf build/messages && babel src/**/*.js > /dev/null && babel src/server/templates/*email.js > /dev/null && babel-node scripts/translate.js",
+    "build:langs": "rm -rf build/messages && babel src/**/*.js > /dev/null && babel src/components/**/*.js > /dev/null && babel src/server/templates/*email.js > /dev/null && babel-node scripts/translate.js",
     "build": "npm run build:server && npm run build:next",
     "lint": "eslint \"src/**/*.js\" \"test/**/*.js\"",
     "lint:fix": "npm run lint -- --fix",

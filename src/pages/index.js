@@ -19,6 +19,15 @@ const ButtonItem = styled.div`
   margin: 1rem 0.5rem;
 `;
 
+const Cover = styled.div`
+  margin: 2rem 0;
+`;
+
+const Font = styled.div`
+  font-weight: bold;
+  font-size: ${({ size }) => `${size}px`};
+`;
+
 const instructions = {
   subject: 'Create a new working group',
   body: `Just send this email to :group@${env.DOMAIN}
@@ -40,7 +49,12 @@ export default () => (
     <TopBar />
     <Content>
       <Title>#CitizenSpring🌱</Title>
-      <Subtitle>March 21-24 2019, meet the citizens that are taking initiatives! 🙋🏻‍♀️🙋🏼‍♂️🙋🏽‍♀️🙋🏿‍♂️🙋🏼‍♀️🙋🏾‍♀️🙋🏻‍♂️</Subtitle>
+      <Cover>
+        <Font size={36}>March 21-24 2019</Font>
+        <Font size={32}>MEET THE CITIZENS</Font>
+        <Font size={27}>that are taking initiatives</Font>
+        <Font size={42}>🙋🏻‍♀️🙋🏼‍♂️🙋🏽‍♀️🙋🏿‍♂️🙋🏼‍♀️🙋🏾‍♀️🙋🏻‍♂️</Font>
+      </Cover>
       <p>
         We have a day of the industry where we visit the old economy. It's about time that we also have a day of the
         citizens where we can discover the new economy and all the amazing things that citizens can do when they get

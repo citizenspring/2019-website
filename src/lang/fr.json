@@ -1,4 +1,8 @@
 {
+  "post.metadata.started": "Commencé",
+  "post.metadata.by": "par",
+  "post.metadata.repliesCount": "{n, plural, zero {} one {one reply} other {# replies}}",
+  "post.metadata.followersCount": "{n, plural, zero {} one {one follower} other {# followers}}",
   "post.reactions.title": "Choisissez une réaction",
   "group.description.empty": "pas de description du groupe",
   "thread.follow.btn": "suivre",

@@ -76,7 +76,7 @@ const queries = {
       const query = { where: {} };
       query.limit = args.limit || 20;
       query.offset = args.offset || 0;
-      query.order = [['createdAt', 'DESC']];
+      query.order = [['name', 'ASC']];
       const { count, rows } = await models.Group.findAndCountAll(query);
       const res = {
         total: count,
