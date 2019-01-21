@@ -23,12 +23,25 @@ libemail.removeEmailResponse = function(html) {
 
   if (html.indexOf('gmail_quote') === -1) return html;
 
-  return html.substr(0, html.indexOf('<div class="gmail_quote">'));
+  return html.substr(0, html.indexOf('<div class="gmail_quote"')) + '</body></html>';
+};
+
+libemail.removeEmailSignature = function(html) {
+  if (!html || typeof html !== 'string')
+    throw new Error('libemail.removeEmailSignature error: html should be a string');
+
+  if (html.indexOf('gmail_signature') === -1) return html;
+
+  let res = html.substr(0, html.indexOf('<div class="gmail_signature"'));
+  res = res.replace(/--+ *(<br( \/)?>)?$/, '');
+  return res + '</body></html>';
 };
 
 libemail.getHTML = function(email) {
   let html = email['stripped-html'];
-
+  html = libemail.removeEmailResponse(html);
+  html = libemail.removeEmailSignature(html);
+  html = html.replace(/(<\/?html>|<\/?head>|<\/?body>)/g, '');
   // iPhone doesn't provide a correct html version of the email if there is no formatting
   // the email is wrapped within <p></p> and new lines are \r\n
   const trimmedHtml = html.substring(3, html.lastIndexOf('</p>')).trim();
@@ -45,7 +58,8 @@ libemail.getHTML = function(email) {
       '<p>' +
       html
         .split('</div><div>')
-        .filter(l => !l.match(/^(<[a-z]+>)?(<[a-z]+>)?<br( \/)?>(<\/[a-z]+>)?(<\/[a-z]+>)?$/)) // we remove empty paragraphs <div><br></div>, <div><b><br /></b></div>
+        .map(l => l.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim())
+        .filter(l => !l.match(/^(<[a-z]+>)*(<br( \/| clear="[a-z]+")?>)+(<\/[a-z]+>)*$/)) // we remove empty paragraphs <div>(<br>)+</div>, <div><b><br /></b></div>
         .join('</p><p>')
         .trim() +
       '</p>';

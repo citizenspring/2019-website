@@ -99,11 +99,6 @@ module.exports = (sequelize, DataTypes) => {
         beforeValidate: post => {
           post.slug = post.slug || slugify(post.title);
         },
-        beforeCreate: post => {
-          if (post.ParentPostId) {
-            post.html = libemail.removeEmailResponse(post.html);
-          }
-        },
         afterCreate: async post => {
           let action = 'CREATE';
           if (post.PostId) {
