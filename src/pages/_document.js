@@ -110,6 +110,7 @@ export default class MyDocument extends Document {
         <body className="custom_class">
           <Main />
           <NextScript />
+          <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer />
         </body>
       </html>
     );

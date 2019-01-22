@@ -4,12 +4,18 @@ import Moment from 'react-moment';
 import withIntl from '../../lib/withIntl';
 
 import { MetadataWrapper, FooterLink } from './Styles';
+import Link from '../Link';
 import { FormattedMessage } from 'react-intl';
 
-function Metadata({ repliesCount, followersCount, createdAt, user }) {
+function Metadata({ repliesCount, followersCount, createdAt, user, group }) {
   const timestamp = new Date(Number(createdAt));
   return (
     <MetadataWrapper>
+      {group && (
+        <span>
+          <Link href={`/${group.slug}`}>{group.name || group.slug}</Link> |{' '}
+        </span>
+      )}
       <span>
         <FormattedMessage id="post.metadata.started" defaultMessage="Started" /> <Moment fromNow>{timestamp}</Moment>{' '}
         <FormattedMessage id="post.metadata.by" defaultMessage="by" />
@@ -48,6 +54,7 @@ Metadata.propTypes = {
   repliesCount: PropTypes.number,
   followersCount: PropTypes.number,
   createdAt: PropTypes.string.isRequired,
+  group: PropTypes.nodeType('Group'),
 };
 
 export default withIntl(Metadata);

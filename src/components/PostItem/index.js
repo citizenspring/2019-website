@@ -29,6 +29,7 @@ class PostListItem extends Component {
         <Metadata
           user={post.user.name}
           createdAt={post.createdAt}
+          group={post.group}
           followersCount={followersCount}
           repliesCount={repliesCount}
         />
