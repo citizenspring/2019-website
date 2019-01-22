@@ -44,10 +44,10 @@ ${unsubscribeTxt}
 `;
 };
 
-export const Reaction = ({ emoji, threadEmail, subject }) => {
+export const Reaction = ({ emoji, postEmail, subject }) => {
   return (
     <TD>
-      <a href={`mailto:${mailto(threadEmail, null, subject, emoji)}`} style={styles.emoji}>
+      <a href={mailto(postEmail, null, subject, emoji)} style={styles.emoji}>
         {emoji}
       </a>
     </TD>
@@ -56,13 +56,13 @@ export const Reaction = ({ emoji, threadEmail, subject }) => {
 
 export const body = withIntl(data => {
   const { groupSlug, post } = data;
-  let threadEmail = `${groupSlug}%2F`;
+  let postEmail = `${groupSlug}/`;
   if (post.ParentPostId) {
-    threadEmail += `${post.ParentPostId}%2F${post.PostId}`;
+    postEmail += `${post.ParentPostId}/${post.PostId}`;
   } else {
-    threadEmail += post.PostId;
+    postEmail += post.PostId;
   }
-  threadEmail += `@${get(config, 'server.domain')}`;
+  postEmail += `@${get(config, 'server.domain')}`;
 
   return (
     <Layout data={data}>
@@ -76,7 +76,7 @@ export const body = withIntl(data => {
           </TR>
           <TR>
             {emojis.map((emoji, i) => (
-              <Reaction key={i} emoji={emoji} threadEmail={threadEmail} subject={`Re: ${post.title}`} />
+              <Reaction key={i} emoji={emoji} postEmail={postEmail} subject={`Re: ${post.title}`} />
             ))}
           </TR>
         </TBody>
