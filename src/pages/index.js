@@ -49,8 +49,9 @@ const actions = [
 
 class HomePage extends React.Component {
   componentDidMount() {
-    console.log('>>> refreshing addtocalendar');
-    window.addeventatc.refresh();
+    setTimeout(() => {
+      window.addeventatc && window.addeventatc.refresh();
+    }, 500);
   }
 
   render() {
