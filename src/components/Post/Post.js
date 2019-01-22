@@ -23,7 +23,7 @@ class Post extends Component {
     }
     const html = keepAnchorsShort(post.html);
     return (
-      <PostWrapper>
+      <PostWrapper id={post.PostId}>
         <ContentWrapper>
           {thread.PostId !== post.PostId && (
             <PostHeader reaction={reaction} user={post.user} createdAt={post.createdAt} />

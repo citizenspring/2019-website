@@ -15,7 +15,10 @@ class PostListItem extends Component {
 
   render() {
     const { groupSlug, post, followersCount, repliesCount } = this.props;
-    const path = `/${groupSlug || get(post, 'group.slug')}/${post.slug}`;
+    let path = `/${groupSlug || get(post, 'group.slug')}/${get(post, 'parent.slug', post.slug)}`;
+    if (get(post, 'parent.slug')) {
+      path += `#${post.PostId}`;
+    }
     if (!post.user) {
       console.error('PostItem> Invalid post: missing post.user', post);
       return <div />;

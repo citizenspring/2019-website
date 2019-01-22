@@ -33,10 +33,14 @@ const getDataQuery = gql`
       nodes {
         id
         ... on Post {
+          PostId
           title
           createdAt
           slug
           group {
+            slug
+          }
+          parent {
             slug
           }
           user {
