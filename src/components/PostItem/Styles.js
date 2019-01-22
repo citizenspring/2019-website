@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const ListItemWrapper = styled.div`
   margin: 8px 0;
+  width: 100%;
 `;
 
 export const HeaderWrapper = styled.div`
