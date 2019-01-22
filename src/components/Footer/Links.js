@@ -24,7 +24,6 @@ export default function Howto({ groupSlug, PostId }) {
         </LinkItem>
       )}
 
-      <LinkItem icon="oc">Start a new group by sending an email to :newgroup@{env.DOMAIN}</LinkItem>
       {get(settings, 'home.buttons', []).map(button => (
         <LinkItem>
           <Link href={button.url} color="black">
