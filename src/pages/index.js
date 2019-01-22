@@ -86,6 +86,7 @@ class HomePage extends React.Component {
                   <span class="organizer_email">info@citizenspring.be</span>
                   <span class="facebook_event">https://www.facebook.com/events/2356473224576228</span>
                   <span class="all_day_event">true</span>
+                  <span class="status">CONFIRMED</span>
                 </div>
               </center>
             </Box>
@@ -104,7 +105,7 @@ class HomePage extends React.Component {
             country. 🇧🇪
           </p>
           <p>
-            We are still working on some the details. But please save the date 🗓 (
+            We are still working on some of the details. But please save the date 🗓 (
             <a href="https://www.facebook.com/events/2356473224576228">Facebook Event</a>) and stay in the loop! ♾
             <ul>
               <li>
@@ -124,8 +125,8 @@ class HomePage extends React.Component {
 
           <Buttons>
             <ButtonItem>
-              <StyledLink href="https://goo.gl/forms/r2R8vFzcwrpKJaUp1" buttonStyle="primary" buttonSize="medium">
-                Join as a volunteer!
+              <StyledLink href="https://goo.gl/forms/LmPU19GNVkzCYxTu1" buttonStyle="primary" buttonSize="medium">
+                Register your citizen initiative
               </StyledLink>
             </ButtonItem>
             <ButtonItem>

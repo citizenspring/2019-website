@@ -24,7 +24,7 @@ describe('webhook email', () => {
 
   afterAll(() => sandbox.restore());
 
-  describe.only('announcements only groups', () => {
+  describe('announcements only groups', () => {
     let group;
     beforeAll(async () => {
       sendEmailSpy.resetHistory();
@@ -39,7 +39,7 @@ describe('webhook email', () => {
       expect(sendEmailSpy.firstCall.args[0]).toEqual(email1.sender);
       expect(sendEmailSpy.firstCall.args[1]).toEqual('Cannot send email to group (must be an admin)');
     });
-    it.only('successfully creates a new thread if sender is an admin', async () => {
+    it('successfully creates a new thread if sender is an admin', async () => {
       await group.addMembers([{ email: email1.sender }], { role: 'ADMIN' });
       await webhook(req, res);
       expect(sendEmailSpy.firstCall.args[0]).toEqual(email1.sender);
