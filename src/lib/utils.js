@@ -13,7 +13,7 @@ export const requireAttributes = (obj, attributes, getErrorMsg) => {
  * @param {*} subject
  * @param {*} body
  */
-export const mailto = (to, action, subject, body) => {
+export const mailto = (to, action, subject = '', body = '') => {
   // let email = to.indexOf('@') === -1 ? `${to}@${domain}` : to;
   let email = to;
   if (action) {
