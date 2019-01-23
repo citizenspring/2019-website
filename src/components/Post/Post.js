@@ -37,9 +37,8 @@ class Post extends Component {
                   post.title,
                   post.text,
                 )}
-              >
-                <div dangerouslySetInnerHTML={{ __html: html }} />
-              </EditableText>
+                html={html}
+              />
               {post.html.length > 14 && <PostReactions group={group} thread={thread} post={post} size={16} />}
             </div>
           )}

@@ -44,8 +44,8 @@ class GroupPage extends React.Component {
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
           <Description>
-            <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)}>
-              {group.description || (
+            <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)} html={group.description}>
+              {!group.description && (
                 <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
               )}
             </EditableText>
