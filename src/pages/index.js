@@ -12,15 +12,6 @@ import { FormattedMessage } from 'react-intl';
 import { mailto } from '../lib/utils';
 import { Box, Flex } from '@rebass/grid';
 
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const ButtonItem = styled.div`
-  margin: 1rem 0.5rem;
-`;
-
 const Cover = styled.div`
   margin: 2rem 0;
 `;
@@ -62,7 +53,7 @@ class HomePage extends React.Component {
           <Flex justifyContent={['center', 'left', 'left']}>
             <Title>#CitizenSpring🌱</Title>
           </Flex>
-          <Flex flexDirection={['column', 'row', 'row']} alignItems="center" justifyContent="space-between">
+          <Flex flexDirection={['column', 'row', 'row']} alignItems="center">
             <Box>
               <Cover>
                 <Font size={36}>March 21-24 2019</Font>
@@ -123,13 +114,13 @@ class HomePage extends React.Component {
             </ul>
           </p>
 
-          <Buttons>
-            <ButtonItem>
+          <Flex flexDirection={['column', 'row', 'row']} alignItems="center" justifyContent="center">
+            <Box py={4} mx={2}>
               <StyledLink href="https://goo.gl/forms/LmPU19GNVkzCYxTu1" buttonStyle="primary" buttonSize="medium">
                 Register your citizen initiative
               </StyledLink>
-            </ButtonItem>
-            <ButtonItem>
+            </Box>
+            <Box mx={2}>
               <StyledLink
                 href={mailto(
                   'newsletter@citizenspring.be',
@@ -142,8 +133,8 @@ class HomePage extends React.Component {
               >
                 Subscribe to our newsletter
               </StyledLink>
-            </ButtonItem>
-          </Buttons>
+            </Box>
+          </Flex>
 
           <Subtitle>
             <FormattedMessage id="homepage.latestPosts" defaultMessage="Latest posts" />
