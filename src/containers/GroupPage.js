@@ -14,6 +14,7 @@ import { mailto } from '../lib/utils';
 
 import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
+import Metadata from '../components/Group/Metadata';
 
 class GroupPage extends React.Component {
   static propTypes = {
@@ -43,6 +44,7 @@ class GroupPage extends React.Component {
         <TopBar group={group} />
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
+          <Metadata group={group} />
           <Description>
             <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)} html={group.description}>
               {!group.description && (
@@ -65,6 +67,15 @@ const getDataQuery = gql`
       slug
       name
       description
+      followers {
+        total
+        nodes {
+          ... on User {
+            id
+            name
+          }
+        }
+      }
       posts {
         total
         nodes {
