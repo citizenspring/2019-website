@@ -119,15 +119,23 @@ libemail.parseHeaders = function(email) {
   const recipient = (email.recipient || email.recipients || '').toLowerCase(); // mailgun's inconsistent api
   const parsedSenderEmail = parseEmailAddress(sender);
   const parsedRecipientEmail = parseEmailAddress(recipient);
+  let parsedGroupEmail = {};
+  if (parsedRecipientEmail.domain === config.server.domain) {
+    parsedGroupEmail = parsedRecipientEmail;
+  }
   const recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`).filter(r => {
     if (!r.email) return false;
     if (r.email === recipient) return false;
     const parsedEmail = parseEmailAddress(r.email);
     if (parsedEmail.email === parsedRecipientEmail.email) return false;
     if (parsedEmail.email === parsedSenderEmail.email) return false;
+    if (!parsedGroupEmail.email && parsedEmail.domain === config.server.domain) {
+      parsedGroupEmail = parsedEmail;
+      return false;
+    }
     return true;
   });
-  return { sender, ...parsedRecipientEmail, recipients };
+  return { sender, ...parsedGroupEmail, recipients };
 };
 
 /**

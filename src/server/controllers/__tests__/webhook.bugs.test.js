@@ -38,7 +38,7 @@ describe('webhook bugs', () => {
 
   afterAll(() => sandbox.restore());
 
-  describe('reply ', () => {
+  describe('when replying', () => {
     let posts;
     beforeAll(async () => {
       // sending first email which creates one group, one post

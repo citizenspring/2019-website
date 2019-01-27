@@ -25,7 +25,7 @@ describe('webhook email', () => {
 
   afterAll(() => sandbox.restore());
 
-  describe('sending first email in a thread', () => {
+  describe('sending first email to testgroup@citizenspring.be and cc firstrecipient', () => {
     beforeAll(async () => {
       sendEmailSpy.resetHistory();
       await webhook(req, res);
@@ -33,6 +33,7 @@ describe('webhook email', () => {
 
     it('creates the group and add creator and all persons cced as ADMIN and FOLLOWER of the group and the post', async () => {
       const group = await models.Group.findOne();
+      expect(group).toExist;
       expect(group.slug).toEqual('testgroup');
       const post = await models.Post.findOne();
       const postFollowers = await models.Member.findAll({ where: { PostId: post.PostId, role: 'FOLLOWER' } });
@@ -49,6 +50,7 @@ describe('webhook email', () => {
       expect(post.html).toEqual(libemail.getHTML(email1));
       expect(post.text).toEqual(email1['stripped-text']);
     });
+
     it('creates users for all persons cced', async () => {
       const users = await models.User.findAll({ order: [['email', 'ASC']] });
       expect(users.length).toEqual(2);

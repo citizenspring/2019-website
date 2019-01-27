@@ -146,7 +146,6 @@ module.exports = (sequelize, DataTypes) => {
     const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
     const userData = extractNamesAndEmailsFromString(email.From)[0];
     const user = await models.User.findOrCreate(userData);
-
     // if we didn't have the name of the user before (i.e. because added by someone else just by email),
     // we add it
     if (user.name === 'anonymous' && userData.name) {
