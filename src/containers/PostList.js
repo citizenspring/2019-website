@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import PostListItem from '../components/PostItem';
 import { FormattedMessage } from 'react-intl';
+import { get } from 'lodash';
 
 const Wrapper = styled.div`
   margin: 0px;
@@ -45,15 +46,18 @@ export default class PostList extends Component {
   renderList(posts) {
     return (
       <Wrapper>
-        {posts.nodes.map((item, i) => (
-          <PostListItem
-            key={i}
-            post={item}
-            repliesCount={item.replies.total}
-            followersCount={item.followers.total}
-            groupSlug={this.props.groupSlug}
-          />
-        ))}
+        {posts.nodes.map(
+          (item, i) =>
+            get(item, 'group.settings.hidden') !== true && (
+              <PostListItem
+                key={i}
+                post={item}
+                repliesCount={item.replies.total}
+                followersCount={item.followers.total}
+                groupSlug={this.props.groupSlug}
+              />
+            ),
+        )}
       </Wrapper>
     );
   }

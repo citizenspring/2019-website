@@ -75,7 +75,7 @@ const queries = {
       offset: { type: GraphQLInt },
     },
     async resolve(_, args) {
-      const query = { where: {} };
+      const query = { where: { status: 'PUBLISHED' } };
       query.limit = args.limit || 20;
       query.offset = args.offset || 0;
       query.order = [['name', 'ASC']];

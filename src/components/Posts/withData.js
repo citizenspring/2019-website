@@ -39,6 +39,7 @@ const getDataQuery = gql`
           slug
           group {
             slug
+            settings
           }
           parent {
             slug
