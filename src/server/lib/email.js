@@ -30,14 +30,17 @@ libemail.removeEmailSignature = function(html) {
   if (!html || typeof html !== 'string')
     throw new Error('libemail.removeEmailSignature error: html should be a string');
 
-  let res = html;
+  let res = html,
+    matches;
   if (html.indexOf('gmail_signature') !== -1) {
-    res = html.substr(0, html.indexOf('<div class="gmail_signature"'));
+    matches = html.match(/<div[^\>]+class="gmail_signature"/i);
+    res = html.substr(0, matches.index);
     res = res.replace(/--+ *(<br( \/)?>)?$/, '') + '</body></html>';
   }
 
   if (html.indexOf('id="AppleMailSignature"') !== -1) {
-    res = html.substr(0, html.indexOf('<div id="AppleMailSignature"'));
+    matches = html.match(/<div[^\>]+id="AppleMailSignature"/i);
+    res = html.substr(0, matches.index);
     res = res.replace(/(<br( \/)?>)*$/, '') + '</body></html>';
   }
   return res;
@@ -52,6 +55,7 @@ libemail.getHTML = function(email) {
   // iPhone doesn't provide a correct html version of the email if there is no formatting
   // the email is wrapped within <p></p> and new lines are \r\n
   const trimmedHtml = html.substring(3, html.lastIndexOf('</p>')).trim();
+
   if (trimmedHtml === (email['body-plain'] || '').trim()) {
     const paragraphs = trimmedHtml.split('\r\n\r\n');
     html = '<p>' + paragraphs.join('</p>\n\n<p>') + '</p>\n';
@@ -72,6 +76,10 @@ libemail.getHTML = function(email) {
       '</p>';
     html = html.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim();
   }
+
+  // Remove trailing <br />
+  html = html.replace(/(<br[^>]*>)+<\/p>$/, '</p>');
+
   return html;
 };
 
@@ -135,6 +143,9 @@ libemail.parseHeaders = function(email) {
     }
     return true;
   });
+  if (!parsedGroupEmail.domain) {
+    parsedGroupEmail = { ...parsedRecipientEmail, groupSlug: undefined };
+  }
   return { sender, ...parsedGroupEmail, recipients };
 };
 

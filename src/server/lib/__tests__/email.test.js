@@ -22,7 +22,7 @@ describe('email', () => {
     });
     expect(headers).toEqual({
       sender: 'sender@gmail.com',
-      groupSlug: 'recipient',
+      groupSlug: undefined,
       tags: ['tag1'],
       domain: 'hotmail.com',
       email: 'recipient@hotmail.com',

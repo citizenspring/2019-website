@@ -5,6 +5,7 @@ import { omit, get } from 'lodash';
 import libemail from '../lib/email';
 import { extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
 import debugLib from 'debug';
+import { inspectRows } from '../lib/jest';
 const debug = debugLib('post');
 
 module.exports = (sequelize, DataTypes) => {
@@ -208,7 +209,6 @@ module.exports = (sequelize, DataTypes) => {
     const thread = parentPost ? parentPost : post;
     // We always add people explicitly mentioned in To or Cc as followers of the thread
     await thread.addFollowers(recipients);
-
     const headers = {
       'Message-Id': `${groupSlug}/${thread.PostId}/${post.PostId}@${get(config, 'server.domain')}`,
       References: `${groupSlug}/${thread.PostId}@${get(config, 'server.domain')}`,
@@ -220,7 +220,10 @@ module.exports = (sequelize, DataTypes) => {
     if (!parentPost) {
       // if the group is of type announcements, only the admins can create new threads
       if (get(group, 'settings.type') === 'announcements') {
+        const members = await models.Member.findAll({ where: { GroupId: group.id, role: 'ADMIN' } });
+        inspectRows(members);
         const isAdmin = await user.isAdmin(group);
+        console.log('>>> isAdmin', isAdmin);
         if (!isAdmin) {
           data = {
             subject: 'Cannot send email to group (must be an admin)',
@@ -245,7 +248,8 @@ module.exports = (sequelize, DataTypes) => {
         subscribe: { label: subscribeLabel, data: { UserId: user.id, PostId: post.PostId } },
         unsubscribe: { label: unsubscribeLabel, data: { UserId: user.id, GroupId: group.id } },
       };
-      const cc = followers.map(u => u.email);
+      const recipientsEmails = recipients.map(r => r.email);
+      const cc = followers.filter(f => !recipientsEmails.includes(f.email)).map(u => u.email);
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
         from: `${userData.name} <${groupEmail}>`,

@@ -4,6 +4,7 @@ import debug from 'debug';
 import { sequelize } from '../models';
 import config from 'config';
 import { execSync } from 'child_process';
+import { pick } from 'lodash';
 
 export const db = {
   reset: async () => {
@@ -48,6 +49,12 @@ export const constructRequestObject = (remoteUser, query) => {
 export const inspectSpy = (spy, argsCount) => {
   for (let i = 0; i < spy.callCount; i++) {
     console.log(`>>> spy.args[${i}]`, { ...spy.args[i].slice(0, argsCount) });
+  }
+};
+
+export const inspectRows = (rows, cols) => {
+  for (let i = 0; i < rows.length; i++) {
+    console.log(`>>> row`, i, ':', cols ? pick(rows[i].dataValues, cols) : rows[i].dataValues);
   }
 };
 

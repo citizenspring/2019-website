@@ -57,33 +57,12 @@ describe('webhook email', () => {
       expect(users.map(u => u.email)).toContain('firstrecipient@gmail.com');
     });
 
-    it('sends the email to all followers of the group', async () => {
-      expect(sendEmailSpy.callCount).toEqual(3);
+    it('sends the email to all followers of the group except people cced', async () => {
+      expect(sendEmailSpy.callCount).toEqual(2);
       expect(sendEmailSpy.firstCall.args[0]).toEqual('firstsender@gmail.com');
       expect(sendEmailSpy.firstCall.args[1]).toEqual('New group email created');
       expect(sendEmailSpy.secondCall.args[0]).toEqual('firstsender@gmail.com');
       expect(sendEmailSpy.secondCall.args[1]).toContain('Message sent to the testgroup');
-      expect(sendEmailSpy.thirdCall.args[0]).toEqual('testgroup@citizenspring.be');
-      expect(sendEmailSpy.thirdCall.args[4].cc).toEqual('firstrecipient@gmail.com');
-      expect(sendEmailSpy.thirdCall.args[2]).toMatch('unfollow this group');
-    });
-
-    it('unsubscribes from the group', async () => {
-      // Test unsubscribe from group
-      const matches = sendEmailSpy.thirdCall.args[2].match(/\/api\/unfollow\?token=([^\s]+)/);
-      const req = { query: { token: matches[1] } };
-      const res = {
-        send: msg => {
-          expect(msg).toEqual('You have successfully unsubscribed from new messages sent to this group');
-        },
-      };
-      await unfollow(req, res);
-      const group = await models.Group.findOne();
-      const user = await models.User.findByEmail('firstrecipient@gmail.com');
-      const member = await models.Member.findOne({
-        where: { role: 'FOLLOWER', UserId: user.id, GroupId: group.GroupId },
-      });
-      expect(member).toBeNull();
     });
   });
 });

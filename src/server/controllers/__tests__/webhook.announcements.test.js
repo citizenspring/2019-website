@@ -34,6 +34,9 @@ describe('webhook email', () => {
         settings: { type: 'announcements' },
       });
     });
+    beforeEach(() => {
+      sendEmailSpy.resetHistory();
+    });
     it('fails to send a new thread if sender is not an admin', async () => {
       await webhook(req, res);
       expect(sendEmailSpy.firstCall.args[0]).toEqual(email1.sender);
