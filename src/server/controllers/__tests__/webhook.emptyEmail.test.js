@@ -83,6 +83,7 @@ describe('webhook empty email, existing user', () => {
         {
           body: {
             ...req.body,
+            'Message-Id': `${Math.round(Math.random() * 10000000)}`,
             recipient: 'testgroup2@citizenspring.be',
           },
         },

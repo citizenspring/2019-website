@@ -37,7 +37,6 @@ describe('webhook bugs', () => {
         EmailMessageId: '<testgroup/1/1@citizenspring.be>',
       });
       await user2.follow({ PostId: post.PostId });
-      await webhook(req, res);
 
       // sending first email which creates one group, one post
       await webhook(req, res);
@@ -66,9 +65,9 @@ describe('webhook bugs', () => {
 
     it('attaches the post to the thread', async () => {
       expect(posts[0].UserId).toEqual(1);
-      expect(posts[2].UserId).toEqual(2);
-      expect(posts[3].ParentPostId).toEqual(posts[0].PostId);
-      expect(posts[3].text).toContain('This is a response from gmail from iPhone');
+      expect(posts[1].UserId).toEqual(2);
+      expect(posts[2].ParentPostId).toEqual(posts[0].PostId);
+      expect(posts[2].text).toContain('This is a response from gmail from iPhone');
     });
 
     it('adds the followers', async () => {
@@ -92,6 +91,29 @@ describe('webhook bugs', () => {
       expect(posts[0].html).toEqual(
         `<p>Hey David,<br><br>- Very good idea to reach Callup.io !<br><br>Hey Xavier,<br></p><p>- How about #BrusselsTogether ?&nbsp;</p><p>- For our next chicken meetup&nbsp;&nbsp;</p><p>: can it be on Wednesday 13. February ?<br>: can it be at BeCentral, a room where we can use a beamer ?</p><p><br>Thank you Brussels chickens !</p><p>Jo</p>`,
       );
+    });
+  });
+
+  describe('error messages', () => {
+    it('error if missing recipient', async () => {
+      const req = { body: {} };
+      const res = { send: () => {} };
+      try {
+        await webhook(req, res);
+      } catch (e) {
+        expect(e.message).toContain('Invalid webhook payload: missing "recipient"');
+      }
+    });
+
+    it('skips duplicate email', async () => {
+      const req = {
+        body: {
+          recipient: 'user@domain.com',
+          'Message-Id': '<CAKR9DSqaMhAwu4CEEELC7_zr4kNAGdJhFE2n5Ueamwvb6ojJ0w@mail.gmail.com>',
+        },
+      };
+      await webhook(req, { send: res => expect(res).toEqual('ok') });
+      await webhook(req, { send: res => expect(res).toEqual('duplicate') });
     });
   });
 });

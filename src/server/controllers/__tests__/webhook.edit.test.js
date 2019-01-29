@@ -58,6 +58,7 @@ describe('webhook edit', () => {
       req.body['stripped-html'] = '<p>This is the v2 of my post</p>';
     });
     it('updates the title and body of the post if sender is admin', async () => {
+      req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
       const posts = await models.Post.findAll();
       expect(posts.length).toEqual(2);
@@ -71,6 +72,7 @@ describe('webhook edit', () => {
     it('creates a new pending version if the author of the edit is not an admin', async () => {
       await models.User.create({ email: 'anotheruser@gmail.com' });
       req.body.sender = 'anotheruser@gmail.com';
+      req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
       const posts = await models.Post.findAll();
       expect(posts.length).toEqual(2);

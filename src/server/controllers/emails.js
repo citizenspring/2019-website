@@ -102,7 +102,7 @@ export async function follow(email, group, PostId) {
   }
   if (PostId) {
     // Follow thread
-    const post = await models.Post.findById(PostId);
+    const post = await models.Post.findByPk(PostId);
     if (!post) {
       console.error(`Can't follow PostId ${PostId}: post not found`);
       return;
@@ -129,10 +129,10 @@ export async function follow(email, group, PostId) {
 export async function edit(senderEmail, GroupId, PostId, data) {
   let target, type;
   if (PostId) {
-    target = await models.Post.findById(PostId);
+    target = await models.Post.findByPk(PostId);
     type = 'post';
   } else {
-    target = await models.Group.findById(GroupId);
+    target = await models.Group.findByPk(GroupId);
     type = 'group';
   }
   const user = await models.User.findByEmail(senderEmail);
@@ -150,7 +150,7 @@ export async function edit(senderEmail, GroupId, PostId, data) {
   };
   await libemail.sendTemplate(`${type}Edited`, templateData, senderEmail);
   if (user.id !== target.UserId) {
-    const admin = await models.User.findById(target.UserId);
+    const admin = await models.User.findByPk(target.UserId);
 
     const token = createJwt(
       'approveEdit',

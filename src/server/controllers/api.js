@@ -73,7 +73,7 @@ export async function approve(req, res, next) {
   if (!TargetId) {
     return res.status(500).send(`Invalid token: TargetId missing`);
   }
-  const target = await models[capitalize(get(token, 'data.type'))].findById(TargetId);
+  const target = await models[capitalize(get(token, 'data.type'))].findByPk(TargetId);
   if (!target) {
     return res.status(500).send(`Cannot approve: TargetId ${TargetId} not found`);
   }
@@ -123,7 +123,7 @@ export async function unfollow(req, res, next) {
       );
     }
   }
-  const member = await models.Member.findById(token.data.MemberId);
+  const member = await models.Member.findByPk(token.data.MemberId);
   let msg;
   if (!member) {
     console.error(`api.unfollow: can't find Member.id`, token.data.MemberId);

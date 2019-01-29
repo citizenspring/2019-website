@@ -72,6 +72,7 @@ describe('webhook replies', () => {
       sendEmailSpy.resetHistory();
       req.body = {
         ...email2,
+        'Message-Id': `${Math.round(Math.random() * 10000000)}`,
         recipient: 'testgroup/1/1@citizenspring.be',
         'In-Reply-To': null,
       };
@@ -107,6 +108,7 @@ describe('webhook replies', () => {
       const post = await models.Post.findOne();
       await post.addFollowers([{ email: 'threadfollower@gmail.com' }]);
       // sending reply
+      req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
       expect(sendEmailSpy.callCount).toEqual(2);
       expect([sendEmailSpy.args[0][4].cc, sendEmailSpy.args[1][4].cc]).toContain(email1.sender);

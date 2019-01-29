@@ -192,7 +192,7 @@ module.exports = (sequelize, DataTypes) => {
         const inReplyToPost = await models.Post.findByEmailMessageId(email['In-Reply-To']);
         parentPost =
           inReplyToPost && inReplyToPost.ParentPostId
-            ? await models.Post.findById(inReplyToPost.ParentPostId)
+            ? await models.Post.findByPk(inReplyToPost.ParentPostId)
             : inReplyToPost;
       }
     }
@@ -338,9 +338,9 @@ module.exports = (sequelize, DataTypes) => {
 
   Post.prototype.getUrl = async function() {
     if (!this.path) {
-      const group = await models.Group.findById(this.GroupId);
+      const group = await models.Group.findByPk(this.GroupId);
       if (this.ParentPostId) {
-        const parentPost = await Post.findById(this.ParentPostId);
+        const parentPost = await Post.findByPk(this.ParentPostId);
         this.path = `/${group.slug}/${parentPost.slug}`;
       } else {
         this.path = `/${group.slug}/${this.slug}`;

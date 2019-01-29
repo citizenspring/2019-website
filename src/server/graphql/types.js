@@ -233,13 +233,13 @@ export const MemberType = new GraphQLObjectType({
       user: {
         type: UserType,
         resolve(member) {
-          return models.User.findById(member.UserId);
+          return models.User.findByPk(member.UserId);
         },
       },
       group: {
         type: GroupType,
         resolve(member) {
-          return models.Group.findById(member.GroupId);
+          return models.Group.findByPk(member.GroupId);
         },
       },
       description: {
@@ -279,7 +279,7 @@ export const GroupType = new GraphQLObjectType({
       user: {
         type: MemberType,
         resolve(group, args, req) {
-          return models.User.findById(group.UserId);
+          return models.User.findByPk(group.UserId);
         },
       },
       followers: {
@@ -382,19 +382,19 @@ export const PostType = new GraphQLObjectType({
       user: {
         type: UserType,
         resolve(post, args, req) {
-          return models.User.findById(post.UserId);
+          return models.User.findByPk(post.UserId);
         },
       },
       group: {
         type: GroupType,
         resolve(post, args, req) {
-          return models.Group.findById(post.GroupId);
+          return models.Group.findByPk(post.GroupId);
         },
       },
       parent: {
         type: PostType,
         resolve(post) {
-          return models.Post.findById(post.ParentPostId);
+          return models.Post.findByPk(post.ParentPostId);
         },
       },
       version: {
@@ -504,19 +504,19 @@ export const ActivityType = new GraphQLObjectType({
       group: {
         type: GroupType,
         resolve(activity) {
-          return models.Group.findById(activity.GroupId);
+          return models.Group.findByPk(activity.GroupId);
         },
       },
       post: {
         type: PostType,
         resolve(activity, args, req) {
-          return models.Post.findById(activity.PostId);
+          return models.Post.findByPk(activity.PostId);
         },
       },
       user: {
         type: UserType,
         resolve(activity, args, req) {
-          return models.User.findById(activity.UserId);
+          return models.User.findByPk(activity.UserId);
         },
       },
       action: {

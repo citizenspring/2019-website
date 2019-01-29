@@ -39,9 +39,8 @@ describe('webhook email', () => {
     describe('email is not empty', () => {
       beforeAll(async () => {
         sendEmailSpy.resetHistory();
-        const req = {
-          body: email1,
-        };
+        const req = { body: email1 };
+        req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
         const res = { send: () => {} };
         await webhook(req, res);
       });

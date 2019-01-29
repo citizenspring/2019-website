@@ -7,6 +7,8 @@ import { get } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('webhook');
 import { handleIncomingEmail } from './emails';
+import LRU from 'lru-cache';
+const cache = new LRU(50);
 
 async function handleFirstTimeUser(email, data) {
   if (!email['message-url']) {
@@ -36,6 +38,11 @@ export default async function webhook(req, res, next) {
   if (!email.recipient) {
     throw new Error('Invalid webhook payload: missing "recipient"');
   }
+  if (cache.get(email['Message-Id'])) {
+    console.warn('!!! duplicate email', email['Message-Id']);
+    return res.send('duplicate');
+  }
+  cache.set(email['Message-Id'], true);
   debug('receiving email from:', email.sender, 'to:', email.recipient, 'subject:', email.subject);
 
   // when replying from gmail to "testgroup@citizenspring.be" <testgroup/28/29@citizenspring.be>,
