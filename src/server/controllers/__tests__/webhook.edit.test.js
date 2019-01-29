@@ -1,4 +1,4 @@
-import { db, inspectSpy } from '../../lib/jest';
+import { db, inspectSpy, inspectRows } from '../../lib/jest';
 import webhook from '../webhook';
 import { unfollow } from '../api';
 
@@ -66,7 +66,7 @@ describe('webhook edit', () => {
       expect(posts[1].status).toEqual('PUBLISHED');
       expect(posts[1].PostId).toEqual(posts[0].PostId);
       expect(posts[1].title).toEqual(req.body.subject);
-      expect(posts[1].html).toEqual(req.body['stripped-html']);
+      expect(posts[1].html).toEqual('<p>This is the v2 of my post');
       await models.Post.truncate();
     });
     it('creates a new pending version if the author of the edit is not an admin', async () => {
@@ -75,12 +75,13 @@ describe('webhook edit', () => {
       req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
       const posts = await models.Post.findAll();
+      inspectRows(posts, ['id', 'PostId', 'status', 'title']);
       expect(posts.length).toEqual(2);
       expect(posts[0].status).toEqual('PUBLISHED');
       expect(posts[1].status).toEqual('PENDING');
       expect(posts[1].PostId).toEqual(posts[0].PostId);
       expect(posts[1].title).toEqual(req.body.subject);
-      expect(posts[1].html).toEqual(req.body['stripped-html']);
+      expect(posts[1].html).toEqual('<p>This is the v2 of my post');
     });
   });
 });

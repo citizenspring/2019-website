@@ -10,6 +10,20 @@ import fs from 'fs';
 import models from '../models';
 
 import { render } from '../templates';
+import unified from 'unified';
+import markdown from 'remark-parse';
+import remark2rehype from 'remark-rehype';
+import raw from 'rehype-raw';
+import stringify from 'rehype-stringify';
+import minify from 'rehype-preset-minify';
+import format from 'rehype-format';
+
+const processor = unified()
+  .use(markdown)
+  .use(remark2rehype, { allowDangerousHTML: true })
+  .use(raw)
+  .use(minify)
+  .use(stringify);
 
 const libemail = {};
 
@@ -36,35 +50,52 @@ libemail.removeEmailSignature = function(html) {
     matches = html.match(/<div[^\>]+class="gmail_signature"/i);
     res = html.substr(0, matches.index);
     res = res.replace(/--+ *(<br( \/)?>)?$/, '') + '</body></html>';
+    return res;
+  }
+
+  if (html.indexOf('composer_signature') !== -1) {
+    matches = html.match(/<div[^\>]+id="composer_signature"/i);
+    res = html.substr(0, matches.index);
+    res = res.replace(/--+ *(<br( \/)?>)?$/, '') + '</body></html>';
+    return res;
   }
 
   if (html.indexOf('id="AppleMailSignature"') !== -1) {
     matches = html.match(/<div[^\>]+id="AppleMailSignature"/i);
     res = html.substr(0, matches.index);
     res = res.replace(/(<br( \/)?>)*$/, '') + '</body></html>';
+    return res;
   }
+
   return res;
 };
 
 libemail.getHTML = function(email) {
-  let html = email['stripped-html'];
+  let html = email['stripped-html'] || '';
   html = libemail.removeEmailResponse(html);
   html = libemail.removeEmailSignature(html);
   html = html.replace(/<head>.*<\/head>/i, '');
   html = html.replace(/(<\/?html>|<\/?head>|<\/?body[^>]*>)/g, '');
+
   // iPhone doesn't provide a correct html version of the email if there is no formatting
   // the email is wrapped within <p></p> and new lines are \r\n
   const trimmedHtml = html.substring(3, html.lastIndexOf('</p>')).trim();
 
   if (trimmedHtml === (email['body-plain'] || '').trim()) {
-    const paragraphs = trimmedHtml.split('\r\n\r\n');
-    html = '<p>' + paragraphs.join('</p>\n\n<p>') + '</p>\n';
-    const newlines = html.split('\r\n');
-    html = newlines.join('<br />\n');
+    html = trimmedHtml;
   }
 
-  // convert <div><br></div> to new paragraphs
-  if (html.indexOf('</div><div>') > -1) {
+  // Outlook
+  if (html.indexOf('<!--StartFragment-->') !== -1) {
+    html = html
+      .substr(html.indexOf('<!--StartFragment-->') + 20)
+      .replace(/<(\/?(span|p|b|i|o:p))[^>]*>/g, '<$1>')
+      .replace(/<\/?(o:p|span)>/g, '')
+      .replace(/<!--[^>]+-->/g, '');
+  }
+
+  // convert <div><br></div> from gmail to new paragraphs
+  if (html.indexOf('</div><div') > -1) {
     html =
       '<p>' +
       html
@@ -72,13 +103,24 @@ libemail.getHTML = function(email) {
         .map(l => l.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim())
         .filter(l => !l.match(/^(<[a-z]+>)*(<br( \/| clear="[a-z]+")?>)+(<\/[a-z]+>)*$/)) // we remove empty paragraphs <div>(<br>)+</div>, <div><b><br /></b></div>
         .join('</p><p>')
+        .replace(/<br><br>/g, '<p>')
         .trim() +
       '</p>';
     html = html.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim();
   }
 
-  // Remove trailing <br />
-  html = html.replace(/(<br[^>]*>)+<\/p>$/, '</p>');
+  // Process markdown
+  if (!html) {
+    console.warn('html is empty for email', email);
+    return '';
+  }
+  html = processor.processSync(html).toString();
+
+  // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail
+  html = html
+    .replace(/(<(p|br[^>]*)>)+$/, '')
+    .replace(/<div[^>]*>(<br[^>]*>)*<\/div>/g, '')
+    .replace(/<div[^>]*>(<br[^>]*>)*<\/div>/g, '');
 
   return html;
 };

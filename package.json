@@ -17,6 +17,7 @@
     "build:next": "next build build",
     "build:langs": "rm -rf build/messages && babel src/**/*.js > /dev/null && babel src/components/**/*.js > /dev/null && babel src/server/templates/*email.js > /dev/null && babel-node scripts/translate.js",
     "build": "npm run build:server && npm run build:next",
+    "reprocess:emails": "babel-node ./scripts/reprocessEmails.js",
     "lint": "eslint \"src/**/*.js\" \"test/**/*.js\"",
     "lint:fix": "npm run lint -- --fix",
     "lint:quiet": "npm run lint -- --quiet",
@@ -24,7 +25,7 @@
     "clean": "rm -rf dist src/.next",
     "postinstall": "sh ./scripts/postinstall.sh",
     "maildev": "./node_modules/.bin/maildev -o",
-    "simulator": "babel-node scripts/simulator.js"
+    "simulator": "babel-node ./scripts/simulator.js"
   },
   "repository": {
     "type": "git",
@@ -96,10 +97,17 @@
     "react-apollo": "^2.3.3",
     "react-dom": "^16.7.0",
     "react-intl": "^2.7.2",
+    "react-markdown": "^4.0.6",
     "react-moment": "^0.8.4",
     "react-spinkit": "^3.0.0",
+    "rehype-format": "^2.3.1",
+    "rehype-preset-minify": "^3.0.0",
+    "rehype-raw": "^4.0.0",
+    "rehype-stringify": "^5.0.0",
     "remark-emoji": "^2.0.2",
     "remark-images": "^0.16.1",
+    "remark-parse": "^6.0.3",
+    "remark-rehype": "^4.0.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "semantic-ui-react": "^0.84.0",
@@ -110,6 +118,8 @@
     "styled-jsx": "^3.1.3",
     "styled-system": "^3.1.11",
     "subscriptions-transport-ws": "^0.9.15",
+    "unified": "^7.1.0",
+    "unified-stream": "^1.0.4",
     "winston": "^3.1.0"
   },
   "devDependencies": {

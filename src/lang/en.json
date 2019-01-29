@@ -1,4 +1,7 @@
 {
+  "edit": "edit",
+  "group.header.members": "{n} {n, plural, one {member} other {members}}",
+  "group.header.posts": "{n} {n, plural, one {post} other {posts}}",
   "loading": "loading",
   "post.metadata.started": "Started",
   "post.metadata.by": "by",

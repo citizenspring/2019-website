@@ -89,7 +89,7 @@ describe('webhook bugs', () => {
     it("cleans properly the html, doesn't send to people already cced", async () => {
       expect(sendEmailSpy.callCount).toEqual(2);
       expect(posts[0].html).toEqual(
-        `<p>Hey David,<br><br>- Very good idea to reach Callup.io !<br><br>Hey Xavier,<br></p><p>- How about #BrusselsTogether ?&nbsp;</p><p>- For our next chicken meetup&nbsp;&nbsp;</p><p>: can it be on Wednesday 13. February ?<br>: can it be at BeCentral, a room where we can use a beamer ?</p><p><br>Thank you Brussels chickens !</p><p>Jo</p>`,
+        `<p>Hey David,<p>- Very good idea to reach Callup.io !<p>Hey Xavier,<br><p>- How about #BrusselsTogether ?<p>- For our next chicken meetup<p>: can it be on Wednesday 13. February ?<br>: can it be at BeCentral, a room where we can use a beamer ?<p><br>Thank you Brussels chickens !<p>Jo`,
       );
     });
   });

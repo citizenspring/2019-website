@@ -8,6 +8,8 @@ if [ "$NODE_ENV" = "staging" ] || [ "$NODE_ENV" = "production" ]; then
   npm run db:migrate
   echo "- building"
   npm run build
+  echo "- reprocessing past emails"
+  npm run reprocess:emails
   exit $?; # exit with return code of previous command
 fi
 
