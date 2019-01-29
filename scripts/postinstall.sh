@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-PG_DATABASE="opencollective-email"
 
 # Only run migrations automatically on staging and production
 if [ "$NODE_ENV" = "staging" ] || [ "$NODE_ENV" = "production" ]; then
@@ -12,6 +11,8 @@ if [ "$NODE_ENV" = "staging" ] || [ "$NODE_ENV" = "production" ]; then
   npm run reprocess:emails
   exit $?; # exit with return code of previous command
 fi
+
+PG_DATABASE="opencollective-email"
 
 # On any other environment, first let's check if postgres is installed
 if command -v psql > /dev/null; then
