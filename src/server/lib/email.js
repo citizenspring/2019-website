@@ -16,10 +16,11 @@ import remark2rehype from 'remark-rehype';
 import raw from 'rehype-raw';
 import stringify from 'rehype-stringify';
 import minify from 'rehype-preset-minify';
-import format from 'rehype-format';
+import toc from 'remark-toc';
 
 const processor = unified()
   .use(markdown)
+  .use(toc)
   .use(remark2rehype, { allowDangerousHTML: true })
   .use(raw)
   .use(minify)

@@ -196,16 +196,16 @@ describe('email', () => {
     );
   });
 
-  it('cleans the html with markdown', async () => {
+  it('cleans the html with markdown and TOC', async () => {
     const email = {
       'body-plain':
-        'Here is a **list** of <i>confirmed</i> <a href="https://google.com">initiatives</a> that will open their doors during the Citizen Spring.\r\nFeel free to edit this list to add your initiative.\r\n\r\nCategory | Name | Description | Place | Dates | website\r\n-------- | ---- | ----------- | ----- | ----- | -------\r\nsustainability | Sustainable Brussels | Your guide to the green face of Brussels. | | | http://sustainablebrussels.be\r\n',
+        '# Title \r\n## Table of contents \r\n## Subtitle 1 \r\nHere is a **list** of <i>confirmed</i> <a href="https://google.com">initiatives</a>\r\n## Subtitle2\r\nthat will open their doors during the Citizen Spring.\r\nFeel free to edit this list to add your initiative.\r\n\r\nCategory | Name | Description | Place | Dates | website\r\n-------- | ---- | ----------- | ----- | ----- | -------\r\nsustainability | Sustainable Brussels | Your guide to the green face of Brussels. | | | http://sustainablebrussels.be\r\n',
       'stripped-html':
-        '<p>Here is a **list** of <i>confirmed</i> <a href="https://google.com">initiatives</a> that will open their doors during the Citizen Spring.\r\nFeel free to edit this list to add your initiative.\r\n\r\nCategory | Name | Description | Place | Dates | website\r\n-------- | ---- | ----------- | ----- | ----- | -------\r\nsustainability | Sustainable Brussels | Your guide to the green face of Brussels. | | | http://sustainablebrussels.be\r\n</p>',
+        '<p># Title \r\n## Table of contents \r\n## Subtitle 1 \r\nHere is a **list** of <i>confirmed</i> <a href="https://google.com">initiatives</a>\r\n## Subtitle2\r\nthat will open their doors during the Citizen Spring.\r\nFeel free to edit this list to add your initiative.\r\n\r\nCategory | Name | Description | Place | Dates | website\r\n-------- | ---- | ----------- | ----- | ----- | -------\r\nsustainability | Sustainable Brussels | Your guide to the green face of Brussels. | | | http://sustainablebrussels.be\r\n</p>',
     };
     const html = await libemail.getHTML(email);
     expect(html).toEqual(
-      `<p>Here is a <strong>list</strong> of <i>confirmed</i> <a href=https://google.com>initiatives</a> that will open their doors during the Citizen Spring. Feel free to edit this list to add your initiative.<table><thead><tr><th>Category<th>Name<th>Description<th>Place<th>Dates<th>website<tbody><tr><td>sustainability<td>Sustainable Brussels<td>Your guide to the green face of Brussels.<td><td><td><a href=http://sustainablebrussels.be>http://sustainablebrussels.be</a></table>`,
+      `<h1>Title</h1><h2>Table of contents</h2><ul><li><a href=#subtitle-1>Subtitle 1</a><li><a href=#subtitle2>Subtitle2</a></ul><h2>Subtitle 1</h2><p>Here is a <strong>list</strong> of <i>confirmed</i> <a href=https://google.com>initiatives</a><h2>Subtitle2</h2><p>that will open their doors during the Citizen Spring. Feel free to edit this list to add your initiative.<table><thead><tr><th>Category<th>Name<th>Description<th>Place<th>Dates<th>website<tbody><tr><td>sustainability<td>Sustainable Brussels<td>Your guide to the green face of Brussels.<td><td><td><a href=http://sustainablebrussels.be>http://sustainablebrussels.be</a></table>`,
     );
   });
 
