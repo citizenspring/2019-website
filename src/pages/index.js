@@ -83,13 +83,12 @@ class HomePage extends React.Component {
             </Box>
           </Flex>
           <p>
-            We have a day of the industry where we visit the old economy. It's about time that we also have a day of the
-            citizens where we can discover the new economy and all the amazing things that citizens can do when they get
-            together! 🤟
+            We have a day of the industry where we visit the old economy. Let's have a day of the citizens where we can
+            discover the new economy and all the amazing things that citizens can do when they get together! 🤟
           </p>
           <p>
-            During those 4 days, we will all open our doors, present what we do, how we got started and how citizens can
-            contribute! 🙌
+            During the first 4 days of Spring, citizen initiatives will open their doors to you, present what they do,
+            how they got started and how you can contribute and join the movement! 🙌
           </p>
           <p>
             It will be totally decentralized. We will publish on this website all the activities happening across the
