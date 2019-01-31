@@ -64,7 +64,7 @@ libemail.removeEmailSignature = function(html) {
   if (html.indexOf('id="AppleMailSignature"') !== -1) {
     matches = html.match(/<div[^\>]+id="AppleMailSignature"/i);
     res = html.substr(0, matches.index);
-    res = res.replace(/(<br( \/)?>)*$/, '') + '</body></html>';
+    res = res.replace(/(<br( \/)?>)*$/, '') + '</div></body></html>';
     return res;
   }
 
@@ -97,17 +97,17 @@ libemail.getHTML = function(email) {
 
   // convert <div><br></div> from gmail to new paragraphs
   if (html.indexOf('</div><div') > -1) {
-    html =
-      '<p>' +
-      html
-        .split('</div><div>')
-        .map(l => l.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim())
-        .filter(l => !l.match(/^(<[a-z]+>)*(<br( \/| clear="[a-z]+")?>)+(<\/[a-z]+>)*$/)) // we remove empty paragraphs <div>(<br>)+</div>, <div><b><br /></b></div>
-        .join('</p><p>')
-        .replace(/<br><br>/g, '<p>')
-        .trim() +
-      '</p>';
-    html = html.replace(/(<div( [a-z]+=[^ ]+)?>|<\/div>)/g, '').trim();
+    html = html
+      .replace(/<div[^>]*>(<(b|i)>)?<br[^>]*>(<\/(b|i)>)?<\/div>/gm, '\r\n\r\n')
+      .replace(/(<br[^>]*>)+/g, '\r\n\r\n')
+      .replace(/<div[^>]*>((?:(?!<\/?div).)+)(<\/div>)?/gm, '<br>\r\n$1\r\n') // replace <div>$line</div> to $line<br>
+      .replace(/^(\r)?\n<br>/gm, '\r\n')
+      .replace(/(<div[^>]*>)+/gm, '')
+      .replace(/(<\/div[^>]*>)+/gm, '')
+      .replace(/\r\n(\r\n)+/g, '\r\n\r\n') // max 2 new empty lines
+      .trim()
+      .replace(/^<br[^>]*>(\r\n)?/, '') // remove leading <br>
+      .replace(/(<br[^>]*>)+$/, ''); // remove trailing <br>
   }
 
   // Process markdown
@@ -120,6 +120,7 @@ libemail.getHTML = function(email) {
   // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail
   html = html
     .replace(/(<(p|br[^>]*)>)+$/, '')
+    .replace(/<(\/?)p><br>/g, '<$1p>')
     .replace(/<div[^>]*>(<br[^>]*>)*<\/div>/g, '')
     .replace(/<div[^>]*>(<br[^>]*>)*<\/div>/g, '');
 
