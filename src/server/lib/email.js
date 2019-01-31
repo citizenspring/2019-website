@@ -17,9 +17,11 @@ import raw from 'rehype-raw';
 import stringify from 'rehype-stringify';
 import minify from 'rehype-preset-minify';
 import toc from 'remark-toc';
+import slug from 'remark-slug';
 
 const processor = unified()
   .use(markdown)
+  .use(slug)
   .use(toc)
   .use(remark2rehype, { allowDangerousHTML: true })
   .use(raw)
@@ -115,6 +117,10 @@ libemail.getHTML = function(email) {
     console.warn('html is empty for email', email);
     return '';
   }
+
+  // remove already linked urls (as they will be relinked with the markdown processor)
+  html = html.replace(/<a[\s][^>]*href="([^"]+)"[^>]+>\1<\/a>/gm, '$1');
+
   html = processor.processSync(html).toString();
 
   // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail

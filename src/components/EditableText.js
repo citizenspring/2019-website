@@ -12,6 +12,15 @@ const Wrapper = styled.div`
     display: inline-block;
     margin-left: 0.5rem;
   }
+  ul {
+    padding-left: 2rem;
+  }
+  ul li {
+    margin: 0.25rem 0;
+  }
+  ul ul {
+    margin-bottom: 2rem;
+  }
   @media (min-width: 600px) {
     .edit {
       visibility: hidden;
