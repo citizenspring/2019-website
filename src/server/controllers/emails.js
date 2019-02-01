@@ -105,6 +105,7 @@ export async function follow(senderEmail, group, PostId) {
   debug('follow group', group.slug, 'PostId:', PostId);
   if (PostId) {
     // Follow thread
+    await post.addFollowers([{ email: senderEmail }]);
     const post = await models.Post.findByPk(PostId);
     if (!post) {
       console.error(`Can't follow PostId ${PostId}: post not found`);
@@ -121,6 +122,7 @@ export async function follow(senderEmail, group, PostId) {
     return `/${group.slug}/${post.slug}`;
   } else {
     // Follow group
+    await group.addFollowers([{ email: senderEmail }]);
     const data = {
       groupSlug: group.slug,
       unsubscribe: { label: 'Unfollow this group', data: { GroupId: group.GroupId } },

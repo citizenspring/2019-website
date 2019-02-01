@@ -81,8 +81,8 @@ const layout = ({ children, data }) => {
                       </a>
                     </TD>
                   )}
-                  {data.subscribe && data.unsubscribe && <TD style={styles.separator}>&nbsp;|&nbsp;</TD>}
-                  {data.unsubscribe && (
+                  {data.subscribe && get(data, 'unsubscribe.url') && <TD style={styles.separator}>&nbsp;|&nbsp;</TD>}
+                  {get(data, 'unsubscribe.url') && (
                     <TD>
                       <a style={styles.footerLink} href={data.unsubscribe.url}>
                         {data.unsubscribe.label}
