@@ -42,12 +42,12 @@ export async function publishEmail(req, res, next) {
     token = verifyJwt(req.query.token);
   } catch (e) {
     if (e && e.name === 'TokenExpiredError') {
-      throw new Error(
-        `The token has expired. Please resend your email to ${groupSlug}@${get(config, 'server.domain')}`,
+      return next(
+        new Error(`The token has expired. Please resend your email to ${groupSlug}@${get(config, 'server.domain')}`),
       );
     }
   }
-  let email;
+  let email, redirect;
   try {
     email = await retrieveEmail(token);
   } catch (e) {
@@ -58,9 +58,14 @@ export async function publishEmail(req, res, next) {
       return res.send('Unknown error');
     }
   }
-  const redirect = await handleIncomingEmail(email);
-  debug('publishEmail: redirecting to', redirect);
-  return res.redirect(redirect);
+  try {
+    redirect = await handleIncomingEmail(email);
+    debug('publishEmail: redirecting to', redirect);
+    return res.redirect(redirect);
+  } catch (e) {
+    console.error('>>> handleIncomingEmail error', JSON.stringify(email), 'response:', JSON.stringify(e));
+    return res.send(`Error: ${e.message}`);
+  }
 }
 
 /**

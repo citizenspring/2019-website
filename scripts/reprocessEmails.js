@@ -3,11 +3,11 @@ import libemail from '../src/server/lib/email';
 
 const run = async () => {
   const posts = await models.Post.findAll();
-  console.log('>>> reprocessing', posts.length, 'emails');
+  console.log('> reprocessing', posts.length, 'emails');
   const promises = [];
   posts.map(p => {
     if (!p.email) {
-      console.log('> no email for post id', p.id, '- skipping');
+      // console.log('> no email for post id', p.id, '- skipping');
       return;
     }
     const html = libemail.getHTML(p.email);
@@ -31,6 +31,7 @@ const run = async () => {
     promises.push(p.update({ html }));
   });
   await Promise.all(promises);
+  console.log('> reprocessing done');
   process.exit(0);
 };
 

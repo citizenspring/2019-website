@@ -2,6 +2,8 @@ import { publishEmail } from '../api';
 import { createJwt } from '../../lib/auth';
 import { db } from '../../lib/jest';
 import models from '../../models';
+import request from 'supertest';
+import server from '../../index';
 
 import nock from 'nock';
 import './api.nock';
@@ -14,21 +16,11 @@ describe('controllers.api', () => {
   beforeAll(db.reset);
   afterAll(db.close);
   it('fails if token has expired', async () => {
-    const req = {
-      query: {
-        groupSlug: 'testgroup',
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlSWQiOiJleUp3SWpwbVlXeHpaU3dpYXlJNklqYzJZakk0TVRKa0xUbGxOVFl0TkdGbE15MDVPREkzTFdJMFpEWXhaRGxoTjJRd1ppSXNJbk1pT2lJMllqVmpOMlF6WXprMklpd2lZeUk2SW5SaGJtdGlJbjA9IiwibWFpbFNlcnZlciI6InNlIiwiaWF0IjoxNTQ1ODk4Nzg2LCJleHAiOjE1NDU5MDIzODYsInN1YiI6ImVtYWlsQ29uZmlybWF0aW9uIn0.tJYkdkuDLnO4fIKc6Pa5kH92I-01wBeorGnBLhR-fq8',
-      },
-    };
-    const res = {
-      send: response => {},
-    };
-    try {
-      await publishEmail(req, res);
-    } catch (e) {
-      expect(e.message).toEqual('The token has expired. Please resend your email to testgroup@citizenspring.be');
-    }
+    const res = await request(server).get(
+      '/api/publishEmail?groupSlug=testgroup&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXNzYWdlSWQiOiJleUp3SWpwbVlXeHpaU3dpYXlJNklqYzJZakk0TVRKa0xUbGxOVFl0TkdGbE15MDVPREkzTFdJMFpEWXhaRGxoTjJRd1ppSXNJbk1pT2lJMllqVmpOMlF6WXprMklpd2lZeUk2SW5SaGJtdGlJbjA9IiwibWFpbFNlcnZlciI6InNlIiwiaWF0IjoxNTQ1ODk4Nzg2LCJleHAiOjE1NDU5MDIzODYsInN1YiI6ImVtYWlsQ29uZmlybWF0aW9uIn0.tJYkdkuDLnO4fIKc6Pa5kH92I-01wBeorGnBLhR-fq8',
+    );
+    expect(res.status).toEqual(500);
+    expect(res.text).toContain('The token has expired');
   });
 
   it('publish first email in a new group', async () => {
