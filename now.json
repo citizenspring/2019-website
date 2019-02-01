@@ -3,7 +3,7 @@
     "NODE_ENV": "production",
     "DOMAIN": "citizenspring.be",
     "BASE_URL": "https://citizenspring.be",
-    "DEBUG": "webhook,email",
+    "DEBUG": "webhook,email,api,group",
     "MAILGUN_USER": "postmaster@citizenspring.be",
     "MAILGUN_API_KEY": "@mailgun_api_key",
     "MAILGUN_PASSWORD": "@mailgun_password",

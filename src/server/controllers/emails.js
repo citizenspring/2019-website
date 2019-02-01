@@ -97,7 +97,7 @@ export function renderTemplate(req, res) {
   return res.send(html);
 }
 
-export async function follow(email, group, PostId) {
+export async function follow(senderEmail, group, PostId) {
   if (!group) {
     console.error(`follow> error: group undefined`);
     return;
@@ -117,7 +117,7 @@ export async function follow(email, group, PostId) {
       post,
       unsubscribe: { label: 'Unfollow this thread', data: { PostId } },
     };
-    await libemail.sendTemplate('followThread', data, email.sender);
+    await libemail.sendTemplate('followThread', data, senderEmail);
     return;
   } else {
     // Follow group
@@ -125,7 +125,7 @@ export async function follow(email, group, PostId) {
       groupSlug: group.slug,
       unsubscribe: { label: 'Unfollow this group', data: { GroupId: group.GroupId } },
     };
-    await libemail.sendTemplate('followGroup', data, email.sender);
+    await libemail.sendTemplate('followGroup', data, senderEmail);
     return;
   }
 }
