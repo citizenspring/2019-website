@@ -38,38 +38,41 @@ server.use((req, res, next) => {
 
 routes(server);
 
-nextApp.prepare().then(() => {
-  server.get('*', pagesHandler);
-  server.use((err, req, res, next) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(err.stack);
-    }
-    return res.status(500).send(
-      `<html>
-          <head>
-            <title>Error</title>
-          </head>
-          <body style="font-family: Helvetica Neue, Helvetica, Sans Serif;">
-            <p>Oh no! Something broke! ¯\\_(ツ)_/¯ </p>
-            <p>${err.message}</p>
-          </body>
-        </html>`,
-    );
-  });
-  server.listen(port, err => {
-    if (err) {
-      throw err;
-    }
-    const host = process.env.NOW_URL || 'http://localhost';
-    logger.info(`> NODE_ENV: ${process.env.NODE_ENV} - DEBUG: ${process.env.DEBUG}`);
-    logger.info(
-      `> Connecting to pgsql://${config.server.database.options.host}:${config.server.database.port || 5432}/${
-        config.server.database.database
-      }`,
-    );
-    logger.info(`> GraphQL server ready on ${host}:${port}/graphql/v1`);
-    logger.info(`> Web server ready on ${host}:${port}`);
-  });
+server.get('*', pagesHandler);
+server.use((err, req, res, next) => {
+  if (!['production', 'test'].includes(process.env.NODE_ENV)) {
+    console.error(err.stack);
+  }
+  return res.status(500).send(
+    `<html>
+        <head>
+          <title>Error</title>
+        </head>
+        <body style="font-family: Helvetica Neue, Helvetica, Sans Serif;">
+          <p>Oh no! Something broke! ¯\\_(ツ)_/¯ </p>
+          <p>${err.message}</p>
+        </body>
+      </html>`,
+  );
 });
 
+process.env.NODE_ENV !== 'test' &&
+  nextApp.prepare().then(() => {
+    server.listen(port, err => {
+      if (err) {
+        throw err;
+      }
+      const host = process.env.NOW_URL || 'http://localhost';
+      logger.info(`> NODE_ENV: ${process.env.NODE_ENV} - DEBUG: ${process.env.DEBUG}`);
+      logger.info(
+        `> Connecting to pgsql://${config.server.database.options.host}:${config.server.database.port || 5432}/${
+          config.server.database.database
+        }`,
+      );
+      logger.info(`> GraphQL server ready on ${host}:${port}/graphql/v1`);
+      logger.info(`> Web server ready on ${host}:${port}`);
+    });
+  });
+
+server.nextApp = nextApp;
 export default server;

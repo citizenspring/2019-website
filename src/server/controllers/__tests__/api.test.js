@@ -21,9 +21,10 @@ describe('controllers.api', () => {
     );
     expect(res.status).toEqual(500);
     expect(res.text).toContain('The token has expired');
+    server.nextApp.close();
   });
 
-  it('publish first email in a new group', async () => {
+  it('publish first email in a new group from new user', async () => {
     const tokenData = {
       messageId:
         'eyJwIjpmYWxzZSwiayI6Ijg0NWQ3Y2ZmLWRiZDgtNGIwYS1iNTZhLWUzNmZmYzNhN2E3NSIsInMiOiI1YTY3MmZjMDkxIiwiYyI6InRhbmtiIn0=',
@@ -34,6 +35,9 @@ describe('controllers.api', () => {
       query: { groupSlug: 'testgroup', token },
     };
     const res = {
+      send: body => {
+        console.log('>>> res.send', body);
+      },
       redirect: path => {
         expect(path).toMatch(/\/testgroup\/.+(-[0-9]+)$/);
       },

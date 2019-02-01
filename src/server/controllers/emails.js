@@ -1,7 +1,7 @@
 import config from 'config';
 import templates, { render } from '../../server/templates';
 import models from '../models';
-import { parseEmailAddress, capitalize } from '../lib/utils';
+import { isEmpty, extractNamesAndEmailsFromString, parseEmailAddress, capitalize } from '../lib/utils';
 import libemail from '../lib/email';
 import { createJwt } from '../lib/auth';
 import debugLib from 'debug';
@@ -118,7 +118,7 @@ export async function follow(senderEmail, group, PostId) {
       unsubscribe: { label: 'Unfollow this thread', data: { PostId } },
     };
     await libemail.sendTemplate('followThread', data, senderEmail);
-    return;
+    return `/${group.slug}/${post.slug}`;
   } else {
     // Follow group
     const data = {
@@ -126,7 +126,7 @@ export async function follow(senderEmail, group, PostId) {
       unsubscribe: { label: 'Unfollow this group', data: { GroupId: group.GroupId } },
     };
     await libemail.sendTemplate('followGroup', data, senderEmail);
-    return;
+    return `/${group.slug}`;
   }
 }
 export async function edit(senderEmail, GroupId, PostId, data) {
@@ -185,18 +185,49 @@ export async function edit(senderEmail, GroupId, PostId, data) {
 }
 
 export async function handleIncomingEmail(email) {
-  const parsedEmailAddress = parseEmailAddress(email.recipient || email.recipients);
+  const parsedEmailAddress = libemail.parseHeaders(email);
+
   debug('handleIncomingEmail: parsedEmailAddress', parsedEmailAddress);
-  const { groupSlug, ParentPostId, PostId, action } = parsedEmailAddress;
-  if (!groupSlug) {
-    throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email recipient ${email.recipient}`);
+  const { recipients, tags, groupSlug, action, ParentPostId, PostId } = parsedEmailAddress;
+  if (!groupSlug || !email.From) {
+    throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email object`);
   }
-  const group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
+
+  const userData = extractNamesAndEmailsFromString(email.From)[0];
+  const user = await models.User.findOrCreate(userData);
+  // if we didn't have the name of the user before (i.e. because added by someone else just by email),
+  // we add it
+  if (user.name === 'anonymous' && userData.name) {
+    user.setName(userData.name);
+  }
+
+  let group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
+
+  // If the group doesn't exist, we create it and add the recipients as admins and followers
+  if (!group) {
+    group = await user.createGroup({ slug: groupSlug, name: groupSlug, tags });
+    await group.addMembers(recipients, { role: 'ADMIN' });
+    await group.addFollowers(recipients);
+    const followers = await group.getFollowers();
+    await libemail.sendTemplate('groupCreated', { group, followers }, user.email);
+    // if the email is empty or is the default email, we don't create the post
+    if (email.subject === 'Create a new working group' || isEmpty(email.subject) || isEmpty(email['stripped-text'])) {
+      return `/${group.slug}`;
+    }
+  } else {
+    // If the group exists and if the email is empty,
+    if (isEmpty(email.subject) || isEmpty(email['stripped-text'])) {
+      // we add the sender and recipients as followers of the group
+      await group.addFollowers([...recipients, userData]);
+      // we send an update about the group info
+      const followers = await group.getFollowers();
+      const posts = await group.getPosts();
+      await libemail.sendTemplate('groupInfo', { group, followers, posts }, user.email);
+      return `/${group.slug}`;
+    }
+  }
 
   if (action) {
-    if (!group) {
-      throw new Error(`handleIncomingEmail> group ${groupSlug} not found`);
-    }
     const data = {};
     switch (action) {
       case 'follow':
@@ -212,7 +243,8 @@ export async function handleIncomingEmail(email) {
           data.name = email.subject;
           data.description = email['stripped-text'];
         }
-        return edit(email.sender, group.id, PostId || ParentPostId, data);
+        const editedPost = await edit(email.sender, group.id, PostId || ParentPostId, data);
+        return `/${group.slug}/${editedPost.slug}`;
     }
   }
 

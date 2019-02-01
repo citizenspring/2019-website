@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   User.prototype.generateShortCode = async function() {
-    const shortcode = Math.floor(Math.random() * 99999) + 10000;
+    const shortcode = Math.floor(Math.random() * 89999) + 10000;
     this.token = shortcode;
     return await this.save();
   };
@@ -147,7 +147,6 @@ module.exports = (sequelize, DataTypes) => {
       logging: console.log,
       where: { UserId: this.id, GroupId: group.id, role: 'ADMIN' },
     });
-    console.log('>>> isAdmin', membership, 'UserId', this.id, 'GroupId', group.id);
     return membership === 1;
   };
 
@@ -235,6 +234,11 @@ module.exports = (sequelize, DataTypes) => {
     return models.Member.destroy({
       where,
     });
+  };
+
+  User.findByEmail = emailAddr => {
+    if (!emailAddr) return;
+    return User.findOne({ where: { email: emailAddr.toLowerCase() } });
   };
 
   User.associate = m => {

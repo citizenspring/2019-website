@@ -297,7 +297,8 @@ libemail.send = async function(to, subject, text, html, options = {}) {
     debug('preview:', filepath);
   }
   if (!transport) {
-    console.warn('lib/email: please configure mailgun or run a local test mail server (see README).');
+    process.env.NODE_ENV !== 'test' &&
+      console.warn('lib/email: please configure mailgun or run a local test mail server (see README).');
     return;
   }
 

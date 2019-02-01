@@ -36,6 +36,7 @@ export const capitalize = str => {
  * @POST: [ {name, email}]
  */
 export const extractNamesAndEmailsFromString = str => {
+  if (!str) return [];
   const recipients = str.split(',').map(recipient => {
     const matches = recipient.match(/([^<]+)<([^@]+@[^\.]+\.[^>]+)>/);
     if (matches) {

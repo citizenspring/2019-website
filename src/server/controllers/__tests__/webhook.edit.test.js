@@ -10,6 +10,7 @@ import email1 from '../../mocks/mailgun.email1.json';
 
 const req = {
   body: {
+    From: 'First Sender <firstsender@gmail.com>',
     sender: 'firstsender@gmail.com',
     recipient: 'testgroup/edit@citizenspring.be',
     subject: 'new group name',
@@ -75,7 +76,6 @@ describe('webhook edit', () => {
       req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
       const posts = await models.Post.findAll();
-      inspectRows(posts, ['id', 'PostId', 'status', 'title']);
       expect(posts.length).toEqual(2);
       expect(posts[0].status).toEqual('PUBLISHED');
       expect(posts[1].status).toEqual('PENDING');

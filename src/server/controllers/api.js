@@ -2,7 +2,7 @@ import config from 'config';
 import { verifyJwt } from '../lib/auth';
 import { get } from 'lodash';
 import request from 'request-promise';
-import { pluralize, capitalize } from '../lib/utils';
+import { extractNamesAndEmailsFromString, pluralize, capitalize } from '../lib/utils';
 import models from '../models';
 import { db } from '../lib/jest';
 import { handleIncomingEmail } from './emails';
@@ -58,12 +58,17 @@ export async function publishEmail(req, res, next) {
       return res.send('Unknown error');
     }
   }
+
+  const userData = extractNamesAndEmailsFromString(email.From)[0];
+  const user = await models.User.findOrCreate(userData);
+
   try {
     redirect = await handleIncomingEmail(email);
     debug('publishEmail: redirecting to', redirect);
     return res.redirect(redirect);
   } catch (e) {
-    console.error('>>> handleIncomingEmail error', JSON.stringify(email), 'response:', JSON.stringify(e));
+    // console.error('>>> handleIncomingEmail error', JSON.stringify(email), 'response:', JSON.stringify(e));
+    throw e;
     return res.send(`Error: ${e.message}`);
   }
 }

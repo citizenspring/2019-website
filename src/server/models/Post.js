@@ -143,45 +143,17 @@ module.exports = (sequelize, DataTypes) => {
    *   - sender and all recipients (To, Cc) added as followers of the Post
    */
   Post.createFromEmail = async email => {
-    const { groupSlug, tags, recipients, action, ParentPostId, PostId } = libemail.parseHeaders(email);
+    const { groupSlug, recipients, ParentPostId } = libemail.parseHeaders(email);
     const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
-    const userData = extractNamesAndEmailsFromString(email.From)[0];
-    const user = await models.User.findOrCreate(userData);
-    // if we didn't have the name of the user before (i.e. because added by someone else just by email),
-    // we add it
-    if (user.name === 'anonymous' && userData.name) {
-      user.setName(userData.name);
-    }
-
-    let group = await models.Group.findBySlug(groupSlug);
-
-    // If the group doesn't exist, we create it and add the recipients as admins and followers
-    if (!group) {
-      group = await user.createGroup({ slug: groupSlug, name: groupSlug, tags });
-      await group.addMembers(recipients, { role: 'ADMIN' });
-      await group.addFollowers(recipients);
-      const followers = await group.getFollowers();
-      await libemail.sendTemplate('groupCreated', { group, followers }, user.email);
-      // if the email is empty or is the default email, we don't create the post
-      if (email.subject === 'Create a new working group' || isEmpty(email.subject) || isEmpty(email['stripped-text'])) {
-        return;
-      }
-    } else {
-      // If the group exists and if the email is empty,
-      if (isEmpty(email.subject) || isEmpty(email['stripped-text'])) {
-        // we add the sender and recipients as followers of the group
-        await group.addFollowers([...recipients, userData]);
-        // we send an update about the group info
-        const followers = await group.getFollowers();
-        const posts = await group.getPosts();
-        await libemail.sendTemplate('groupInfo', { group, followers, posts }, user.email);
-      }
-    }
 
     // if the content of the email is empty, we don't create any post
     if (isEmpty(email['stripped-text'])) {
       return;
     }
+
+    const userData = extractNamesAndEmailsFromString(email.From)[0];
+    const user = await models.User.findByEmail(userData.email);
+    const group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
 
     let parentPost;
     if (ParentPostId) {
@@ -221,9 +193,7 @@ module.exports = (sequelize, DataTypes) => {
       // if the group is of type announcements, only the admins can create new threads
       if (get(group, 'settings.type') === 'announcements') {
         const members = await models.Member.findAll({ where: { GroupId: group.id, role: 'ADMIN' } });
-        inspectRows(members);
         const isAdmin = await user.isAdmin(group);
-        console.log('>>> isAdmin', isAdmin);
         if (!isAdmin) {
           data = {
             subject: 'Cannot send email to group (must be an admin)',
