@@ -17,7 +17,7 @@ export const body = data => {
     <Layout data={data}>
       <p>
         You are now following the <a href={`${get(config, 'server.baseUrl')}/${groupSlug}`}>{groupSlug}</a> group of the
-        ${get(config, 'collective.name')} collective. All new emails sent to {groupSlug}@{get(config, 'server.domain')}{' '}
+        {get(config, 'collective.name')} collective. All new emails sent to {groupSlug}@{get(config, 'server.domain')}{' '}
         will now also be sent to you.
       </p>
       <p>

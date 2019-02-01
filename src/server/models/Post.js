@@ -306,9 +306,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
 
-  Post.prototype.getUrl = async function() {
+  /**
+   * Returns the full canonical url of this post
+   * if groupSlug is passed, it saves a query
+   */
+  Post.prototype.getUrl = async function(groupSlug) {
     if (!this.path) {
-      const group = await models.Group.findByPk(this.GroupId);
+      let group;
+      if (groupSlug) {
+        group = { slug: groupSlug };
+      } else {
+        group = await models.Group.findByPk(this.GroupId);
+      }
       if (this.ParentPostId) {
         const parentPost = await Post.findByPk(this.ParentPostId);
         this.path = `/${group.slug}/${parentPost.slug}`;

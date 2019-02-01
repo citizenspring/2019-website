@@ -6,6 +6,7 @@ import Oy from 'oy-vey';
 import * as shortcode from './shortcode.email.js';
 import * as confirmEmail from './confirmEmail.email.js';
 import * as confirmJoinGroup from './confirmJoinGroup.email.js';
+import * as confirmFollowThread from './confirmFollowThread.email.js';
 import * as followGroup from './followGroup.email.js';
 import * as followThread from './followThread.email.js';
 import * as groupCreated from './groupCreated.email.js';
@@ -22,6 +23,7 @@ const templates = {
   shortcode,
   confirmEmail,
   confirmJoinGroup,
+  confirmFollowThread,
   followGroup,
   followThread,
   threadCreated,

@@ -10,7 +10,7 @@ import { handleIncomingEmail } from './emails';
 import LRU from 'lru-cache';
 const cache = new LRU(50);
 
-async function handleFirstTimeUser(email, data) {
+async function handleFirstTimeUser(email, data, action) {
   if (!email['message-url']) {
     throw new Error('Invalid webhook payload: missing "message-url"');
   }
@@ -22,8 +22,17 @@ async function handleFirstTimeUser(email, data) {
   const token = createJwt('emailConfirmation', tokenData, '1h');
   data.confirmationUrl = `${config.server.baseUrl}/api/publishEmail?groupSlug=${data.groupSlug}&token=${token}`;
 
-  if (isEmpty(email['stripped-text'])) {
-    return await libemail.sendTemplate('confirmJoinGroup', data, email.sender);
+  if (isEmpty(email['stripped-text']) || ['join', 'follow'].includes(action)) {
+    if (!data.ParentPostId) {
+      return await libemail.sendTemplate('confirmJoinGroup', data, email.sender);
+    } else {
+      data.post = await models.Post.findOne({
+        attributes: ['slug', 'title'],
+        where: { PostId: data.ParentPostId, status: 'PUBLISHED' },
+      });
+      data.post.url = await data.post.getUrl(data.groupSlug);
+      return await libemail.sendTemplate('confirmFollowThread', data, email.sender);
+    }
   } else {
     data.post = {
       text: email['stripped-text'],
@@ -50,7 +59,7 @@ export default async function webhook(req, res, next) {
   if (email.recipient.indexOf(', ') !== -1) {
     email.recipient = email.recipient.split(', ')[0];
   }
-  const { groupSlug, ParentPostId, PostId, action } = parseEmailAddress(email.recipient);
+  const { groupSlug, ParentPostId, action } = parseEmailAddress(email.recipient);
   const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`.toLowerCase();
 
   // Ignore emails coming from ourselves (since we send emails to the group and cc recipients)
@@ -68,7 +77,8 @@ export default async function webhook(req, res, next) {
     data.action.label = `post my email to the ${groupSlug} group`;
   }
   if (['follow', 'join', 'subscribe'].includes(action)) {
-    if (PostId) {
+    if (ParentPostId) {
+      data.ParentPostId = ParentPostId;
       data.action.label = `${action} this thread`;
     } else {
       data.action.label = `${action} this group`;
@@ -82,7 +92,7 @@ export default async function webhook(req, res, next) {
   // the user will have to click the link provided in an email confirmation to publish their email to the group
   if (!user) {
     debug('user not found');
-    await handleFirstTimeUser(email, data);
+    await handleFirstTimeUser(email, data, action);
     return res.send('ok');
   }
 

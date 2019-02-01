@@ -105,12 +105,12 @@ export async function follow(senderEmail, group, PostId) {
   debug('follow group', group.slug, 'PostId:', PostId);
   if (PostId) {
     // Follow thread
-    await post.addFollowers([{ email: senderEmail }]);
-    const post = await models.Post.findByPk(PostId);
+    const post = await models.Post.findOne({ where: { PostId, status: 'PUBLISHED' } });
     if (!post) {
       console.error(`Can't follow PostId ${PostId}: post not found`);
       return;
     }
+    await post.addFollowers([{ email: senderEmail }]);
     const url = await post.getUrl();
     const data = {
       groupSlug: group.slug,
@@ -235,7 +235,7 @@ export async function handleIncomingEmail(email) {
       case 'follow':
       case 'join':
       case 'subscribe':
-        return follow(email.sender, group, PostId);
+        return follow(email.sender, group, ParentPostId);
       case 'edit':
         if (ParentPostId) {
           data.title = email.subject;

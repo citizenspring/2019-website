@@ -4,7 +4,7 @@ import Layout from './email.layout';
 import { get } from 'lodash';
 
 export const subject = ({ post }) => {
-  return `You are now following ${post.title}`;
+  return `You are now following the thread ${post.title}`;
 };
 
 export const previewText = ({ post }) => {
