@@ -122,6 +122,7 @@
     "subscriptions-transport-ws": "^0.9.15",
     "unified": "^7.1.0",
     "unified-stream": "^1.0.4",
+    "validator": "^10.11.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {

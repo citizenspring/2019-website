@@ -4,11 +4,12 @@ import {
   GraphQLInt,
   GraphQLString,
   GraphQLInputObjectType,
-  GraphQLNonNull
-} from "graphql";
+  GraphQLNonNull,
+  GraphQLFloat,
+} from 'graphql';
 
 const EmailType = new GraphQLScalarType({
-  name: "Email",
+  name: 'Email',
   serialize: value => {
     return value;
   },
@@ -17,9 +18,7 @@ const EmailType = new GraphQLScalarType({
   },
   parseLiteral: ast => {
     if (ast.kind !== Kind.STRING) {
-      throw new GraphQLError(
-        `Query error: Can only parse strings got a: ${ast.kind}`
-      );
+      throw new GraphQLError(`Query error: Can only parse strings got a: ${ast.kind}`);
     }
 
     // Regex taken from: http://stackoverflow.com/a/46181/761555
@@ -29,12 +28,12 @@ const EmailType = new GraphQLScalarType({
     }
 
     return ast.value;
-  }
+  },
 });
 
 export const UserInputType = new GraphQLInputObjectType({
-  name: "UserInputType",
-  description: "Input type for User",
+  name: 'UserInputType',
+  description: 'Input type for User',
   fields: () => ({
     firstName: { type: GraphQLString },
     lastName: { type: GraphQLString },
@@ -45,32 +44,47 @@ export const UserInputType = new GraphQLInputObjectType({
     facebook: { type: GraphQLString },
     website: { type: GraphQLString },
     zipcode: { type: GraphQLString },
-    country: { type: GraphQLString },
+    countryCode: { type: GraphQLString },
     gender: { type: GraphQLString },
     token: { type: GraphQLString },
     preferredLanguage: { type: GraphQLString },
-    languages: { type: new GraphQLList(GraphQLString) }
-  })
+    languages: { type: new GraphQLList(GraphQLString) },
+  }),
+});
+export const LocationInputType = new GraphQLInputObjectType({
+  name: 'LocationInputType',
+  description: 'Input type for Location',
+  fields: () => ({
+    name: { type: GraphQLString },
+    addressLine1: { type: GraphQLString },
+    addressLine2: { type: GraphQLString },
+    zipcode: { type: GraphQLString },
+    city: { type: GraphQLString },
+    countryCode: { type: GraphQLString },
+    lat: { type: GraphQLFloat },
+    long: { type: GraphQLFloat },
+  }),
 });
 
 export const GroupInputType = new GraphQLInputObjectType({
-  name: "GroupInputType",
-  description: "Input type for Group",
+  name: 'GroupInputType',
+  description: 'Input type for Group',
   fields: () => ({
     UserId: { type: GraphQLInt },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
-    color: { type: GraphQLString }
-  })
+    location: { type: LocationInputType },
+    color: { type: GraphQLString },
+  }),
 });
 
 export const PostInputType = new GraphQLInputObjectType({
-  name: "PostInputType",
-  description: "Input type for Post",
+  name: 'PostInputType',
+  description: 'Input type for Post',
   fields: () => ({
     id: { type: GraphQLInt },
     title: { type: GraphQLString },
     body: { type: GraphQLString },
-    color: { type: GraphQLString }
-  })
+    color: { type: GraphQLString },
+  }),
 });

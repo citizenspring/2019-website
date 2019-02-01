@@ -2,7 +2,7 @@
 
 import * as auth from '../lib/auth';
 import libemail from '../lib/email';
-import config from 'config';
+import { isISO31661Alpha2 } from 'validator';
 
 module.exports = (sequelize, DataTypes) => {
   const { models, Op } = sequelize;
@@ -43,7 +43,18 @@ module.exports = (sequelize, DataTypes) => {
       token: DataTypes.STRING,
       gender: DataTypes.STRING,
       zipcode: DataTypes.STRING,
-      country: DataTypes.STRING,
+      countryCode: {
+        type: DataTypes.STRING,
+        length: 2,
+        validate: {
+          len: 2,
+          isValidCountryCode(value) {
+            if (!isISO31661Alpha2(value)) {
+              throw new Error('Invalid Country Code.');
+            }
+          },
+        },
+      },
       website: DataTypes.STRING,
       twitter: DataTypes.STRING,
       facebook: DataTypes.STRING,

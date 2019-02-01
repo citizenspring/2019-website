@@ -5,6 +5,7 @@ import {
   GraphQLBoolean,
   GraphQLInterfaceType,
   GraphQLObjectType,
+  GraphQLFloat,
   GraphQLEnumType,
 } from 'graphql';
 import GraphQLJSON from 'graphql-type-json';
@@ -63,6 +64,21 @@ export const NodeInterfaceType = new GraphQLInterfaceType({
       id: { type: GraphQLInt },
     };
   },
+});
+
+export const LocationType = new GraphQLObjectType({
+  name: 'LocationType',
+  description: 'Type for Location',
+  fields: () => ({
+    name: { type: GraphQLString },
+    addressLine1: { type: GraphQLString },
+    addressLine2: { type: GraphQLString },
+    zipcode: { type: GraphQLString },
+    city: { type: GraphQLString },
+    countryCode: { type: GraphQLString },
+    lat: { type: GraphQLFloat },
+    long: { type: GraphQLFloat },
+  }),
 });
 
 export const UserType = new GraphQLObjectType({
@@ -157,10 +173,10 @@ export const UserType = new GraphQLObjectType({
           return user.zipcode;
         },
       },
-      country: {
+      countryCode: {
         type: GraphQLString,
         resolve(user) {
-          return user.country;
+          return user.countryCode;
         },
       },
       preferredLanguage: {
@@ -218,6 +234,7 @@ export const UserType = new GraphQLObjectType({
     };
   },
 });
+
 export const MemberType = new GraphQLObjectType({
   name: 'Member',
   description: 'This represents a Membership',
@@ -350,6 +367,10 @@ export const GroupType = new GraphQLObjectType({
         resolve(group) {
           return group.color;
         },
+      },
+      location: {
+        type: LocationType,
+        description: 'Name, address, lat, long of the location.',
       },
       settings: {
         type: GraphQLJSON,

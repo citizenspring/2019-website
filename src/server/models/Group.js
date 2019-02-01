@@ -4,6 +4,7 @@ import slugify from 'limax';
 import { get, omit } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('group');
+import { isISO31661Alpha2 } from 'validator';
 
 module.exports = (sequelize, DataTypes) => {
   const { models, Op } = sequelize;
@@ -63,10 +64,46 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       image: DataTypes.STRING,
       color: DataTypes.STRING,
+      geoLocationLatLong: DataTypes.GEOMETRY('POINT'),
+      locationName: DataTypes.STRING,
+      addressLine1: DataTypes.STRING,
+      addressLine2: DataTypes.STRING,
+      zipcode: DataTypes.STRING,
+      city: DataTypes.STRING,
+      countryCode: {
+        type: DataTypes.STRING,
+        length: 2,
+        validate: {
+          len: 2,
+          isValidCountryCode(value) {
+            if (!isISO31661Alpha2(value)) {
+              throw new Error('Invalid Country Code.');
+            }
+          },
+        },
+      },
+      startsAt: DataTypes.DATE,
+      endsAt: DataTypes.DATE,
       settings: DataTypes.JSON,
     },
     {
       paranoid: true,
+      getterMethods: {
+        location() {
+          return {
+            name: this.locationName,
+            addressLine1: this.addressLine1,
+            addressLine2: this.addressLine2,
+            zipcode: this.zipcode,
+            city: this.city,
+            countryCode: this.countryCode,
+            lat:
+              this.geoLocationLatLong && this.geoLocationLatLong.coordinates && this.geoLocationLatLong.coordinates[0],
+            long:
+              this.geoLocationLatLong && this.geoLocationLatLong.coordinates && this.geoLocationLatLong.coordinates[1],
+          };
+        },
+      },
       indexes: [
         {
           fields: ['slug', 'status'],
@@ -81,6 +118,21 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Group validation error: need to provide a slug or a name', group);
           }
           group.slug = group.slug || slugify(group.name);
+          const location = group.location;
+          if (location) {
+            group.locationName = location.name;
+            group.addressLine1 = location.addressLine1;
+            group.addressLine2 = location.addressLine2;
+            group.city = location.city;
+            group.countryCode = location.countryCode;
+            group.zipcode = location.zipcode;
+            if (location.lat) {
+              group.geoLocationLatLong = {
+                type: 'Point',
+                coordinates: [location.lat, location.long],
+              };
+            }
+          }
         },
         afterCreate: async group => {
           let action = 'CREATE';

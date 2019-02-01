@@ -22,7 +22,9 @@ if command -v psql > /dev/null; then
     echo "✓ $PG_DATABASE database exists"
   else
     echo "- creating $PG_DATABASE database";
-    createdb $PG_DATABASE
+    createdb $PG_DATABASE;
+    echo "- adding POSTGIS extension";
+    psql "${PG_DATABASE}" -c "CREATE EXTENSION IF NOT EXISTS POSTGIS;" 1> /dev/null
   fi
   echo "- running migration if any"
   npm run db:migrate:dev

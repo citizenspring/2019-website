@@ -1,6 +1,6 @@
 import models from '../';
 import { db } from '../../lib/jest';
-let user;
+let user, group;
 describe('group model', async () => {
   beforeAll(db.reset);
   beforeAll(async () => {
@@ -32,6 +32,28 @@ describe('group model', async () => {
     await newVersion.publish();
     expect(newVersion.status).toEqual('PUBLISHED');
   });
+
+  describe('location', () => {
+    it('fails if invalid country code', async () => {
+      try {
+        group = await user.createGroup({ slug: 'newgroup', countryCode: 'Belgium' });
+      } catch (e) {
+        expect(e.message).toEqual('Validation error: Invalid Country Code.');
+      }
+    });
+    it('works if valid country code', async () => {
+      try {
+        group = await user.createGroup({
+          slug: 'newgroup',
+          countryCode: 'BE',
+          geoLocationLatLong: { type: 'Point', coordinates: [50.845568, 4.357482] },
+        });
+      } catch (e) {
+        expect(e).toBeUndefined();
+      }
+    });
+  });
+
   describe('followers', async () => {
     let group;
     beforeAll(async () => {

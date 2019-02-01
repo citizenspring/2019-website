@@ -13,14 +13,17 @@ export const db = {
       console.log(`> ${config.server.database.database} db reset`);
       return true;
     } catch (e) {
+      console.error(e);
       console.log(`lib/jest.js> cannot reset ${config.server.database.database} db in ${process.env.NODE_ENV} env.`, e);
-      process.exit(0);
+      // process.exit(0);
     }
   },
   close: async () => {
-    console.log(`> dropping ${config.server.database.database}`);
     await sequelize.close();
-    execSync(`dropdb ${config.server.database.database}`);
+    if (!process.env.PG_DATABASE) {
+      console.log(`> dropping ${config.server.database.database}`);
+      execSync(`dropdb ${config.server.database.database}`);
+    }
   },
 };
 

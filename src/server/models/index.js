@@ -11,10 +11,15 @@ import debug from 'debug';
 const config = server.database;
 
 if (['circleci', 'test', 'development'].includes(process.env.NODE_ENV)) {
-  const dbname = process.env.PG_DATABASE || `citizenspring-test-${Math.round(Math.random() * 1000000)}`;
+  let dbname = process.env.PG_DATABASE;
+  if (!dbname) {
+    dbname = `citizenspring-test-${Math.round(Math.random() * 1000)}`;
+    console.log('> creating db', dbname);
+    execSync(`createdb ${dbname} || true`);
+    console.log('> adding postgis extension', dbname);
+    execSync(`psql "${dbname}" -c "CREATE EXTENSION IF NOT EXISTS POSTGIS;" 1> /dev/null`);
+  }
   config.database = dbname;
-  console.log('> creating db', dbname);
-  execSync(`createdb ${dbname} || true`);
 }
 
 // this is needed to prevent sequelize from converting integers to strings, when model definition isn't clear

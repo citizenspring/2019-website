@@ -12,11 +12,15 @@ ROOT="$( dirname "$(readlink "$0/..")" )"
 NODEBIN=${ROOT}/node_modules/.bin
 PATH=${PATH}:$NODEBIN
 
-if [ -f .env ]; then
-  echo "- loading .env"
-  export $(egrep -v '^#' .env | xargs)
-  echo $PD_DATABASE
-fi
+
+# if [ -f .env ]; then
+#   echo "- loading .env"
+#   export $(egrep -v '^#' .env | xargs)
+#   echo $PG_DATABASE
+# fi
+
+echo "PG_USERNAME=$PG_USERNAME";
+echo "PG_DATABASE=$PG_DATABASE";
 
 # Environment
 SQLENV=${SEQUELIZE_ENV:=${NODE_ENV:=development}}
@@ -24,7 +28,7 @@ SQLENV=${SEQUELIZE_ENV:=${NODE_ENV:=development}}
 # Parameters & Command
 SEQUELIZE_CONFIG="--models-path src/server/models/ --migrations-path src/server/migrations/ --config config/sequelize_cli.json"
 LOCAL_DB_URL="--url postgres://${PG_USERNAME:=}@${PG_HOST:=localhost}:${PG_PORT:=5432}/${PG_DATABASE:=opencollective-email}"
-[ -n "$LOCAL" ] && SEQUELIZE_CONFIG="${SEQUELIZE_CONFIG} ${LOCAL_DB_URL}"
+[ -n "$PG_USERNAME" ] && SEQUELIZE_CONFIG="${SEQUELIZE_CONFIG} ${LOCAL_DB_URL}"
 COMMAND="babel-node $NODEBIN/sequelize ${SEQUELIZE_CONFIG} $@"
 
 # Variables exported for the exec
