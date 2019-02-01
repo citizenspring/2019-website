@@ -60,14 +60,15 @@ nextApp.prepare().then(() => {
     if (err) {
       throw err;
     }
+    const host = process.env.NOW_URL || 'localhost';
     logger.info(`> NODE_ENV: ${process.env.NODE_ENV} - DEBUG: ${process.env.DEBUG}`);
     logger.info(
       `> Connecting to pgsql://${config.server.database.options.host}:${config.server.database.port || 5432}/${
         config.server.database.database
       }`,
     );
-    logger.info(`> GraphQL server ready on http://localhost:${port}/graphql/v1`);
-    logger.info(`> Web server ready on http://localhost:${port}`);
+    logger.info(`> GraphQL server ready on http://${host}:${port}/graphql/v1`);
+    logger.info(`> Web server ready on http://${host}:${port}`);
   });
 });
 
