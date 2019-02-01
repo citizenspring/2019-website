@@ -4,6 +4,8 @@ import models from '../models';
 import { parseEmailAddress, capitalize } from '../lib/utils';
 import libemail from '../lib/email';
 import { createJwt } from '../lib/auth';
+import debugLib from 'debug';
+const debug = debugLib('email');
 
 const defaultData = {
   post: {
@@ -100,6 +102,7 @@ export async function follow(email, group, PostId) {
     console.error(`follow> error: group undefined`);
     return;
   }
+  debug('follow group', group.slug, 'PostId:', PostId);
   if (PostId) {
     // Follow thread
     const post = await models.Post.findByPk(PostId);
@@ -182,7 +185,9 @@ export async function edit(senderEmail, GroupId, PostId, data) {
 }
 
 export async function handleIncomingEmail(email) {
-  const { groupSlug, ParentPostId, PostId, action } = parseEmailAddress(email.recipient || email.recipients);
+  const parsedEmailAddress = parseEmailAddress(email.recipient || email.recipients);
+  debug('handleIncomingEmail: parsedEmailAddress', parsedEmailAddress);
+  const { groupSlug, ParentPostId, PostId, action } = parsedEmailAddress;
   if (!groupSlug) {
     throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email recipient ${email.recipient}`);
   }

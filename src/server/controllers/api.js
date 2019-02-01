@@ -6,8 +6,16 @@ import { pluralize, capitalize } from '../lib/utils';
 import models from '../models';
 import { db } from '../lib/jest';
 import { handleIncomingEmail } from './emails';
+import mockedData from '../mocks/mailgun.email3.retrieved.json';
+import debugLib from 'debug';
+const debug = debugLib('api');
 
 export const retrieveEmail = async ({ mailServer, messageId }) => {
+  if (process.env.NODE_ENV === 'test') {
+    console.log('>>> api.retrieveEmail> test environment, returning mocked data');
+    return mockedData;
+  }
+  debug('retrieveEmail', mailServer, messageId);
   const requestOptions = {
     json: true,
     auth: {
@@ -16,7 +24,9 @@ export const retrieveEmail = async ({ mailServer, messageId }) => {
     },
   };
   const url = `https://${mailServer}.api.mailgun.net/v3/domains/${get(config, 'server.domain')}/messages/${messageId}`;
-  return await request.get(url, requestOptions);
+  const email = await request.get(url, requestOptions);
+  debug('retrieveEmail', 'email retrieved', JSON.stringify(email));
+  return email;
 };
 
 /**
@@ -49,7 +59,7 @@ export async function publishEmail(req, res, next) {
     }
   }
   const redirect = await handleIncomingEmail(email);
-
+  debug('publishEmail: redirecting to', redirect);
   return res.redirect(redirect);
 }
 
