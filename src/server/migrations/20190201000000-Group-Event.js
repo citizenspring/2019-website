@@ -4,7 +4,8 @@ module.exports = {
   up: function(queryInterface, Sequelize) {
     return queryInterface.sequelize
       .query('CREATE EXTENSION IF NOT EXISTS postgis;')
-      .then(() => queryInterface.changeColumn('Users', 'country', 'countryCode', { type: Sequelize.STRING(2) }))
+      .then(() => queryInterface.renameColumn('Users', 'country', 'countryCode'))
+      .then(() => queryInterface.changeColumn('Users', 'countryCode', { type: Sequelize.STRING(2) }))
       .then(() => queryInterface.addColumn('Groups', 'geoLocationLatLong', { type: Sequelize.GEOMETRY('POINT') }))
       .then(() => queryInterface.addColumn('Groups', 'locationName', { type: Sequelize.STRING }))
       .then(() => queryInterface.addColumn('Groups', 'addressLine1', { type: Sequelize.STRING }))
@@ -27,7 +28,8 @@ module.exports = {
       .then(() => queryInterface.removeColumn('Groups', 'countryCode'))
       .then(() => queryInterface.removeColumn('Groups', 'startsAt'))
       .then(() => queryInterface.removeColumn('Groups', 'endsAt'))
-      .then(() => queryInterface.changeColumn('Users', 'countryCode', 'country', { type: Sequelize.STRING }))
+      .then(() => queryInterface.changeColumn('Users', 'countryCode', { type: Sequelize.STRING }))
+      .then(() => queryInterface.renameColumn('Users', 'countryCode', 'country'))
       .then(() => queryInterface.sequelize.query('DROP EXTENSION postgis;'));
   },
 };
