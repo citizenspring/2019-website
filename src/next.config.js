@@ -20,6 +20,8 @@ const nextConfig = {
   publicRuntimeConfig: {
     // Will be available on both server and client
     DOMAIN: server.domain,
+    BASE_URL: server.baseUrl,
+    GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
     GRAPHQL_URL: `${process.env.NOW_URL || server.baseUrl}/graphql/v1`,
   },
   webpack: config => {

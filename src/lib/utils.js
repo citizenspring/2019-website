@@ -30,3 +30,5 @@ export const keepAnchorsShort = (html, maxLength = 40) => {
     return match;
   });
 };
+
+export const getEnvVar = v => (process.browser ? get(window, ['__NEXT_DATA__', 'env', v]) : get(process, ['env', v]));
