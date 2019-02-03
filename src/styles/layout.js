@@ -26,3 +26,8 @@ export const Description = styled.p`
   font-size: 1.6rem;
   color: #555;
 `;
+
+export const PullQuote = styled.p`
+  font-size: 2rem;
+  font-style: italic;
+`;
