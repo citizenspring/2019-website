@@ -18,7 +18,9 @@ class Map extends React.Component {
   }
 
   getApiKey() {
-    return getEnvVar('GOOGLE_MAPS_API_KEY');
+    const api_key = getEnvVar('GOOGLE_MAPS_API_KEY');
+    console.log('>>> api_key', api_key);
+    return api_key;
   }
 
   render() {
