@@ -3,9 +3,8 @@ import nextRoutes from 'next-routes';
 const pages = nextRoutes();
 
 pages
-  .add('faq')
-  .add('contribute')
   .add('create')
+  .add('groups')
   .add('group', '/:groupSlug')
   .add('thread', '/:groupSlug/:threadSlug')
   .add('index', '/');

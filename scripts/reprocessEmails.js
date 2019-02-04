@@ -23,7 +23,7 @@ const run = async () => {
       'saving:',
       Math.round(((p.html.length - html.length) / p.html.length) * 100) + '%',
     );
-    if (p.html.length < html.length) {
+    if (p.html.length !== html.length) {
       console.log('>>> p.email', p.email['stripped-html']);
       console.log('>>> html', html);
       console.log('------------------------');

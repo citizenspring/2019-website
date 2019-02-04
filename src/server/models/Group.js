@@ -245,13 +245,12 @@ module.exports = (sequelize, DataTypes) => {
     return this.addMembers(recipients, { role: 'FOLLOWER' });
   };
 
-  Group.associate = function(m) {
-    // group.getFollowers();
-    Group.belongsToMany(m.User, {
-      through: { model: m.Member, unique: false, scope: { role: 'FOLLOWER' } },
-      as: 'followers',
-      foreignKey: 'GroupId',
+  Group.prototype.getFollowers = async function() {
+    const memberships = await models.Member.findAll({
+      where: { GroupId: this.GroupId, role: 'FOLLOWER' },
+      include: [{ model: models.User, as: 'user' }],
     });
+    return memberships.map(m => m.user);
   };
 
   return Group;
