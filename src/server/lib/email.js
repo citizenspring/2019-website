@@ -99,7 +99,9 @@ libemail.getHTML = function(email) {
 
   // Microsoft Word (yes, seriously)
   if (html.indexOf('urn:schemas-microsoft-com:office:word') !== -1) {
-    html = html.substr(html.lastIndexOf('</xml>') + 6);
+    html = html.substr(html.lastIndexOf('<![endif]-->') + 12);
+    html = html.replace(/<o:p>([^<]*)<\/o:p>/gm, '<span>$1</span>');
+    return html;
   }
 
   // convert <div><br></div> from gmail to new paragraphs
