@@ -7,7 +7,7 @@ import Links from './Links';
 
 class Footer extends Component {
   static propTypes = {
-    group: PropTypes.nodeType('Group').isRequired,
+    group: PropTypes.nodeType('Group'),
     post: PropTypes.nodeType('Post'),
   };
 

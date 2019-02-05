@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from '../Link';
-import StyledLink from '../StyledLink';
 import { LinksWrapper } from './Styles';
 import LinkItem from './LinkItem';
 import env from '../../env.frontend';
 import settings from '../../../settings.json';
 import { get } from 'lodash';
 
-export default function Howto({ groupSlug, PostId }) {
+export default function FooterLinks({ groupSlug, PostId }) {
   const threadEmail = `${groupSlug}/${PostId}@${env.DOMAIN}`;
   const groupEmail = `${groupSlug}@${env.DOMAIN}`;
   return (
@@ -24,8 +23,8 @@ export default function Howto({ groupSlug, PostId }) {
         </LinkItem>
       )}
 
-      {get(settings, 'home.buttons', []).map(button => (
-        <LinkItem>
+      {get(settings, 'home.buttons', []).map((button, key) => (
+        <LinkItem key={key}>
           <Link href={button.url} color="black">
             {button.label}
           </Link>
@@ -35,7 +34,7 @@ export default function Howto({ groupSlug, PostId }) {
   );
 }
 
-Howto.propTypes = {
-  groupSlug: PropTypes.string.isRequired,
+FooterLinks.propTypes = {
+  groupSlug: PropTypes.string,
   PostId: PropTypes.number,
 };

@@ -92,8 +92,9 @@ libemail.getHTML = function(email) {
   if (html.indexOf('<!--StartFragment-->') !== -1) {
     html = html
       .substr(html.indexOf('<!--StartFragment-->') + 20)
-      .replace(/<(\/?(span|p|b|i|o:p))[^>]*>/g, '<$1>')
+      .replace(/<((span|p|b|i|o:p))[^>]*>/g, '<$1>')
       .replace(/<\/?(o:p|span)>/g, '')
+      .replace(/<\/?b>\s?(<\/?b>\s?)+/g, '')
       .replace(/<!--[^>]+-->/g, '');
   }
 
