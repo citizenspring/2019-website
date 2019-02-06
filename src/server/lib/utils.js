@@ -70,7 +70,7 @@ export const parseEmailAddress = emailAddress => {
 
   const parts = inbox.split('/');
   const parsed = {
-    groupSlug: get(parts, '[0]'),
+    groupSlug: get(parts, '[0]', '').toLowerCase(),
     tags: emailTokens[3] ? emailTokens[3].toLowerCase().split('+') : [],
   };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withIntl from '../lib/withIntl';
+import { get } from 'lodash';
 
 import Group from '../containers/GroupPage';
 
@@ -10,7 +11,7 @@ class GroupPage extends React.Component {
       res.setHeader('Cache-Control', 's-maxage=300');
     }
 
-    return { groupSlug: query && query.groupSlug, query };
+    return { groupSlug: get(query, 'groupSlug'), eventSlug: get(query, 'eventSlug'), query };
   }
 
   static propTypes = {
@@ -27,7 +28,12 @@ class GroupPage extends React.Component {
   async componentDidMount() {}
 
   render() {
-    return <Group groupSlug={this.props.groupSlug} />;
+    const { groupSlug, eventSlug } = this.props;
+    let slug = groupSlug;
+    if (eventSlug) {
+      slug += '/events/' + eventSlug;
+    }
+    return <Group groupSlug={slug} />;
   }
 }
 

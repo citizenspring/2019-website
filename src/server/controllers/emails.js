@@ -232,7 +232,7 @@ export async function submit(senderEmail, group, text) {
     templates.map(t => {
       promises.push(
         user.createPost({
-          ...omit(t.dataValues, ['id']),
+          ...omit(t.dataValues, ['id', 'createdAt', 'UserId']),
           GroupId: newGroup.GroupId,
         }),
       );

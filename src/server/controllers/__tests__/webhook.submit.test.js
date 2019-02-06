@@ -12,7 +12,8 @@ const req = {
     sender: 'firstsender@gmail.com',
     recipient: 'registrations/submit@citizenspring.be',
     subject: 'follow group name',
-    'stripped-text': `Just send this email to register
+    'stripped-text': 'Just send this email to register',
+    'body-plain': `Just send this email to register
 
 ---
 slug: newgroup
