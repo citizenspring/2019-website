@@ -36,7 +36,22 @@ const Wrapper = styled.div`
 export default function EditableText({ mailto, html, children }) {
   return (
     <Wrapper>
-      {html && <div dangerouslySetInnerHTML={{ __html: autolinker.link(html) }} />}
+      {html && (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: autolinker.link(html, {
+              truncate: 30,
+              replaceFn: match => {
+                if (match.getType() === 'email') return true;
+                // it looks like there is a bug to process already linked facebook urls:
+                // e.g. <a href=https://www.facebook.com/hashtag/muntcentrum?epa=HASHTAG>#Muntcentrum</a>
+                const post = html.substr(match.offset + match.getAnchorText().length);
+                if (post.match(/^\?[^>]+>/)) return false;
+              },
+            }),
+          }}
+        />
+      )}
       {children && <div>{children}</div>}
       <a href={mailto} className="edit">
         ✏️

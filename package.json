@@ -123,6 +123,7 @@
     "remark-toc": "^5.1.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
+    "sanitize-html": "^1.20.0",
     "semantic-ui-react": "^0.84.0",
     "sequelize": "^4.42.0",
     "sequelize-cli": "^5.4.0",

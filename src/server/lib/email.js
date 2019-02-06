@@ -8,7 +8,7 @@ import { createJwt } from '../lib/auth';
 import path from 'path';
 import fs from 'fs';
 import models from '../models';
-
+import sanitizeHtml from 'sanitize-html';
 import { render } from '../templates';
 import unified from 'unified';
 import markdown from 'remark-parse';
@@ -129,6 +129,14 @@ libemail.getHTML = function(email) {
   // remove already linked urls (as they will be relinked with the markdown processor)
   html = html.replace(/<a[\s][^>]*href="([^"]+)"[^>]+>\1<\/a>/gm, '$1');
 
+  // we remove the <a data-*> from copy pastes from facebook
+  html = sanitizeHtml(html, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
+    allowedAttributes: {
+      a: ['href', 'name', 'target'],
+      img: ['src'],
+    },
+  });
   html = processor.processSync(html).toString();
 
   // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail
