@@ -17,7 +17,7 @@ ${email && quoteEmail(email)}
 export const body = withIntl(data => {
   return (
     <Layout data={data}>
-      <p>{data.body}</p>
+      <div dangerouslySetInnerHTML={{ __html: data.body }} />
       {data.email && quoteEmail(data.email, 'html')}
     </Layout>
   );

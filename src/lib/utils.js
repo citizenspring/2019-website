@@ -11,17 +11,22 @@ export const requireAttributes = (obj, attributes, getErrorMsg) => {
 
 /**
  * Generate the mailto value for href
+ * Respects RFC https://tools.ietf.org/html/rfc6068#section-6.1
  * @param {*} to
  * @param {*} subject
  * @param {*} body
  */
 export const mailto = (to, action, subject = '', body = '') => {
+  const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
   // let email = to.indexOf('@') === -1 ? `${to}@${domain}` : to;
   let email = to;
   if (action) {
     email = email.replace('@', `/${action}@`);
   }
-  const encodedBody = encodeURIComponent(body).replace(/%0A/g, '%0D%0A');
+  let encodedBody = encodeURIComponent(body).replace(/%0A/g, '%0D%0A'); // proper RFC recommendation but ignored by gmail on iOS
+  if (iOS) {
+    encodedBody = encodedBody.replace(/%20%20/g, '%26nbsp%3B%26nbsp%3B'); // iOS Mail App considers the body as HTML
+  }
   return `mailto:${email.replace('/', '%2F')}?subject=${encodeURIComponent(subject)}&body=${encodedBody}`;
 };
 

@@ -21,13 +21,10 @@ class CreateGroupPage extends React.Component {
 
   onSubmit(form) {
     const yamlString = yaml.safeDump(form);
-    console.log('>>> onSubmit', form);
-    console.log('>>> yamlString', yamlString);
-    const body = `Just send this email to register without modification\n\n---\n${yamlString}---\n`;
+    const body = `Just send this email to register\n\n---\n${yamlString}---\n`;
     const a = document.createElement('a');
     a.href = mailto('registrations@citizenspring.be', 'submit', form.name, body);
     console.log('>>> email body', body);
-    console.log('>>> a.href', a.href);
     a.click();
   }
 

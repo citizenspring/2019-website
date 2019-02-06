@@ -152,6 +152,7 @@ class CreateGroupPage extends React.Component {
       onChange: event => this.onChange(fieldname, event.target.value),
       type: 'text',
       width: 1,
+      px: [1, 2, 3],
     };
   }
 
@@ -164,7 +165,7 @@ class CreateGroupPage extends React.Component {
           <Title>
             <FormattedMessage id="createGroup.title" defaultMessage="Register your Citizen Initiative" />
           </Title>
-          <Box px={[1, 2, 2]} width={[1, 1 / 2, 1 / 3]}>
+          <Box px={[1, 2, 2]}>
             <Box as="form" m={[0, 2, 2]} onSubmit={this.onSubmit} method="POST">
               <Box mb={3}>
                 <StyledInputField label="Name of your collective" htmlFor="name" error={this.getFieldError('name')}>

@@ -2,9 +2,14 @@ import styled from 'styled-components';
 import { Box } from '@rebass/grid';
 import { H1 } from '../components/Text';
 
+const MaxWidth = styled.div`
+  max-width: 900px;
+  margin: 0 auto;
+`;
+
 export const Content = children => (
   <Box py={3} px={[2, 3, 3]}>
-    {children.children}
+    <MaxWidth>{children.children}</MaxWidth>
   </Box>
 );
 
