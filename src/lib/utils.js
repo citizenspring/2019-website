@@ -17,7 +17,7 @@ export const requireAttributes = (obj, attributes, getErrorMsg) => {
  * @param {*} body
  */
 export const mailto = (to, action, subject = '', body = '') => {
-  const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+  const iOS = process.browser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
   // let email = to.indexOf('@') === -1 ? `${to}@${domain}` : to;
   let email = to;
   if (action) {
