@@ -21,6 +21,8 @@ PATH=${PATH}:$NODEBIN
 
 echo "PG_USERNAME=$PG_USERNAME";
 echo "PG_DATABASE=$PG_DATABASE";
+echo "NOW=$NOW";
+echo "NODE_ENV=$NODE_ENV";
 
 # Environment
 SQLENV=${SEQUELIZE_ENV:=${NODE_ENV:=development}}
@@ -28,7 +30,7 @@ SQLENV=${SEQUELIZE_ENV:=${NODE_ENV:=development}}
 # Parameters & Command
 SEQUELIZE_CONFIG="--models-path src/server/models/ --migrations-path src/server/migrations/ --config config/sequelize_cli.json"
 LOCAL_DB_URL="--url postgres://${PG_USERNAME:=}@${PG_HOST:=localhost}:${PG_PORT:=5432}/${PG_DATABASE:=opencollective-email}"
-[ -n "$PG_USERNAME" ] && SEQUELIZE_CONFIG="${SEQUELIZE_CONFIG} ${LOCAL_DB_URL}"
+[ -z "$NOW" ] && SEQUELIZE_CONFIG="${SEQUELIZE_CONFIG} ${LOCAL_DB_URL}"
 COMMAND="babel-node $NODEBIN/sequelize ${SEQUELIZE_CONFIG} $@"
 
 # Variables exported for the exec
