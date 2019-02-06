@@ -13,9 +13,144 @@ export default class MyDocument extends Document {
         <Head>
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, user-scalable=no" />
-          <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,900|Rubik" />
+          <link rel="stylesheet" href="/static/styles/geosuggest.css" />
+          <link rel="stylesheet" href="/static/styles/react-tags.css" />
           <style>{`
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 100;
+              src: url("/static/fonts/Inter-Thin.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Thin.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 100;
+              src: url("/static/fonts/Inter-ThinItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-ThinItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 200;
+              src: url("/static/fonts/Inter-ExtraLight.woff2") format("woff2"),
+                  url("/static/fonts/Inter-ExtraLight.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 200;
+              src: url("/static/fonts/Inter-ExtraLightItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-ExtraLightItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 300;
+              src: url("/static/fonts/Inter-Light.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Light.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 300;
+              src: url("/static/fonts/Inter-LightItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-LightItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 400;
+              src: url("/static/fonts/Inter-Regular.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Regular.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 400;
+              src: url("/static/fonts/Inter-Italic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Italic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 500;
+              src: url("/static/fonts/Inter-Medium.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Medium.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 500;
+              src: url("/static/fonts/Inter-MediumItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-MediumItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 600;
+              src: url("/static/fonts/Inter-SemiBold.woff2") format("woff2"),
+                  url("/static/fonts/Inter-SemiBold.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 600;
+              src: url("/static/fonts/Inter-SemiBoldItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-SemiBoldItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 700;
+              src: url("/static/fonts/Inter-Bold.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Bold.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 700;
+              src: url("/static/fonts/Inter-BoldItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-BoldItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 800;
+              src: url("/static/fonts/Inter-ExtraBold.woff2") format("woff2"),
+                  url("/static/fonts/Inter-ExtraBold.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 800;
+              src: url("/static/fonts/Inter-ExtraBoldItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-ExtraBoldItalic.woff") format("woff");
+            }
+
+            @font-face {
+              font-family: Inter;
+              font-style:  normal;
+              font-weight: 900;
+              src: url("/static/fonts/Inter-Black.woff2") format("woff2"),
+                  url("/static/fonts/Inter-Black.woff") format("woff");
+            }
+            @font-face {
+              font-family: Inter;
+              font-style:  italic;
+              font-weight: 900;
+              src: url("/static/fonts/Inter-BlackItalic.woff2") format("woff2"),
+                  url("/static/fonts/Inter-BlackItalic.woff") format("woff");
+            }
+
             html {
               font-size: 62.5%;
               height: 100%;
@@ -43,7 +178,7 @@ export default class MyDocument extends Document {
             }
                       
             body {
-              font-family: "Inter UI", sans-serif;
+              font-family: Inter, sans-serif;
               font-size: 1.4rem;
               height: 100%;
               margin: 0;

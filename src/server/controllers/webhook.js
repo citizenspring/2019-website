@@ -1,5 +1,5 @@
 import libemail from '../lib/email';
-import { parseEmailAddress, extractEmailsFromString, isEmpty } from '../lib/utils';
+import { parseEmailAddress, extractEmailsFromString, extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
 import { createJwt } from '../lib/auth';
 import models from '../models';
 import config from 'config';
@@ -54,6 +54,21 @@ export default async function webhook(req, res, next) {
   cache.set(email['Message-Id'], true);
   debug('receiving email from:', email.sender, 'to:', email.recipient, 'subject:', email.subject);
 
+  // If there is an attachment, we respond with an error (TODO: support attachments)
+  // if (email.attachments) {
+  //   await libemail.sendTemplate(
+  //     'error',
+  //     {
+  //       subject: `Your email couldn't be sent`,
+  //       body: `We don't support attachments yet. Can you send again your email without images or documents? You can post a link to them instead.`,
+  //       email,
+  //     },
+  //     user.email,
+  //   );
+  //   console.error(e);
+  //   return res.send('ok');
+  // }
+
   // when replying from gmail to "testgroup@citizenspring.be" <testgroup/28/29@citizenspring.be>,
   // the email.recipient becomes testgroup/28/29@citizenspring.be, testgroup@citizenspring.be
   if (email.recipient.indexOf(', ') !== -1) {
@@ -84,9 +99,13 @@ export default async function webhook(req, res, next) {
       data.action.label = `${action} this group`;
     }
   }
-
-  // Look if sender already has an account
-  const user = await models.User.findByEmail(email.sender);
+  let user;
+  if (action === 'submit') {
+    user = await models.User.findOrCreate(extractNamesAndEmailsFromString(email.From)[0]);
+  } else {
+    // Look if sender already has an account: TODO we might want to check that the user also is a member of the group
+    user = await models.User.findByEmail(email.sender);
+  }
 
   // If no, we send a confirmation email before creating / publishing an account
   // the user will have to click the link provided in an email confirmation to publish their email to the group

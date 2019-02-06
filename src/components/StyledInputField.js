@@ -6,11 +6,16 @@ import { P, Span } from './Text';
 /**
  * Form field to display an input element with a label and errors. Uses [renderProps](https://reactjs.org/docs/render-props.html#using-props-other-than-render) to pass field props like 'name' and 'id' to child input.
  */
-const StyledInputField = ({ children, label, htmlFor, error, success, disabled, ...props }) => (
+const StyledInputField = ({ children, label, description, htmlFor, error, success, disabled, ...props }) => (
   <Box {...props}>
     {label && (
-      <P as="label" htmlFor={htmlFor} display="block" color="black.500" mb={1}>
+      <P as="label" htmlFor={htmlFor} display="block" color="black.700" mb={1} fontSize={'1.6rem'}>
         {label}
+      </P>
+    )}
+    {description && (
+      <P as="div" htmlFor={htmlFor} display="block" color="black.500" fontSize={'1.4rem'} mb={1} mt={-1}>
+        {description}
       </P>
     )}
     {children({ name: htmlFor, id: htmlFor, error: Boolean(error) || undefined, success, disabled })}
@@ -33,6 +38,7 @@ StyledInputField.propTypes = {
   htmlFor: PropTypes.string,
   /** text to display above the input */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  description: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   /** Show success state for field */
   success: PropTypes.bool,
   /** All props from `Box` */

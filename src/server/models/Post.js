@@ -81,9 +81,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       uuid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
       EmailMessageId: DataTypes.STRING,
+      type: {
+        type: DataTypes.STRING, // POST, EVENT
+        defaultValue: 'POST',
+      },
       title: DataTypes.STRING,
       html: DataTypes.TEXT,
       text: DataTypes.TEXT,
+      tags: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+      },
       email: DataTypes.JSON,
     },
     {

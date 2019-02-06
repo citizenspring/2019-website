@@ -1,19 +1,20 @@
 import styled from 'styled-components';
+import { Box } from '@rebass/grid';
+import { H1 } from '../components/Text';
 
-export const Content = styled.div`
-  max-width: 1000px;
-  width: 100%;
-  padding: 2rem 1rem;
-  margin: 0 auto;
-  font-size: 1.6rem;
-`;
+export const Content = children => (
+  <Box py={3} px={[2, 3, 3]}>
+    {children.children}
+  </Box>
+);
 
-export const Title = styled.h1`
-  font-size: 2.8rem;
-  margin-right: 1rem;
-  margin-top: 4rem;
-  padding-top: 3rem;
-`;
+export const Title = children => {
+  return (
+    <Box mr={2} mt={[2, 3, 3]} mb={[3, 3, 4]} pt={[1, 2, 4]}>
+      <H1 fontSize={'3rem'}>{children.children}</H1>
+    </Box>
+  );
+};
 
 export const Subtitle = styled.h1`
   font-size: 2rem;

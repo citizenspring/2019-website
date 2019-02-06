@@ -19,186 +19,374 @@ import StyledInput from '../components/StyledInput';
 import StyledTextarea from '../components/StyledTextarea';
 import StyledButton from '../components/StyledButton';
 import StyledCard from '../components/StyledCard';
-import { mailto } from '../lib/utils';
-import env from '../env.frontend';
+import StyledCheckbox from '../components/StyledCheckbox';
 import InputTypeLocation from '../components/InputTypeLocation';
-
+import InputTypeTags from '../components/InputTypeTags';
+import env from '../env.frontend';
 import { FormattedMessage, defineMessages } from 'react-intl';
+import slug from 'slug';
 
 const timeOptions = [];
 for (let i = 8; i < 24; i++) {
   timeOptions.push(`${i}h`);
 }
 
-const enhance = compose(
-  withState('state', 'setState', ({ errors }) => ({ errors, tab: 'personal' })),
-  withHandlers({
-    timeOptions,
-    getFieldError: ({ state, errors }) => name => (errors && errors[name]) || state.errors[name],
-    onChange: ({ setState }) => ({ target }) =>
-      setState(state => ({
-        ...state,
-        [target.name]: target.value,
-        errors: { ...state.errors, [target.name]: null },
-      })),
-    onInvalid: ({ setState }) => event => {
-      event.persist();
-      event.preventDefault();
-      setState(state => ({
-        ...state,
-        errors: { ...state.errors, [event.target.name]: event.target.validationMessage },
-      }));
-    },
-  }),
-  // follows composition of onChange && onInvalid to access them from props
-  withHandlers({
-    getFieldProps: ({ state, onChange, onInvalid }) => name => ({
-      defaultValue: state[name] || '',
+class CreateGroupPage extends React.Component {
+  static propTypes = {
+    /** a map of errors to the matching field name, i.e. `{ email: 'Invalid email' }` will display that message until the email field */
+    errors: PropTypes.objectOf(PropTypes.string),
+    /** handles submissions of form */
+    onSubmit: PropTypes.func.isRequired,
+    /** Disable submit and show a spinner on button when set to true */
+    loading: PropTypes.bool,
+    /** All props from `StyledCard` */
+    ...StyledCard.propTypes,
+  };
+
+  constructor(props) {
+    super(props);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.state = {
+      form: {
+        startsAt: 'Thu March 21st',
+        startsAtTime: '10h',
+        endsAtTime: '11h',
+      },
+      edited: {},
+      errors: {},
+    };
+
+    const suggestionsArray = [
+      'food',
+      'shopping',
+      'mobility',
+      'coliving',
+      'coworking',
+      'homelessness',
+      'integration',
+      'workshop',
+      'community place',
+      'permaculture',
+      'recycling',
+      'gardening',
+      'transition',
+      'energy',
+      'culture',
+      'education',
+      'family',
+      'art',
+      'well being',
+      'technology',
+      'research',
+      'creative communities',
+      'other communities',
+      'local economy',
+      'circular economy',
+      'sustainability',
+      'zero waste',
+      'recycling',
+      'second hand',
+      'art',
+      'repair café',
+      'fablab',
+      'citizenship',
+      'solidarity',
+      'housing',
+      'collective',
+      'cooperative',
+      'social business',
+    ];
+
+    this.suggestions = suggestionsArray.map(s => {
+      return { id: s, text: s };
+    });
+
+    this.languagesValues = [
+      'English',
+      'French',
+      'Dutch',
+      'Arabic',
+      'Italian',
+      'Polish',
+      'Romanian',
+      'Spanish',
+      'Turkish',
+      'Brusseleer',
+    ];
+    this.kidsFriendlyValues = ['babies', 'toddlers', 'kids'];
+  }
+
+  getFieldError(fieldname) {
+    return this.state.errors[fieldname];
+  }
+
+  onChange(fieldname, value, add) {
+    const newState = this.state;
+    if (add !== undefined) {
+      newState.form[fieldname] = newState.form[fieldname] || [];
+      if (add) {
+        newState.form[fieldname].push(value);
+      } else {
+        const newArray = newState.form[fieldname].filter(v => v !== value);
+        newState.form[fieldname] = newArray;
+      }
+    } else {
+      newState.form[fieldname] = value;
+    }
+    if (fieldname === 'name' && !this.state.edited.slug) {
+      newState.form.slug = slug(value);
+    }
+    newState.edited[fieldname] = true;
+    this.setState(newState);
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    return this.props.onSubmit(this.state.form);
+  }
+
+  getFieldProps(fieldname) {
+    return {
       fontSize: 'Paragraph',
       lineHeight: 'Paragraph',
-      onChange,
-      onInvalid,
+      onChange: event => this.onChange(fieldname, event.target.value),
       type: 'text',
       width: 1,
-    }),
-  }),
-);
+    };
+  }
 
-const CreateGroupPage = enhance(
-  ({ getFieldError, getFieldProps, onChange, onSubmit, state, setState, submitting, ...props }) => (
-    <div>
-      <TopBar />
-      <Content>
-        <Title>
-          <FormattedMessage id="createGroup.title" defaultMessage="Register your Citizen Initiative" />
-        </Title>
-        <StyledCard width={1} maxWidth={480} {...props}>
-          <Box
-            as="form"
-            p={4}
-            onSubmit={event => {
-              event.preventDefault();
-              onSubmit(pick(state, ['email', 'firstName', 'lastName']));
-            }}
-            method="POST"
-          >
-            <Box mb={3}>
-              <StyledInputField label="Name" htmlFor="name" error={getFieldError('name')}>
-                {inputProps => <StyledInput {...inputProps} {...getFieldProps(inputProps.name)} />}
-              </StyledInputField>
-            </Box>
-
-            <Box mb={4}>
-              <StyledInputField label="Website" htmlFor="website" error={getFieldError('website')}>
-                {inputProps => <StyledInput {...inputProps} {...getFieldProps(inputProps.name)} />}
-              </StyledInputField>
-            </Box>
-            <Box mb={4}>
-              <StyledInputField label="Description" htmlFor="description" error={getFieldError('description')}>
-                {inputProps => <StyledTextarea {...inputProps} {...getFieldProps(inputProps.name)} />}
-              </StyledInputField>
-            </Box>
-
-            {/* <Box mb={4}>
-            <StyledInputField label="Desired URL" htmlFor="slug" error={getFieldError('slug')}>
-              {inputProps => (
-                <StyledInputGroup prepend={`${env.BASE_URL}/`} {...inputProps} {...getFieldProps(inputProps.name)} />
-              )}
-            </StyledInputField>
-          </Box>
-          </Box> */}
-
-            <Flex>
-              <Box mb={4} width={1 / 2}>
-                <StyledInputField label="When is your open door?" htmlFor="startsAt" error={getFieldError('startsAt')}>
-                  {inputProps => (
-                    <StyledSelect
-                      options={['Thursday March 21st', 'Friday March 22nd', 'Saturday March 23rd', 'Sunday March 24th']}
-                      defaultValue="Thursday March 21st"
-                      {...inputProps}
-                      {...getFieldProps(inputProps.name)}
-                      onChange={({ key }) => onChange({ target: { name: 'startsAt', value: key } })}
-                    />
-                  )}
+  render() {
+    const { onSubmit, loading } = this.props;
+    return (
+      <div>
+        <TopBar />
+        <Content>
+          <Title>
+            <FormattedMessage id="createGroup.title" defaultMessage="Register your Citizen Initiative" />
+          </Title>
+          <Box px={[1, 2, 2]} width={[1, 1 / 2, 1 / 3]}>
+            <Box as="form" m={[0, 2, 2]} onSubmit={this.onSubmit} method="POST">
+              <Box mb={3}>
+                <StyledInputField label="Name of your collective" htmlFor="name" error={this.getFieldError('name')}>
+                  {inputProps => <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} />}
                 </StyledInputField>
               </Box>
-              <Box mb={4} width={1 / 4}>
-                <StyledInputField label="From" htmlFor="startsAtTime" error={getFieldError('startsAtTime')}>
+
+              <Box mb={3}>
+                <StyledInputField
+                  label="Quick description of your collective"
+                  description="(don't worry, you can refine this later)"
+                  htmlFor="description"
+                  error={this.getFieldError('description')}
+                >
+                  {inputProps => <StyledTextarea rows={5} {...inputProps} {...this.getFieldProps(inputProps.name)} />}
+                </StyledInputField>
+              </Box>
+
+              <Box mb={3}>
+                <StyledInputField
+                  label="Website"
+                  description="URL of your website or of your Facebook page"
+                  htmlFor="website"
+                  error={this.getFieldError('website')}
+                >
+                  {inputProps => <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} />}
+                </StyledInputField>
+              </Box>
+
+              <Box mb={4}>
+                <StyledInputField
+                  label="Desired URL and email on citizenspring.be"
+                  description="That way, citizens have a consistent way to reach out to any citizen initiative"
+                  htmlFor="slug"
+                  error={this.getFieldError('slug')}
+                >
                   {inputProps => (
-                    <StyledSelect
-                      options={timeOptions}
-                      defaultValue="10h"
-                      {...inputProps}
-                      {...getFieldProps(inputProps.name)}
-                      onChange={({ key }) => onChange({ target: { name: 'startsAtTime', value: key } })}
-                    />
+                    <div>
+                      <Box mb={1}>
+                        <StyledInputGroup
+                          prepend={`${env.BASE_URL}/`}
+                          defaultValue={this.state.form[inputProps.name]}
+                          {...inputProps}
+                          {...this.getFieldProps(inputProps.name)}
+                        />
+                      </Box>
+                      <StyledInputGroup
+                        append={`@${env.DOMAIN}`}
+                        defaultValue={this.state.form[inputProps.name]}
+                        {...inputProps}
+                        {...this.getFieldProps(inputProps.name)}
+                      />
+                    </div>
                   )}
                 </StyledInputField>
               </Box>
 
-              <Box mb={4} width={1 / 4}>
-                <StyledInputField label="Till" htmlFor="endsAtTime" error={getFieldError('endsAtTime')}>
+              <Box mb={3}>
+                <StyledInputField
+                  label="Description of your open door"
+                  description="What will you do at your open door? What will people learn?"
+                  htmlFor="eventDescription"
+                  error={this.getFieldError('eventDescription')}
+                >
+                  {inputProps => <StyledTextarea rows={5} {...inputProps} {...this.getFieldProps(inputProps.name)} />}
+                </StyledInputField>
+              </Box>
+
+              <Flex>
+                <Box mb={4} width={1 / 2}>
+                  <StyledInputField
+                    label="When is your open door?"
+                    htmlFor="startsAt"
+                    error={this.getFieldError('startsAt')}
+                  >
+                    {inputProps => (
+                      <StyledSelect
+                        options={['Thu March 21st', 'Fri March 22nd', 'Sat March 23rd', 'Sun March 24th']}
+                        defaultValue={this.state.form[inputProps.name]}
+                        {...inputProps}
+                        {...this.getFieldProps(inputProps.name)}
+                        onChange={({ key }) => this.onChange('startsAt', key)}
+                      />
+                    )}
+                  </StyledInputField>
+                </Box>
+                <Box mb={4} width={1 / 4}>
+                  <StyledInputField label="From" htmlFor="startsAtTime" error={this.getFieldError('startsAtTime')}>
+                    {inputProps => (
+                      <StyledSelect
+                        options={timeOptions}
+                        defaultValue={this.state.form[inputProps.name]}
+                        {...inputProps}
+                        {...this.getFieldProps(inputProps.name)}
+                        onChange={({ key }) => this.onChange('startsAtTime', key)}
+                      />
+                    )}
+                  </StyledInputField>
+                </Box>
+
+                <Box mb={4} width={1 / 4}>
+                  <StyledInputField label="Till" htmlFor="endsAtTime" error={this.getFieldError('endsAtTime')}>
+                    {inputProps => (
+                      <StyledSelect
+                        options={timeOptions}
+                        defaultValue={this.state.form[inputProps.name]}
+                        {...inputProps}
+                        {...this.getFieldProps(inputProps.name)}
+                        onChange={({ key }) => this.onChange('endsAtTime', key)}
+                      />
+                    )}
+                  </StyledInputField>
+                </Box>
+              </Flex>
+
+              <Box mb={4}>
+                <StyledInputField
+                  label="Location"
+                  description="Where will your open door take place?"
+                  htmlFor="location"
+                  error={this.getFieldError('location')}
+                >
                   {inputProps => (
-                    <StyledSelect
-                      options={timeOptions}
-                      defaultValue="10h"
-                      {...inputProps}
-                      {...getFieldProps(inputProps.name)}
-                      onChange={({ key }) => onChange({ target: { name: 'endsAtTime', value: key } })}
+                    <InputTypeLocation
+                      {...this.getFieldProps(inputProps.name)}
+                      onChange={location => this.onChange('location', location)}
                     />
                   )}
                 </StyledInputField>
               </Box>
-            </Flex>
 
-            <Box mb={4}>
-              <StyledInputField label="Location" htmlFor="location" error={getFieldError('location')}>
-                {inputProps => <InputTypeLocation {...inputProps} {...getFieldProps(inputProps.name)} />}
-              </StyledInputField>
-            </Box>
+              <Flex>
+                <Box mb={4} width={2 / 3}>
+                  <StyledInputField
+                    label="Languages"
+                    description="What languages can you accommodate?"
+                    htmlFor="languages"
+                    error={this.getFieldError('languages')}
+                  >
+                    {inputProps =>
+                      this.languagesValues.map(lang => (
+                        <Box my={2}>
+                          <StyledCheckbox
+                            label={lang}
+                            {...inputProps}
+                            {...this.getFieldProps(inputProps.name)}
+                            onChange={val => this.onChange(inputProps.name, lang, val.checked)}
+                          />
+                        </Box>
+                      ))
+                    }
+                  </StyledInputField>
+                </Box>
 
-            <Box mb={4}>
-              <StyledInputField
-                label="Registration URL (Facebook event / Eventbrite) - optional"
-                htmlFor="eventUrl"
-                error={getFieldError('eventUrl')}
+                <Box mb={4} width={1 / 3}>
+                  <StyledInputField
+                    label="Kids friendly"
+                    description="Is your open door kid friendly?"
+                    htmlFor="kidsFriendly"
+                    error={this.getFieldError('kidsFriendly')}
+                  >
+                    {inputProps =>
+                      this.kidsFriendlyValues.map(lang => (
+                        <Box my={2}>
+                          <StyledCheckbox
+                            label={lang}
+                            {...inputProps}
+                            {...this.getFieldProps(inputProps.name)}
+                            onChange={val => this.onChange(inputProps.name, lang, val.checked)}
+                          />
+                        </Box>
+                      ))
+                    }
+                  </StyledInputField>
+                </Box>
+              </Flex>
+
+              <Box mb={4}>
+                <StyledInputField
+                  label="Tags"
+                  description="Tags help people browse through all the citizen initiatives"
+                  htmlFor="tags"
+                  error={this.getFieldError('tags')}
+                >
+                  {inputProps => (
+                    <InputTypeTags
+                      {...this.getFieldProps(inputProps.name)}
+                      onChange={tags => this.onChange('tags', tags)}
+                      suggestions={this.suggestions}
+                    />
+                  )}
+                </StyledInputField>
+              </Box>
+
+              <Box mb={4}>
+                <StyledInputField
+                  label="Registration URL if any"
+                  description="Facebook event / Eventbrite - optional - please make sure you mention #CitizenSpring in the title/description of the event"
+                  htmlFor="eventUrl"
+                  error={this.getFieldError('eventUrl')}
+                >
+                  {inputProps => <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} />}
+                </StyledInputField>
+              </Box>
+
+              <StyledButton
+                buttonStyle="primary"
+                width={1}
+                type="submit"
+                disabled={!this.state.form.name}
+                fontWeight="600"
+                loading={loading}
               >
-                {inputProps => <StyledInput {...inputProps} {...getFieldProps(inputProps.name)} />}
-              </StyledInputField>
+                <FormattedMessage id="createGroup.submitBtn" defaultMessage="Register" />
+              </StyledButton>
             </Box>
-
-            <StyledButton
-              buttonStyle="primary"
-              disabled={!state.email}
-              width={1}
-              type="submit"
-              fontWeight="600"
-              loading={submitting}
-            >
-              <FormattedMessage id="createGroup.submitBtn" defaultMessage="Register" />
-            </StyledButton>
           </Box>
-        </StyledCard>
-      </Content>
-      <Footer />
-    </div>
-  ),
-);
-
-CreateGroupPage.propTypes = {
-  /** a map of errors to the matching field name, i.e. `{ email: 'Invalid email' }` will display that message until the email field */
-  errors: PropTypes.objectOf(PropTypes.string),
-  /** handles submissions of form */
-  onSubmit: PropTypes.func.isRequired,
-  /** Disable submit and show a spinner on button when set to true */
-  submitting: PropTypes.bool,
-  /** All props from `StyledCard` */
-  ...StyledCard.propTypes,
-};
-
-CreateGroupPage.defaultProps = {
-  errors: {},
-  submitting: false,
-};
+        </Content>
+        <Footer />
+      </div>
+    );
+  }
+}
 
 export default withIntl(CreateGroupPage);

@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Gmaps, Marker } from 'react-gmaps';
-
-import { getEnvVar } from '../lib/utils';
+import env from '../env.frontend';
 
 class Map extends React.Component {
   static propTypes = {
@@ -15,12 +14,6 @@ class Map extends React.Component {
     map.setOptions({
       disableDefaultUI: false,
     });
-  }
-
-  getApiKey() {
-    const api_key = getEnvVar('GOOGLE_MAPS_API_KEY');
-    console.log('>>> api_key', api_key);
-    return api_key;
   }
 
   render() {
@@ -37,7 +30,7 @@ class Map extends React.Component {
           loadingMessage={'Loading map'}
           params={{
             v: '3.exp',
-            key: this.getApiKey(),
+            key: env.GOOGLE_MAPS_API_KEY,
           }}
           onMapCreated={this.onMapCreated}
         >

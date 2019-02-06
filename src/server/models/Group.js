@@ -25,6 +25,16 @@ module.exports = (sequelize, DataTypes) => {
           return this.getDataValue('GroupId') || this.id;
         },
       },
+      ParentGroupId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Groups',
+          key: 'id',
+        },
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+        allowNull: true,
+      },
       version: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -60,8 +70,13 @@ module.exports = (sequelize, DataTypes) => {
           }
         },
       },
+      type: {
+        type: DataTypes.STRING, // GROUP, EVENT
+        defaultValue: 'GROUP',
+      },
       name: DataTypes.STRING,
       description: DataTypes.STRING,
+      website: DataTypes.STRING,
       image: DataTypes.STRING,
       color: DataTypes.STRING,
       geoLocationLatLong: DataTypes.GEOMETRY('POINT'),
@@ -84,6 +99,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       startsAt: DataTypes.DATE,
       endsAt: DataTypes.DATE,
+      tags: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+      },
       settings: DataTypes.JSON,
     },
     {

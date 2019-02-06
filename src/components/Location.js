@@ -1,7 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Map from './Map';
+import GoogleMap from './GoogleMap';
 import colors from '../constants/colors';
+
+import styled from 'styled-components';
+
+const LocationWrapper = styled.div`
+  margin: 1rem 0;
+`;
+const Map = styled.div`
+  height: 300px;
+`;
 
 class Location extends React.Component {
   static propTypes = {
@@ -17,10 +26,10 @@ class Location extends React.Component {
     const { name, address, lat, long } = this.props.location;
 
     return (
-      <section id="location" className="location">
+      <LocationWrapper>
         <div className="description">
           {this.props.showTitle && <h1>Location</h1>}
-          <div className="name">{name}</div>
+          {this.props.showLocationName && <div className="name">{name}</div>}
           <div className="address" style={{ color: colors.darkgray }}>
             <a href={`http://maps.apple.com/?q=${lat},${long}`} target="_blank" rel="noopener noreferrer">
               {address}
@@ -28,11 +37,11 @@ class Location extends React.Component {
           </div>
         </div>
         {lat && long && (
-          <div className="map">
-            <Map lat={lat} long={long} />
-          </div>
+          <Map>
+            <GoogleMap lat={lat} long={long} />
+          </Map>
         )}
-      </section>
+      </LocationWrapper>
     );
   }
 }

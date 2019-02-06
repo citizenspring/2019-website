@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 import Geosuggest from 'react-geosuggest';
 import classNames from 'classnames';
 import Location from './Location';
+import '../static/styles/geosuggest.css';
+
+const pick = (htmlString, attr) => {
+  if (htmlString.indexOf(attr) === -1) return null;
+  let res = htmlString.substr(htmlString.indexOf(attr) + attr.length + 2);
+  return res.substr(0, res.indexOf('</span>'));
+};
 
 class InputTypeLocation extends React.Component {
   static propTypes = {
@@ -30,19 +37,29 @@ class InputTypeLocation extends React.Component {
       this.setState({ value: {} });
       return this.props.onChange({});
     }
+    let countryCode;
+    value.gmaps.address_components.map(ac => {
+      if (!countryCode && ac.short_name.length === 2 && ac.types.includes('country')) {
+        countryCode = ac.short_name;
+      }
+    });
     const label = value.label && value.label.replace(/,.+/, '');
     const location = {
       name: label,
-      address: value.gmaps.formatted_address,
+      address: pick(value.gmaps.adr_address, 'street-address'),
+      zipcode: pick(value.gmaps.adr_address, 'postal-code'),
+      city: pick(value.gmaps.adr_address, 'locality'),
+      countryCode,
       lat: value.location.lat,
       long: value.location.lng,
     };
+    console.log('>>> location', location);
     this.setState({ value: location });
     return this.props.onChange(location);
   }
 
   render() {
-    const options = this.props.options || {};
+    const options = this.props.options || { types: ['establishment', 'geocode'] };
 
     return (
       <div className={classNames('InputTypeLocation', this.props.className)}>

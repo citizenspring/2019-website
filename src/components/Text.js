@@ -63,7 +63,7 @@ export const H1 = P.withComponent(tag.h1);
 H1.defaultProps = {
   ...P.defaultProps,
   fontSize: 'H1',
-  fontWeight: 'bold',
+  fontWeight: '300',
   letterSpacing: '-1.2px',
   lineHeight: 'H1',
 };

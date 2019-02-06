@@ -7,6 +7,7 @@ import { ApolloProvider } from 'react-apollo';
 import withData from '../lib/withData';
 
 import theme from '../constants/theme';
+import { getGoogleMapsScriptUrl, loadGoogleMaps } from '../lib/google-maps';
 
 import '../../node_modules/nprogress/nprogress.css';
 import '../static/styles/app.css';
@@ -26,6 +27,16 @@ class OpenCollectiveEmail extends App {
     }
 
     const scripts = {};
+
+    if (pageProps.scripts) {
+      if (pageProps.scripts.googleMaps) {
+        if (ctx.req) {
+          scripts['google-maps'] = getGoogleMapsScriptUrl();
+        } else {
+          await loadGoogleMaps();
+        }
+      }
+    }
 
     return { pageProps, scripts };
   }
