@@ -192,11 +192,16 @@ export async function edit(senderEmail, GroupId, PostId, data) {
 
 export async function submit(senderEmail, group, text) {
   const yamlText = text.substring(text.indexOf('---') + 3, text.lastIndexOf('---'));
-  let form;
+  console.log('>>> yamlText', yamlText);
+  let form = {};
   try {
     form = yaml.safeLoad(yamlText);
   } catch (e) {
     throw new Error('Unable to parse your form application');
+  }
+  console.log('>>> form', form);
+  if (!form.slug) {
+    throw new Error('Unable to parse your form application: missing data');
   }
   const user = await models.User.findByEmail(senderEmail);
   const location = {};
