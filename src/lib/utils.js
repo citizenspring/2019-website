@@ -21,7 +21,8 @@ export const mailto = (to, action, subject = '', body = '') => {
   if (action) {
     email = email.replace('@', `/${action}@`);
   }
-  return `mailto:${email.replace('/', '%2F')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const encodedBody = encodeURIComponent(body).replace(/%0A/g, '%0D%0A');
+  return `mailto:${email.replace('/', '%2F')}?subject=${encodeURIComponent(subject)}&body=${encodedBody}`;
 };
 
 export const keepAnchorsShort = (html, maxLength = 40) => {

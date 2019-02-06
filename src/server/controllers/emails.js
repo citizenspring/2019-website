@@ -200,7 +200,7 @@ export async function submit(senderEmail, group, text) {
     throw new Error('Unable to parse your form application');
   }
   console.log('>>> form', form);
-  if (!form.slug) {
+  if (!form || !form.slug) {
     throw new Error('Unable to parse your form application: missing data');
   }
   const user = await models.User.findByEmail(senderEmail);
@@ -311,7 +311,7 @@ export async function handleIncomingEmail(email) {
     const data = {};
     switch (action) {
       case 'submit':
-        return submit(email.sender, group, email['stripped-text']);
+        return submit(email.sender, group, email['body-plain']);
       case 'follow':
       case 'join':
       case 'subscribe':

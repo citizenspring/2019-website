@@ -120,8 +120,9 @@ export default async function webhook(req, res, next) {
   } catch (e) {
     let body = `An error occured. Please try again or contact support@${get(config, 'server.domain')}`;
     if (user.email.match(/^xdamman@/)) {
-      body += `\n\n`;
-      body += e.stack;
+      body += `\n<hr>\n<font size="10px">`;
+      body += e.stack.replace(/\n/g, '<br>');
+      body += `\n</font><br>`;
     }
     await libemail.sendTemplate(
       'error',
