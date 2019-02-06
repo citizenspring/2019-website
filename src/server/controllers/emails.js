@@ -192,7 +192,7 @@ export async function edit(senderEmail, GroupId, PostId, data) {
 
 export async function submit(senderEmail, group, text) {
   const yamlText = text.substring(text.indexOf('---') + 3, text.lastIndexOf('---'));
-  console.log('>>> yamlText', yamlText);
+  console.log('>>> text', text, '>>> yamlText', yamlText);
   let form = {};
   try {
     form = yaml.safeLoad(yamlText);

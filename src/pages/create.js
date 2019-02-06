@@ -27,6 +27,7 @@ class CreateGroupPage extends React.Component {
     const a = document.createElement('a');
     a.href = mailto('registrations@citizenspring.be', 'submit', form.name, body);
     console.log('>>> email body', body);
+    console.log('>>> a.href', a.href);
     a.click();
   }
 
