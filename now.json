@@ -7,6 +7,7 @@
     "MAILGUN_USER": "postmaster@citizenspring.be",
     "MAILGUN_API_KEY": "@mailgun_api_key",
     "MAILGUN_PASSWORD": "@mailgun_password",
+    "GOOGLE_MAPS_API_KEY": "@google_maps_api_key",
     "PG_URL": "@pg_url",
     "PG_DATABASE": "@pg_database",
     "PG_HOST": "@pg_host",
