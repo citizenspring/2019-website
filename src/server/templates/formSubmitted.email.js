@@ -32,7 +32,7 @@ export const body = data => {
       <p>You now also have a special page on citizenspring.be/{form.slug} that you can edit to present yourselve.</p>
       {posts && (
         <div>
-          <p>We've already posted some posts that we invite you to look at and edit:</p>
+          <p>We've already posted some posts on your page that we invite you to look at and edit:</p>
           <ul>
             {posts.map(post => (
               <li>

@@ -105,6 +105,15 @@ libemail.getHTML = function(email) {
     return html;
   }
 
+  // Remove padding otherwise markdown consider it as <code> (e.g. Thunderbird)
+  const matches = html.match(/^ +</gm);
+  if (matches) {
+    const paddings = [];
+    matches.map(m => paddings.push(m.length - 1));
+    const minPadding = Math.min.apply(null, paddings);
+    html = html.replace(new RegExp(`^ {${minPadding}}`, 'gm'), '');
+  }
+
   // convert <div><br></div> from gmail to new paragraphs
   if (html.indexOf('</div><div') > -1) {
     html = html
