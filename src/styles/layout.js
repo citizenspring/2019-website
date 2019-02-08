@@ -15,7 +15,7 @@ export const Content = children => (
 
 export const Title = children => {
   return (
-    <Box mr={2} mt={[2, 3, 3]} mb={[3, 3, 4]} pt={[1, 2, 4]}>
+    <Box mr={2} mt={[2, 3, 3]} mb={[2, 2, 3]} pt={[1, 2, 4]}>
       <H1 fontSize={'3rem'}>{children.children}</H1>
     </Box>
   );

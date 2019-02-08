@@ -5,9 +5,10 @@ import { NodeListType, UserType, GroupType, PostType, NodeType, MemberType, Acti
 import models, { sequelize, Op } from '../models';
 
 const getIdFromSlug = async function(table, slug) {
-  const item = await models[table].findOne({ attributes: ['id'], where: { slug: slug.toLowerCase() } });
+  const canonicalIdCol = `${table}Id`;
+  const item = await models[table].findOne({ attributes: ['id', canonicalIdCol], where: { slug: slug.toLowerCase() } });
   if (!item) throw Error(`Cannot find ${table} with slug ${slug}`);
-  return item.id;
+  return item[canonicalIdCol];
 };
 
 const queries = {

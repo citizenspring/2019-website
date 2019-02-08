@@ -1,4 +1,16 @@
 import styled from 'styled-components';
+import { Span } from '../Text';
+import { Box } from '@rebass/grid';
+
+export const MetadataWrapper = children => {
+  return (
+    <Box mt={-3} mb={1}>
+      <Span fontSize={'1.2rem'} color="#828282">
+        {children.children}
+      </Span>
+    </Box>
+  );
+};
 
 export const ListItemWrapper = styled.div`
   margin: 8px 0;
@@ -24,13 +36,6 @@ export const Title = styled.h1`
   &:visited {
     color: #828282;
   }
-`;
-
-export const MetadataWrapper = styled.div`
-  font-size: 1.2rem;
-  display: 'flex';
-  color: #828282;
-  margin: 0;
 `;
 
 export const FooterLink = styled.a.attrs({

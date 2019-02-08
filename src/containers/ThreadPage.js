@@ -53,12 +53,7 @@ class ThreadPage extends React.Component {
       `${capitalize(intl.formatMessage(this.messages['follow']))} ${thread.title}`,
       intl.formatMessage(this.messages['follow.body']),
     );
-    const replyEmail = mailto(
-      threadEmail,
-      null,
-      `Re: ${thread.title}`,
-      intl.formatMessage(this.messages['reply.body']),
-    );
+    const replyEmail = mailto(threadEmail, null, `Re: ${thread.title}`);
     const actions = [
       { label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' },
       { label: intl.formatMessage(this.messages['reply']), href: replyEmail },

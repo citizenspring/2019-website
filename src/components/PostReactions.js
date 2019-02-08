@@ -5,6 +5,8 @@ import { mailto } from '../lib/utils';
 import env from '../env.frontend';
 import withIntl from '../lib/withIntl';
 import { defineMessages } from 'react-intl';
+import Link from './Link';
+import StyledLink from './StyledLink';
 
 const Wrapper = styled.div`
   margin: 1rem 0;
@@ -25,6 +27,8 @@ function PostReactions({ intl, group, thread, reply, size }) {
   if (!thread) return <div />;
   const messages = defineMessages({
     title: { id: 'post.reactions.title', defaultMessage: 'Pick a reaction' },
+    or: { id: 'post.reactions.or', defaultMessage: 'or' },
+    reply: { id: 'post.reply.btn', defaultMessage: 'reply' },
   });
   const postEmail = `${group.slug}/${reply ? `${thread.PostId}/${reply.PostId}` : thread.PostId}@${env.DOMAIN}`;
   const subject = `Re: ${thread.title}`;
@@ -38,6 +42,12 @@ function PostReactions({ intl, group, thread, reply, size }) {
           </a>
         </Emoji>
       ))}
+      <Label>{intl.formatMessage(messages.or)} </Label>
+      <Link href={mailto(postEmail, null, subject)}>
+        <StyledLink buttonStyle={'standard'} buttonSize="small">
+          {intl.formatMessage(messages.reply)}
+        </StyledLink>
+      </Link>
     </Wrapper>
   );
 }

@@ -21,6 +21,9 @@ const Wrapper = styled.div`
   ul ul {
     margin-bottom: 2rem;
   }
+  img {
+    max-width: 100%;
+  }
   @media (min-width: 600px) {
     .edit {
       visibility: hidden;
