@@ -4,7 +4,7 @@ import { Box } from '@rebass/grid';
 
 export const MetadataWrapper = children => {
   return (
-    <Box mt={-3} mb={1}>
+    <Box>
       <Span fontSize={'1.2rem'} color="#828282">
         {children.children}
       </Span>

@@ -13,6 +13,7 @@ import env from '../env.frontend';
 import { mailto } from '../lib/utils';
 import { capitalize } from '../server/lib/utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { Box } from '@rebass/grid';
 
 class ThreadPage extends React.Component {
   static propTypes = {
@@ -53,17 +54,15 @@ class ThreadPage extends React.Component {
       `${capitalize(intl.formatMessage(this.messages['follow']))} ${thread.title}`,
       intl.formatMessage(this.messages['follow.body']),
     );
-    const replyEmail = mailto(threadEmail, null, `Re: ${thread.title}`);
-    const actions = [
-      { label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' },
-      { label: intl.formatMessage(this.messages['reply']), href: replyEmail },
-    ];
+    const actions = [{ label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' }];
     return (
       <div>
         <TopBar group={thread.group} />
         <Content>
           <TitleWithActions title={thread.title} actions={actions} />
-          <Metadata user={thread.user.name} createdAt={thread.createdAt} followersCount={thread.followers.total} />
+          <Box mt={[-2, -2, -3]}>
+            <Metadata user={thread.user.name} createdAt={thread.createdAt} followersCount={thread.followers.total} />
+          </Box>
           <Post group={thread.group} thread={thread} post={thread} />
           {thread.replies.nodes.map((post, i) => (
             <Post key={i} group={thread.group} thread={thread} post={post} />
