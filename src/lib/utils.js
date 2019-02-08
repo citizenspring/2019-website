@@ -30,9 +30,12 @@ export const mailto = (to, action, subject = '', body = '') => {
   return `mailto:${email.replace('/', '%2F')}?subject=${encodeURIComponent(subject)}&body=${encodedBody}`;
 };
 
+/**
+ * Trim long displayUrls
+ */
 export const keepAnchorsShort = (html, maxLength = 40) => {
-  return html.replace(/(<a href="([^ ]+)">)([^ <]+)<\/a>/g, (match, tag, url, displayUrl) => {
-    if (url === displayUrl && displayUrl.length > maxLength) {
+  return html.replace(/(<a href="?([^ ]+)"?[^>]*>)([^ <]+)<\/a>/gm, (match, tag, url, displayUrl) => {
+    if (displayUrl.length > maxLength && displayUrl.match(/^(https?:\/\/|www\.)/)) {
       return `${tag}${displayUrl.replace(/^https?:\/\/(www\.)?/i, '').substr(0, maxLength - 1)}…</a>`;
     }
     return match;
