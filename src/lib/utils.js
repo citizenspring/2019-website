@@ -33,13 +33,16 @@ export const mailto = (to, action, subject = '', body = '') => {
 /**
  * Trim long displayUrls
  */
-export const keepAnchorsShort = (html, maxLength = 40) => {
-  return html.replace(/(<a href="?([^ ]+)"?[^>]*>)([^ <]+)<\/a>/gm, (match, tag, url, displayUrl) => {
-    if (displayUrl.length > maxLength && displayUrl.match(/^(https?:\/\/|www\.)/)) {
-      return `${tag}${displayUrl.replace(/^https?:\/\/(www\.)?/i, '').substr(0, maxLength - 1)}…</a>`;
-    }
-    return match;
-  });
+export const keepAnchorsShort = (html, maxLength = 44) => {
+  return html.replace(
+    /(<a href=(?:'|")?([^( |"|'|>))]+)(?:'|")?[^>]*>)((?:(?!<\/?a).)+)<\/a>/gm,
+    (match, tag, url, displayUrl) => {
+      if (displayUrl.length > maxLength && displayUrl.match(/^(https?:\/\/|www\.)/)) {
+        return `<a href="${url}">${displayUrl.replace(/^https?:\/\/(www\.)?/i, '').substr(0, maxLength - 1)}…</a>`;
+      }
+      return match;
+    },
+  );
 };
 
 export const getEnvVar = v => (process.browser ? get(window, ['__NEXT_DATA__', 'env', v]) : get(process, ['env', v]));

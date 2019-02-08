@@ -83,6 +83,16 @@ describe('email', () => {
     );
   });
 
+  it('cleans html from facebook', () => {
+    const email = {
+      'stripped-html': `<br><br>[40] <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.bruzz.be%2Fstedenbouw%2Fwoningen-hotel-en-openbare-ruimte-muntcentrum-2019-01-28%3Ffbclid%3DIwAR3jN3fR2fs6czLNF58ntN7baSpoRhj66CjENY8CxeV2mEwjph_CUYlpc_I&#x26h=AT386hBCXcOs33bbprawmWTpTiAZ_9exoxbbt2Fe1DkD3pRxoT9W9hzXvvNT5XqiPg71dOY1ZIszdgXyxufWMQo1ejIyWSFztlSxq2c0JdmJ2jjNaPgFi4RZJig2GpfaYnSUSi5OkHhuCzhwjHQDlEwbkA"rel="nofollow noopener" data-lynx-mode=async target=_blank>https://www.bruzz.be/<wbr><span class=word_break></span>stedenbouw/<wbr><span class=word_break></span>woningen-hotel-en-openbare-<wbr><span class=word_break></span>ruimte-muntcentrum-2019-01<wbr><span class=word_break></span>-28</a><br>`,
+    };
+    const html = libemail.getHTML(email);
+    expect(html).toEqual(
+      `<p><br>[40] <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.bruzz.be%2Fstedenbouw%2Fwoningen-hotel-en-openbare-ruimte-muntcentrum-2019-01-28%3Ffbclid%3DIwAR3jN3fR2fs6czLNF58ntN7baSpoRhj66CjENY8CxeV2mEwjph_CUYlpc_I&#x26h=AT386hBCXcOs33bbprawmWTpTiAZ_9exoxbbt2Fe1DkD3pRxoT9W9hzXvvNT5XqiPg71dOY1ZIszdgXyxufWMQo1ejIyWSFztlSxq2c0JdmJ2jjNaPgFi4RZJig2GpfaYnSUSi5OkHhuCzhwjHQDlEwbkA">https://www.bruzz.be/stedenbouw/woningen-hotel-en-openbare-ruimte-muntcentrum-2019-01-28</a>`,
+    );
+  });
+
   it("doesn't convert emails sent using Thunderbird to <code>", () => {
     const email = {
       'stripped-html':

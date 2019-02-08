@@ -24,9 +24,9 @@ const run = async () => {
       Math.round(((p.html.length - html.length) / p.html.length) * 100) + '%',
     );
     if (p.html.length !== html.length) {
-      console.log('>>> p.email', p.email['stripped-html']);
-      console.log('>>> html', html);
-      console.log('------------------------');
+      // console.log('>>> p.email', p.email['stripped-html']);
+      // console.log('>>> html', html);
+      // console.log('------------------------');
     }
     promises.push(p.update({ html }));
   });

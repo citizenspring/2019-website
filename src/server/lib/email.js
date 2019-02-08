@@ -142,7 +142,7 @@ libemail.getHTML = function(email) {
   html = sanitizeHtml(html, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
     allowedAttributes: {
-      a: ['href', 'name', 'target'],
+      a: ['href', 'name'],
       img: ['src'],
     },
   });
