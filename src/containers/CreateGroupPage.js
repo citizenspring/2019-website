@@ -168,6 +168,13 @@ class CreateGroupPage extends React.Component {
           <Box px={[1, 2, 2]}>
             <Box as="form" m={[0, 2, 2]} onSubmit={this.onSubmit} method="POST">
               <Box mb={3}>
+                <StyledInputField label="Your personal email" htmlFor="email" error={this.getFieldError('email')}>
+                  {inputProps => (
+                    <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} type="email" required />
+                  )}
+                </StyledInputField>
+              </Box>
+              <Box mb={3}>
                 <StyledInputField label="Name of your collective" htmlFor="name" error={this.getFieldError('name')}>
                   {inputProps => <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} />}
                 </StyledInputField>
@@ -375,7 +382,7 @@ class CreateGroupPage extends React.Component {
                 buttonStyle="primary"
                 width={1}
                 type="submit"
-                disabled={!this.state.form.name}
+                disabled={!(this.state.form.name && this.state.form.email)}
                 fontWeight="600"
                 loading={loading}
               >

@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'GROUP',
       },
       name: DataTypes.STRING,
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
       website: DataTypes.STRING,
       image: DataTypes.STRING,
       color: DataTypes.STRING,

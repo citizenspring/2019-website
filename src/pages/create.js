@@ -33,4 +33,24 @@ class CreateGroupPage extends React.Component {
   }
 }
 
-export default withIntl(CreateGroupPage);
+const createGroupMutation = gql`
+  mutation createGroup($group: GroupInputType!) {
+    createGroup(group: $group) {
+      id
+      slug
+      createdAt
+    }
+  }
+`;
+
+const addMutation = graphql(createGroupMutation, {
+  props: ({ ownProps, mutate }) => ({
+    createGroup: async group => {
+      return await mutate({
+        variables: { group },
+      });
+    },
+  }),
+});
+
+export default withIntl(addMutation(CreateGroupPage));

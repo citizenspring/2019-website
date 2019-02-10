@@ -27,6 +27,77 @@ const mutations = {
       return models.Group.create(args.group);
     },
   },
+  createEvent: {
+    type: GroupType,
+    description: 'Use this mutation to create an event and a group in the process if needed',
+    args: {
+      group: { type: new GraphQLNonNull(GroupInputType) },
+    },
+    resolve(_, args, req) {
+
+
+      const user = await models.User.findOrCreate(args.group.user.email);
+      const location = {};
+      if (form.location) {
+        location.locationName = form.location.name;
+        location.addressLine1 = form.location.address;
+        location.zipcode = form.location.zipcode;
+        location.countryCode = form.location.countryCode;
+        location.city = form.location.city;
+        location.geoLocationLatLong = { type: 'Point', coordinates: [form.location.lat, form.location.long] };
+      }
+      const newGroupData = {
+        ...pick(form, ['slug', 'name', 'description', 'website', 'tags']),
+        ...location,
+      };
+      const newGroup = await user.createGroup(newGroupData);
+      const postData = {
+        title: form.name,
+        html: json2html(form),
+        text: yamlText,
+        GroupId: group.GroupId,
+        tags: form.tags,
+      };
+      const templatesGroup = await models.Group.findBySlug('templates');
+      if (templatesGroup) {
+        const templates = await models.Post.findAll({ where: { status: 'PUBLISHED', GroupId: templatesGroup.GroupId } });
+        const promises = [];
+        templates.map(t => {
+          promises.push(
+            user.createPost({
+              ...omit(t.dataValues, ['id', 'createdAt', 'UserId']),
+              GroupId: newGroup.GroupId,
+            }),
+          );
+        });
+        await Promise.all(promises);
+      }
+      const post = await user.createPost(postData);
+      const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
+      const startsAt = new Date(`2019-03-${startsAtDate} ${form.startsAtTime.replace('h', ':00')}`);
+      const endsAt = new Date(`2019-03-${startsAtDate} ${form.endsAtTime.replace('h', ':00')}`);
+      const eventGroupData = {
+        ParentGroupId: newGroup.GroupId,
+        name: `${form.name} open door`,
+        slug: `${form.slug}/events/${moment(startsAt).format('YYYYMMDDHHmm')}`,
+        type: 'EVENT',
+        description: form.eventDescription,
+        website: form.website,
+        tags: form.tags,
+        ...location,
+        startsAt,
+        endsAt,
+      };
+      await user.createGroup(eventGroupData);
+      const posts = await models.Post.findAll({ where: { status: 'PUBLISHED', GroupId: newGroup.GroupId } });
+      await libemail.sendTemplate(
+        `formSubmitted`,
+        { posts, form, url: `${get(config, 'server.baseUrl')}/${group.slug}/${post.slug}` },
+        senderEmail,
+      );
+
+    },
+  },
   createPost: {
     type: PostType,
     args: {

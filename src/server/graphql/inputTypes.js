@@ -71,10 +71,15 @@ export const GroupInputType = new GraphQLInputObjectType({
   description: 'Input type for Group',
   fields: () => ({
     UserId: { type: GraphQLInt },
+    user: { type: UserInputType },
+    parentGroup: { type: GroupInputType },
+    slug: { type: GraphQLString },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
+    website: { type: GraphQLString },
     location: { type: LocationInputType },
     color: { type: GraphQLString },
+    tags: { type: new GraphQLList(GraphQLString) },
   }),
 });
 
