@@ -3,7 +3,7 @@ import nextRoutes from 'next-routes';
 const pages = nextRoutes();
 
 pages
-  .add('create')
+  .add('create', '/:groupSlug?/create')
   .add('groups')
   .add('group', '/:groupSlug')
   .add('thread', '/:groupSlug/:threadSlug')

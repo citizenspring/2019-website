@@ -15,6 +15,7 @@ import { mailto } from '../lib/utils';
 import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/Metadata';
+import Locations from '../components/Locations';
 
 class GroupPage extends React.Component {
   static propTypes = {
@@ -38,7 +39,7 @@ class GroupPage extends React.Component {
       },
       { label: '+ New Thread', href: mailto(groupEmail) },
     ];
-
+    console.log('>>> group loaded', group);
     return (
       <div>
         <TopBar group={group} />
@@ -52,6 +53,7 @@ class GroupPage extends React.Component {
               )}
             </EditableText>
           </Description>
+          <Locations group={group} />
           <PostList groupSlug={group.slug} posts={group.posts} />
         </Content>
         <Footer group={group} />
@@ -61,7 +63,14 @@ class GroupPage extends React.Component {
 }
 
 const getDataQuery = gql`
-  query Group($groupSlug: String!) {
+  query Group(
+    $groupSlug: String!
+    $subGroupsLimit: Int
+    $subGroupsType: String
+    $subGroupsOffset: Int
+    $subGroupsHasLocation: Boolean
+    $subGroupsIncludeChildren: Boolean
+  ) {
     Group(groupSlug: $groupSlug) {
       id
       slug
@@ -98,6 +107,37 @@ const getDataQuery = gql`
           }
         }
       }
+      location {
+        name
+        zipcode
+        lat
+        long
+      }
+      groups(
+        type: $subGroupsType
+        limit: $subGroupsLimit
+        offset: $subGroupsOffset
+        hasLocation: $subGroupsHasLocation
+        includeChildren: $subGroupsIncludeChildren
+      ) {
+        total
+        nodes {
+          id
+          ... on Group {
+            GroupId
+            name
+            createdAt
+            slug
+            path
+            location {
+              name
+              zipcode
+              lat
+              long
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -111,6 +151,8 @@ export const addData = graphql(getDataQuery, {
         groupSlug: props.groupSlug,
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
+        subGroupsIncludeChildren: true,
+        subGroupsHasLocation: true,
       },
     };
   },

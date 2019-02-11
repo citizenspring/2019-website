@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
           }
         },
       },
+      path: { type: DataTypes.STRING, allowNull: true },
       type: {
         type: DataTypes.STRING, // GROUP, EVENT
         defaultValue: 'GROUP',
@@ -81,8 +82,7 @@ module.exports = (sequelize, DataTypes) => {
       color: DataTypes.STRING,
       geoLocationLatLong: DataTypes.GEOMETRY('POINT'),
       locationName: DataTypes.STRING,
-      addressLine1: DataTypes.STRING,
-      addressLine2: DataTypes.STRING,
+      address: DataTypes.STRING,
       zipcode: DataTypes.STRING,
       city: DataTypes.STRING,
       countryCode: {
@@ -103,15 +103,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },
       settings: DataTypes.JSON,
-    },
-    {
-      paranoid: true,
-      getterMethods: {
-        location() {
+      formData: DataTypes.JSONB,
+      location: {
+        type: DataTypes.VIRTUAL,
+        get() {
           return {
             name: this.locationName,
-            addressLine1: this.addressLine1,
-            addressLine2: this.addressLine2,
+            address: this.address,
             zipcode: this.zipcode,
             city: this.city,
             countryCode: this.countryCode,
@@ -122,6 +120,9 @@ module.exports = (sequelize, DataTypes) => {
           };
         },
       },
+    },
+    {
+      paranoid: true,
       indexes: [
         {
           fields: ['slug', 'status'],
@@ -136,11 +137,10 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Group validation error: need to provide a slug or a name', group);
           }
           group.slug = group.slug || slugify(group.name);
-          const location = group.location;
+          const location = get(group, 'dataValues.location');
           if (location) {
             group.locationName = location.name;
-            group.addressLine1 = location.addressLine1;
-            group.addressLine2 = location.addressLine2;
+            group.address = location.address;
             group.city = location.city;
             group.countryCode = location.countryCode;
             group.zipcode = location.zipcode;
@@ -151,6 +151,7 @@ module.exports = (sequelize, DataTypes) => {
               };
             }
           }
+          return group;
         },
         afterCreate: async group => {
           let action = 'CREATE';
@@ -174,6 +175,24 @@ module.exports = (sequelize, DataTypes) => {
   // Get the latest version of the group by slug (and optional status PUBLISHED/ARCHIVED/PENDING)
   Group.findBySlug = (slug, status) => {
     const where = { slug: slug.toLowerCase() };
+    if (status) {
+      where.status = status;
+    }
+    return Group.findOne({ where, order: [['id', 'DESC']] });
+  };
+  Group.findByPath = (path, slug, status) => {
+    const where = { path: path.toLowerCase() };
+    if (slug) {
+      where.slug = slug.toLowerCase();
+    }
+    if (status) {
+      where.status = status;
+    }
+    return Group.findOne({ where, order: [['id', 'DESC']] });
+  };
+
+  Group.findByGroupId = (GroupId, status) => {
+    const where = { GroupId };
     if (status) {
       where.status = status;
     }

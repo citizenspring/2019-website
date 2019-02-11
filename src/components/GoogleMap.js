@@ -8,7 +8,13 @@ class Map extends React.Component {
     lat: PropTypes.number,
     long: PropTypes.number,
     address: PropTypes.string,
+    markers: PropTypes.arrayOf(PropTypes.object),
   };
+
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
 
   onMapCreated(map) {
     map.setOptions({
@@ -16,9 +22,19 @@ class Map extends React.Component {
     });
   }
 
-  render() {
-    const { lat, long } = this.props;
+  handleClick(m) {
+    console.log('>>> click on', m);
+  }
 
+  render() {
+    let { lat, long, markers } = this.props;
+    if (!markers || markers.length === 0) {
+      markers = [{ lat, long }];
+    }
+    if (!lat && !long) {
+      lat = markers[0].lat;
+      long = markers[0].long;
+    }
     return (
       <div style={{ width: '100%', height: '100%' }}>
         <Gmaps
@@ -26,7 +42,7 @@ class Map extends React.Component {
           height={'100%'}
           lat={lat}
           lng={long}
-          zoom={16}
+          zoom={14}
           loadingMessage={'Loading map'}
           params={{
             v: '3.exp',
@@ -34,7 +50,9 @@ class Map extends React.Component {
           }}
           onMapCreated={this.onMapCreated}
         >
-          <Marker lat={lat} lng={long} draggable={false} />
+          {markers.map((m, key) => (
+            <Marker key={key} lat={m.lat} lng={m.long} draggable={false} onClick={() => this.handleClick(m)} />
+          ))}
         </Gmaps>
         <a
           className="map-overlay"

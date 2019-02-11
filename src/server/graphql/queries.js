@@ -72,11 +72,18 @@ const queries = {
   allGroups: {
     type: NodeListType,
     args: {
+      type: {
+        type: GraphQLString,
+        description: 'type of group to return (GROUP or EVENT). Default: ALL',
+      },
       limit: { type: GraphQLInt },
       offset: { type: GraphQLInt },
     },
     async resolve(_, args) {
       const query = { where: { status: 'PUBLISHED' } };
+      if (args.type) {
+        query.where.type = args.type;
+      }
       query.limit = args.limit || 20;
       query.offset = args.offset || 0;
       query.order = [['name', 'ASC']];
@@ -87,6 +94,7 @@ const queries = {
         limit: query.limit,
         offset: query.offset,
       };
+      console.log('>>> res', res);
       return res;
     },
   },

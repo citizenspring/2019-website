@@ -23,7 +23,7 @@ if [[ ! -s ${DBDUMPS_DIR}${FILENAME} ]]; then
   PG_URL_ENVIRONMENT_VARIABLE="${PG_URL_ENVIRONMENT_VARIABLE:-DATABASE_URL}"
   PG_URL=`heroku config:get ${PG_URL_ENVIRONMENT_VARIABLE} -a "citizenspring"`
   echo "Dumping ${ENV} database"
-  pg_dump -O -F t "${PG_URL}" > "${DBDUMPS_DIR}${FILENAME}"
+  pg_dump -O -c -F t "${PG_URL}" > "${DBDUMPS_DIR}${FILENAME}"
 fi
 
 echo "DB dump saved in ${DBDUMPS_DIR}${FILENAME}"

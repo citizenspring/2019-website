@@ -169,7 +169,7 @@ module.exports = (sequelize, DataTypes) => {
     try {
       group = await models.Group.create({ ...groupData, UserId: this.id });
     } catch (e) {
-      console.error('user.createGroup: unable to create group', groupData);
+      console.error('user.createGroup: unable to create group', groupData, e);
       throw e;
     }
     const memberships = [

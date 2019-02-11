@@ -6,10 +6,6 @@ import libemail from '../lib/email';
 import { createJwt } from '../lib/auth';
 import debugLib from 'debug';
 const debug = debugLib('email');
-import yaml from 'js-yaml';
-import { get, pick, omit } from 'lodash';
-import json2html from '../lib/json2table';
-import moment from 'moment';
 
 const defaultData = {
   post: {

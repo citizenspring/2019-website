@@ -1,41 +1,82 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withIntl from '../lib/withIntl';
-import yaml from 'js-yaml';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+import { pick } from 'lodash';
 
 import CreateGroup from '../containers/CreateGroupPage';
-import { mailto } from '../lib/utils';
+import CreateGroupPending from '../containers/CreateGroupPending';
 
 class CreateGroupPage extends React.Component {
-  static getInitialProps({ query: { hostCollectiveSlug } }) {
+  static getInitialProps({ query: { groupSlug } }) {
     const scripts = { googleMaps: true }; // Used in <InputTypeLocation>
-    return { scripts };
+    return { scripts, path: `/${groupSlug}` };
   }
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { view: 'create' };
     this.onSubmit = this.onSubmit.bind(this);
+    // this.onSubmit({
+    //   startsAt: 'Thu March 21st',
+    //   startsAtTime: '10h',
+    //   endsAtTime: '11h',
+    //   email: 'xdamman@gmail.com',
+    //   name: 'Frida',
+    //   slug: 'frida',
+    //   description: 'frida description',
+    //   website: 'frida.brussels',
+    //   eventDescription: 'event description',
+    //   location: {
+    //     name: 'EAT WELL',
+    //     address: null,
+    //     zipcode: '1000',
+    //     city: 'Brussel',
+    //     countryCode: 'BE',
+    //     lat: 50.8450035,
+    //     long: 4.35811769999998,
+    //   },
+    //   languages: ['English', 'French'],
+    //   kidsFriendly: ['toddlers', 'kids', 'babies'],
+    //   tags: ['family', 'cooperative'],
+    //   eventUrl: 'event url',
+    // });
   }
 
   async componentDidMount() {}
 
-  onSubmit(form) {
-    const yamlString = yaml.safeDump(form);
-    const body = `Just send this email to register\n\n---\n${yamlString}---\n`;
-    const a = document.createElement('a');
-    a.href = mailto('registrations@citizenspring.be', 'submit', form.name, body);
-    console.log('>>> email body', body);
-    a.click();
+  async onSubmit(form) {
+    console.log('>>> form', form);
+    const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
+    const startsAt = new Date(`2019-03-${startsAtDate} ${form.startsAtTime.replace('h', ':00')}`);
+    const endsAt = new Date(`2019-03-${startsAtDate} ${form.endsAtTime.replace('h', ':00')}`);
+    const collective = pick(form, ['slug', 'name', 'description', 'website', 'tags']);
+    const user = { email: form.email };
+    const group = {
+      description: form.eventDescription,
+      startsAt,
+      endsAt,
+      website: form.eventUrl,
+      location: form.location,
+      tags: form.tags,
+      formData: pick(form, ['languages', 'kidsFriendly']),
+    };
+    const res = await this.props.createGroup({ group, user, collective });
+    this.setState({ view: 'pending' });
   }
 
   render() {
-    return <CreateGroup onSubmit={this.onSubmit} />;
+    if (this.state.view === 'pending') {
+      return <CreateGroupPending email="myemail@gnail.com" />;
+    } else {
+      return <CreateGroup onSubmit={this.onSubmit} />;
+    }
   }
 }
 
 const createGroupMutation = gql`
-  mutation createGroup($group: GroupInputType!) {
-    createGroup(group: $group) {
+  mutation createGroup($path: String, $user: UserInputType!, $collective: GroupInputType!, $group: GroupInputType!) {
+    createGroup(path: $path, user: $user, collective: $collective, group: $group) {
       id
       slug
       createdAt
@@ -45,9 +86,9 @@ const createGroupMutation = gql`
 
 const addMutation = graphql(createGroupMutation, {
   props: ({ ownProps, mutate }) => ({
-    createGroup: async group => {
+    createGroup: async ({ user, collective, group }) => {
       return await mutate({
-        variables: { group },
+        variables: { path: ownProps.path, group, user, collective },
       });
     },
   }),

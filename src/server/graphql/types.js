@@ -71,8 +71,7 @@ export const LocationType = new GraphQLObjectType({
   description: 'Type for Location',
   fields: () => ({
     name: { type: GraphQLString },
-    addressLine1: { type: GraphQLString },
-    addressLine2: { type: GraphQLString },
+    address: { type: GraphQLString },
     zipcode: { type: GraphQLString },
     city: { type: GraphQLString },
     countryCode: { type: GraphQLString },
@@ -299,6 +298,60 @@ export const GroupType = new GraphQLObjectType({
           return models.User.findByPk(group.UserId);
         },
       },
+      parentGroup: {
+        type: GroupType,
+        description: 'Returns the parent of this group',
+        resolve(group, args, req) {
+          return models.Group.findByGroupId(group.ParentGroupId);
+        },
+      },
+      groups: {
+        type: NodeListType,
+        args: {
+          type: {
+            type: GraphQLString,
+            description: 'type of group to return (GROUP or EVENT). Default: ALL',
+          },
+          hasLocation: {
+            type: GraphQLBoolean,
+            description: 'only return sub groups that have a location',
+          },
+          includeChildren: {
+            type: GraphQLBoolean,
+            description: 'include children of sub groups (e.g. events)',
+          },
+          limit: { type: GraphQLInt },
+          offset: { type: GraphQLInt },
+        },
+        description: 'returns the list of sub groups (type GROUP or EVENT)',
+        async resolve(group, args) {
+          const where = {};
+          if (args.includeChildren) {
+            where.path = { [Op.like]: `/${group.slug}/%` };
+          } else {
+            where.ParentGroupId = group.GroupId;
+          }
+          const query = { where };
+          if (args.type) {
+            where.type = args.type;
+          }
+          if (args.hasLocation) {
+            where.geoLocationLatLong = { [Op.not]: null };
+          }
+          query.limit = args.limit || 20;
+          query.offset = args.offset || 0;
+
+          const count = await models.Group.count(query);
+          const rows = await models.Group.findAll(query);
+          return {
+            total: count,
+            nodes: rows,
+            type: 'Group',
+            limit: args.limit,
+            offset: args.offset,
+          };
+        },
+      },
       followers: {
         type: NodeListType,
         async resolve(group, args) {
@@ -350,6 +403,12 @@ export const GroupType = new GraphQLObjectType({
           return group.slug;
         },
       },
+      path: {
+        type: GraphQLString,
+        resolve(group) {
+          return group.path;
+        },
+      },
       name: {
         type: GraphQLString,
         resolve(group) {
@@ -376,6 +435,12 @@ export const GroupType = new GraphQLObjectType({
         type: GraphQLJSON,
         resolve(group) {
           return group.settings;
+        },
+      },
+      createdAt: {
+        type: GraphQLString,
+        resolve(group) {
+          return group.createdAt;
         },
       },
     };

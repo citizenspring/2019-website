@@ -7,6 +7,7 @@ import {
   GraphQLNonNull,
   GraphQLFloat,
 } from 'graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 const EmailType = new GraphQLScalarType({
   name: 'Email',
@@ -56,8 +57,7 @@ export const LocationInputType = new GraphQLInputObjectType({
   description: 'Input type for Location',
   fields: () => ({
     name: { type: GraphQLString },
-    addressLine1: { type: GraphQLString },
-    addressLine2: { type: GraphQLString },
+    address: { type: GraphQLString },
     zipcode: { type: GraphQLString },
     city: { type: GraphQLString },
     countryCode: { type: GraphQLString },
@@ -72,14 +72,18 @@ export const GroupInputType = new GraphQLInputObjectType({
   fields: () => ({
     UserId: { type: GraphQLInt },
     user: { type: UserInputType },
-    parentGroup: { type: GroupInputType },
+    collective: { type: GroupInputType },
     slug: { type: GraphQLString },
+    type: { type: GraphQLString },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     website: { type: GraphQLString },
+    startsAt: { type: GraphQLString },
+    endsAt: { type: GraphQLString },
     location: { type: LocationInputType },
     color: { type: GraphQLString },
     tags: { type: new GraphQLList(GraphQLString) },
+    formData: { type: GraphQLJSON },
   }),
 });
 

@@ -3,6 +3,7 @@ import TopBar from '../components/TopBar/index.js';
 import Footer from '../components/Footer/index.js';
 import { Title, Content, PullQuote } from '../styles/layout';
 import StyledLink from '../components/StyledLink';
+import LocationsWithData from '../components/LocationsWithData';
 import styled from 'styled-components';
 import { mailto } from '../lib/utils';
 import { Box, Flex } from '@rebass/grid';
@@ -61,6 +62,7 @@ class HomePage extends React.Component {
               </center>
             </Box>
           </Flex>
+          <LocationsWithData />
           <PullQuote>"The future is already here. It's just not evenly distributed yet" - somebody famous.</PullQuote>
           <p>
             In the face of the climate emergency, we need to change the way we live and work. We need to embrace a much
@@ -91,7 +93,7 @@ class HomePage extends React.Component {
             <ul>
               <li>
                 If you are a citizen initiative,{' '}
-                <a href="https://goo.gl/forms/LmPU19GNVkzCYxTu1">register your initiative using this form</a>.
+                <StyledLink href="/create">register your initiative using this form</StyledLink>.
               </li>
               <li>
                 If you want to help us organize or become a local coordinator for your city, join the{' '}
@@ -109,7 +111,7 @@ class HomePage extends React.Component {
 
           <Flex flexDirection={['column', 'row', 'row']} alignItems="center" justifyContent="center">
             <Box py={4} mx={2}>
-              <StyledLink href="https://goo.gl/forms/LmPU19GNVkzCYxTu1" buttonStyle="primary" buttonSize="medium">
+              <StyledLink href="/create" buttonStyle="primary" buttonSize="medium">
                 Register your citizen initiative
               </StyledLink>
             </Box>

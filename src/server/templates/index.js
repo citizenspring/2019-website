@@ -4,6 +4,7 @@ import React from 'react';
 import Oy from 'oy-vey';
 
 import * as shortcode from './shortcode.email.js';
+import * as confirmCreateGroup from './confirmCreateGroup.email.js';
 import * as confirmEmail from './confirmEmail.email.js';
 import * as confirmJoinGroup from './confirmJoinGroup.email.js';
 import * as confirmFollowThread from './confirmFollowThread.email.js';
@@ -16,12 +17,12 @@ import * as postEdited from './postEdited.email.js';
 import * as approveGroupEdit from './approveGroupEdit.email.js';
 import * as approvePostEdit from './approvePostEdit.email.js';
 import * as threadCreated from './threadCreated.email.js';
-import * as formSubmitted from './formSubmitted.email.js';
 import * as post from './post.email.js';
 import * as error from './error.email.js';
 
 const templates = {
   shortcode,
+  confirmCreateGroup,
   confirmEmail,
   confirmJoinGroup,
   confirmFollowThread,
@@ -36,7 +37,6 @@ const templates = {
   postEdited,
   approveGroupEdit,
   approvePostEdit,
-  formSubmitted,
 };
 
 export default templates;

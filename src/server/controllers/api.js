@@ -101,8 +101,13 @@ export async function approve(req, res, next) {
   if (get(token, 'data.always') === true) {
     target.addAdmin(target.UserId);
   }
+  if (get(token, 'data.includeChildren') === true) {
+    const ParentColumn = `Parent${capitalize(get(token, 'data.type')).replace(/s$/, '')}Id`;
+    const children = await models[capitalize(get(token, 'data.type'))].findAll({ where: { [ParentColumn]: TargetId } });
+    children.map(async child => await child.publish());
+  }
   const path = await target.getPath();
-  return res.redirect(path);
+  return res.redirect(`${path}?action=${token.sub}`);
 }
 
 export async function follow(req, res, next) {

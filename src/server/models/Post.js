@@ -105,6 +105,9 @@ module.exports = (sequelize, DataTypes) => {
       ],
       hooks: {
         beforeValidate: post => {
+          if (!post.slug && !post.title) {
+            throw new Error('Post validation error: need to provide a slug or a title', post);
+          }
           post.slug = post.slug || slugify(post.title);
         },
         afterCreate: async post => {

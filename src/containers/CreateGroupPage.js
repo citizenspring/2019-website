@@ -95,6 +95,8 @@ class CreateGroupPage extends React.Component {
       'collective',
       'cooperative',
       'social business',
+      'vegan',
+      'cafe',
     ];
 
     this.suggestions = suggestionsArray.map(s => {
@@ -134,7 +136,7 @@ class CreateGroupPage extends React.Component {
       newState.form[fieldname] = value;
     }
     if (fieldname === 'name' && !this.state.edited.slug) {
-      newState.form.slug = slug(value);
+      newState.form.slug = (slug(value) || '').toLowerCase();
     }
     newState.edited[fieldname] = true;
     this.setState(newState);
