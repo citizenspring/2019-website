@@ -39,7 +39,7 @@ class Post extends Component {
                 )}
                 html={html}
               />
-              {post.html.length > 14 && <PostReactions group={group} thread={thread} post={post} size={16} />}
+              {post.html.length > 14 && <PostReactions group={group} thread={thread} reply={post} size={16} />}
             </div>
           )}
         </ContentWrapper>
