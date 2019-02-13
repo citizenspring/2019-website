@@ -212,7 +212,8 @@ libemail.parseHeaders = function(email) {
     throw new Error('libemail.parseHeaders: invalid email object');
   }
   const sender = email.sender.toLowerCase();
-  const recipient = (email.recipient || email.recipients || '').toLowerCase(); // mailgun's inconsistent api
+  // note: we cannot use email.recipient since mailgun removes the /ThreadId/PostId as part of the recipient address
+  const recipient = extractNamesAndEmailsFromString(email.To)[0].email;
   const parsedSenderEmail = parseEmailAddress(sender);
   const parsedRecipientEmail = parseEmailAddress(recipient);
   let parsedGroupEmail = {};
@@ -221,7 +222,7 @@ libemail.parseHeaders = function(email) {
   }
   const recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`).filter(r => {
     if (!r.email) return false;
-    if (r.email === recipient) return false;
+    if (r.email === parsedRecipientEmail.email) return false;
     const parsedEmail = parseEmailAddress(r.email);
     if (parsedEmail.email === parsedRecipientEmail.email) return false;
     if (parsedEmail.email === parsedSenderEmail.email) return false;
