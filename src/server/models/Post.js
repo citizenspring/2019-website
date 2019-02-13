@@ -229,7 +229,7 @@ module.exports = (sequelize, DataTypes) => {
       const cc = followers.filter(f => !recipientsEmails.includes(f.email)).map(u => u.email);
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
-        from: `${userData.name} <${groupEmail}>`,
+        from: `${user.name} <${groupEmail}>`,
         cc,
         headers,
       });
@@ -245,13 +245,14 @@ module.exports = (sequelize, DataTypes) => {
       };
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
-        from: `${userData.name} <${groupEmail}>`,
+        from: `${user.name} <${groupEmail}>`,
         cc: followers.map(u => u.email),
         headers,
       });
     }
     return post;
   };
+
   /**
    * Edits a post and saves a new version
    */
