@@ -82,6 +82,19 @@ describe('email', () => {
       `<p>Beste actieve burger<p>Tussen 21 en 24 maart 2019 organiseert #CitizenSpring🌱 opendeurdagen voor burgerinitiatieven. Het concept volgt het idee van een openbedrijvendag, maar dan voor burgerinitiatieven. Het doel van deze dagen is de zichtbaarheid van al deze actieve burgers te verhogen.`,
     );
   });
+
+  it('removes signature from Huawei phones', () => {
+    const email = {
+      'stripped-signature': 'Sent from my Huawei phone',
+      'stripped-html':
+        'I saw another proposal from a girls and needs a clearer font<div>I&#39;ll try to improve those or adjust them.?&nbsp;<br /><br />Sent from my Huawei phone</div>',
+    };
+    const html = libemail.getHTML(email);
+    expect(html).toEqual(
+      `<p>I saw another proposal from a girls and needs a clearer font<br>I'll try to improve those or adjust them.?`,
+    );
+  });
+
   it('cleans outlook html email with markdown', () => {
     const email = {
       'stripped-html':

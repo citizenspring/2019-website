@@ -104,6 +104,11 @@ libemail.getHTML = function(email) {
     return html;
   }
 
+  // Huawei phones
+  if (email['stripped-signature']) {
+    html = html.replace(email['stripped-signature'], '');
+  }
+
   // Remove padding otherwise markdown consider it as <code> (e.g. Thunderbird)
   const matches = html.match(/^ +</gm);
   if (matches) {
@@ -134,9 +139,6 @@ libemail.getHTML = function(email) {
     return '';
   }
 
-  // remove already linked urls (as they will be relinked with the markdown processor)
-  html = html.replace(/<a[\s][^>]*href="([^"]+)"[^>]+>\1<\/a>/gm, '$1');
-
   // we remove the <a data-*> from copy pastes from facebook
   html = sanitizeHtml(html, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
@@ -146,11 +148,16 @@ libemail.getHTML = function(email) {
     },
   });
 
-  // convert <p></p> to new lines since they will be converted back by markdown processor
   html = html
+    // remove already linked urls (as they will be relinked with the markdown processor)
+    .replace(/<a[\s][^>]*href="([^"]+)"[^>]+>\1<\/a>/gm, '$1')
+    // convert <p></p> to double new lines since they will be converted back by markdown processor
     .replace(/<p[^>]*>((?:(?!<\/?p)(.|\n))*)(<\/p>)/gm, '\r\n$1\r\n')
-    .replace(/(\r)?\n((\r)?\n)+/gm, '\r\n\r\n') // replace <p>$line</p> to $line<br>
-    .replace(/\no /gm, '\n  - '); // handle lists level 2
+    // convert <div></div> to new lines since they will be converted back by markdown processor
+    .replace(/<div[^>]*>((?:(?!<\/?div)(.|\n))*)(<\/div>)/gm, '<br>\r\n$1\r\n')
+    .replace(/(\r)?\n((\r)?\n)+/gm, '\r\n\r\n') // max 2 new lines in a row
+    .replace(/\no /gm, '\n  - ') // handle lists level 2
+    .replace(/(<br[^>]*>)+(\r\n)*$/g, ''); // clean trailing new lines
 
   html = processor.processSync(html).toString();
 
