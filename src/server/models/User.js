@@ -133,10 +133,10 @@ module.exports = (sequelize, DataTypes) => {
    * Instance Methods
    */
   User.prototype.setName = async function(name) {
-    const tokens = name.split(' ');
-    this.firstName = tokens[0];
+    const tokens = name.match(/^([^(.| )]+)(?: |\.)?(.*)$/);
+    this.firstName = tokens[1];
     if (tokens.length > 1) {
-      this.lastName = tokens.slice(1).join(' ');
+      this.lastName = tokens[2];
     }
     return await this.save();
   };

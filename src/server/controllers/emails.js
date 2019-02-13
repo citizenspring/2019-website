@@ -275,10 +275,14 @@ export async function handleIncomingEmail(email) {
 
   const userData = extractNamesAndEmailsFromString(email.From)[0];
   const user = await models.User.findOrCreate(userData);
+
   // if we didn't have the name of the user before (i.e. because added by someone else just by email),
   // we add it
-  if (user.name === 'anonymous' && userData.name) {
+  const emailAccount = parseEmailAddress(userData.email).groupSlug;
+  if (userData.name && (user.name === 'anonymous' || user.name === emailAccount)) {
     user.setName(userData.name);
+  } else if (user.name === 'anonymous') {
+    user.setName(emailAccount);
   }
 
   let group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
