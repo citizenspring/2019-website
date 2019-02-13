@@ -92,10 +92,9 @@ libemail.getHTML = function(email) {
   if (html.indexOf('<!--StartFragment-->') !== -1) {
     html = html
       .substr(html.indexOf('<!--StartFragment-->') + 20)
-      .replace(/<((span|p|b|i|o:p))[^>]*>/g, '<$1>')
-      .replace(/<\/?(o:p|span)>/g, '')
-      .replace(/<\/?b>\s?(<\/?b>\s?)+/g, '')
-      .replace(/<!--[^>]+-->/g, '');
+      .replace(/\n/gm, ' ')
+      .replace(/( |&nbsp;)+/gm, ' ')
+      .replace(/<\/?b[^>]*>\s?(<\/?b[^>]*>\s?)+/g, '');
   }
 
   // Microsoft Word (yes, seriously)
@@ -146,6 +145,13 @@ libemail.getHTML = function(email) {
       img: ['src'],
     },
   });
+
+  // convert <p></p> to new lines since they will be converted back by markdown processor
+  html = html
+    .replace(/<p[^>]*>((?:(?!<\/?p)(.|\n))*)(<\/p>)/gm, '\r\n$1\r\n')
+    .replace(/(\r)?\n((\r)?\n)+/gm, '\r\n\r\n') // replace <p>$line</p> to $line<br>
+    .replace(/\no /gm, '\n  - '); // handle lists level 2
+
   html = processor.processSync(html).toString();
 
   // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail
