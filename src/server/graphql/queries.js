@@ -76,6 +76,7 @@ const queries = {
         type: GraphQLString,
         description: 'type of group to return (GROUP or EVENT). Default: ALL',
       },
+      tags: { type: new GraphQLList(GraphQLString), description: 'filter by tags (AND)' },
       limit: { type: GraphQLInt },
       offset: { type: GraphQLInt },
     },
@@ -83,6 +84,9 @@ const queries = {
       const query = { where: { status: 'PUBLISHED' } };
       if (args.type) {
         query.where.type = args.type;
+      }
+      if (args.tags) {
+        query.where.tags = { [Op.contains]: args.tags };
       }
       query.limit = args.limit || 20;
       query.offset = args.offset || 0;

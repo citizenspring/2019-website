@@ -427,6 +427,12 @@ export const GroupType = new GraphQLObjectType({
           return group.color;
         },
       },
+      tags: {
+        type: new GraphQLList(GraphQLString),
+        resolve(group) {
+          return group.tags;
+        },
+      },
       location: {
         type: LocationType,
         description: 'Name, address, lat, long of the location.',

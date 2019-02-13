@@ -33,6 +33,12 @@ export const Description = styled.p`
   color: #555;
 `;
 
+export const DescriptionBlock = styled.div`
+  margin: 1rem 0;
+  font-size: 1.6rem;
+  color: #555;
+`;
+
 export const PullQuote = styled.p`
   font-size: 2rem;
   font-style: italic;

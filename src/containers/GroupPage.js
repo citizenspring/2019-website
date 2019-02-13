@@ -7,7 +7,7 @@ import PostList from './PostList';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 
-import { Content, Description } from '../styles/layout';
+import { Content, DescriptionBlock } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
 import EditableText from '../components/EditableText';
 import { mailto } from '../lib/utils';
@@ -15,7 +15,8 @@ import { mailto } from '../lib/utils';
 import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/Metadata';
-import Locations from '../components/Locations';
+import SubgroupsMap from '../components/Group/SubgroupsMap';
+import SubgroupsTags from '../components/Group/SubgroupsTags';
 
 class GroupPage extends React.Component {
   static propTypes = {
@@ -46,14 +47,15 @@ class GroupPage extends React.Component {
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
           <Metadata group={group} />
-          <Description>
+          <DescriptionBlock>
             <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)} html={group.description}>
               {!group.description && (
                 <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
               )}
             </EditableText>
-          </Description>
-          <Locations group={group} />
+          </DescriptionBlock>
+          <SubgroupsTags group={group} />
+          <SubgroupsMap group={group} />
           <PostList groupSlug={group.slug} posts={group.posts} />
         </Content>
         <Footer group={group} />
@@ -129,6 +131,7 @@ const getDataQuery = gql`
             createdAt
             slug
             path
+            tags
             location {
               name
               zipcode
