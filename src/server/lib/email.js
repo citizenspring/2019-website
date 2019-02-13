@@ -1,9 +1,9 @@
 import debugLib from 'debug';
 const debug = debugLib('email');
-import { get, uniq } from 'lodash';
+import { get, uniq, pick } from 'lodash';
 import nodemailer from 'nodemailer';
 import config from 'config';
-import { parseEmailAddress, extractNamesAndEmailsFromString } from '../lib/utils';
+import { parseEmailAddress, extractNamesAndEmailsFromString, getRecipientEmail } from '../lib/utils';
 import { createJwt } from '../lib/auth';
 import path from 'path';
 import fs from 'fs';
@@ -205,7 +205,8 @@ libemail.generateSubscribeUrl = async function(email, memberData) {
 
 /**
  * returns headers of an email object as sent by mailgun
- * @POST { sender: email, groupSlug, tags: [string], recipients: [{name, email}], ParentPostId, PostId }
+ * note: we extract the group email from the list of recipients
+ * @POST { sender: email, recipients: [{name, email}],  group: { slug, email, domain }, action, tags: [string], ParentPostId, PostId }
  */
 libemail.parseHeaders = function(email) {
   if (!email.sender) {
@@ -213,29 +214,38 @@ libemail.parseHeaders = function(email) {
   }
   const sender = email.sender.toLowerCase();
   // note: we cannot use email.recipient since mailgun removes the /ThreadId/PostId as part of the recipient address
-  const recipient = extractNamesAndEmailsFromString(email.To)[0].email;
+  const recipientEmail = getRecipientEmail(email);
   const parsedSenderEmail = parseEmailAddress(sender);
-  const parsedRecipientEmail = parseEmailAddress(recipient);
+  const parsedRecipientEmail = parseEmailAddress(recipientEmail);
   let parsedGroupEmail = {};
   if (parsedRecipientEmail.domain === config.server.domain) {
     parsedGroupEmail = parsedRecipientEmail;
   }
-  const recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`).filter(r => {
+  let recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`);
+  recipients = recipients.filter(r => {
     if (!r.email) return false;
-    if (r.email === parsedRecipientEmail.email) return false;
     const parsedEmail = parseEmailAddress(r.email);
-    if (parsedEmail.email === parsedRecipientEmail.email) return false;
-    if (parsedEmail.email === parsedSenderEmail.email) return false;
-    if (!parsedGroupEmail.email && parsedEmail.domain === config.server.domain) {
-      parsedGroupEmail = parsedEmail;
+    if (r.email === sender) return false;
+    if (parsedEmail.domain === config.server.domain) {
+      if (!parsedGroupEmail.email) {
+        parsedGroupEmail = parsedEmail;
+      }
       return false;
     }
     return true;
   });
-  if (!parsedGroupEmail.domain) {
-    parsedGroupEmail = { ...parsedRecipientEmail, groupSlug: undefined };
+
+  const res = {
+    sender,
+    recipients,
+    ...pick(parsedGroupEmail, ['action', 'ParentPostId', 'PostId', 'tags']),
+  };
+
+  if (parsedGroupEmail.domain) {
+    res.group = pick(parsedGroupEmail, ['email', 'domain']);
+    res.group.slug = parsedGroupEmail.groupSlug;
   }
-  return { sender, ...parsedGroupEmail, recipients };
+  return res;
 };
 
 /**

@@ -150,8 +150,10 @@ module.exports = (sequelize, DataTypes) => {
    *   - sender and all recipients (To, Cc) added as followers of the Post
    */
   Post.createFromEmail = async email => {
-    const { groupSlug, recipients, ParentPostId } = libemail.parseHeaders(email);
-    const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
+    const parsedHeaders = libemail.parseHeaders(email);
+    const { recipients, ParentPostId } = parsedHeaders;
+    const groupSlug = get(parsedHeaders, 'group.slug');
+    const groupEmail = get(parsedHeaders, 'group.email');
 
     // if the content of the email is empty, we don't create any post
     if (isEmpty(email['stripped-text'])) {

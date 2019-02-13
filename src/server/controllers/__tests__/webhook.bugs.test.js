@@ -101,14 +101,14 @@ describe('webhook bugs', () => {
       try {
         await webhook(req, res);
       } catch (e) {
-        expect(e.message).toContain('Invalid webhook payload: missing "recipient"');
+        expect(e.message).toContain('Invalid webhook payload: missing "To"');
       }
     });
 
     it('skips duplicate email', async () => {
       const req = {
         body: {
-          recipient: 'user@domain.com',
+          To: 'user@domain.com',
           'Message-Id': '<CAKR9DSqaMhAwu4CEEELC7_zr4kNAGdJhFE2n5Ueamwvb6ojJ0w@mail.gmail.com>',
         },
       };

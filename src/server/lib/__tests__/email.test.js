@@ -6,10 +6,12 @@ describe('email', () => {
     const headers = libemail.parseHeaders(email2);
     expect(headers).toEqual({
       sender: 'firstrecipient@gmail.com',
-      groupSlug: 'testgroup',
-      tags: [],
-      domain: 'citizenspring.be',
-      email: 'testgroup@citizenspring.be',
+      tags: ['tag1'],
+      group: {
+        email: 'testgroup@citizenspring.be',
+        slug: 'testgroup',
+        domain: 'citizenspring.be',
+      },
       action: undefined,
       recipients: [{ name: 'First Sender', email: 'firstsender@gmail.com' }],
     });
@@ -17,17 +19,17 @@ describe('email', () => {
   it('ignores duplicate email recipients', () => {
     const headers = libemail.parseHeaders({
       sender: 'sender@gmail.com',
-      recipient: 'recipient+tag1@hotmail.com',
+      To: 'recipient+tag1@hotmail.com, recipient+tag2@hotmail.com',
       Cc: 'Carlos <cc@gmail.com>, recipient+tag2@hotmail.com, sender+newt@gmail.com',
     });
     expect(headers).toEqual({
       sender: 'sender@gmail.com',
-      groupSlug: undefined,
-      tags: ['tag1'],
-      domain: 'hotmail.com',
-      email: 'recipient@hotmail.com',
-      action: undefined,
-      recipients: [{ name: 'Carlos', email: 'cc@gmail.com' }],
+      recipients: [
+        { email: 'recipient+tag1@hotmail.com' },
+        { email: 'recipient+tag2@hotmail.com' },
+        { name: 'Carlos', email: 'cc@gmail.com' },
+        { email: 'sender+newt@gmail.com' },
+      ],
     });
   });
 

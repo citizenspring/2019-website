@@ -73,7 +73,6 @@ describe('webhook replies', () => {
       req.body = {
         ...email2,
         'Message-Id': `${Math.round(Math.random() * 10000000)}`,
-        recipient: 'testgroup@citizenspring.be',
         To: '"testgroup@citizenspring.be" <testgroup/1/1@citizenspring.be>',
         'In-Reply-To': '<testgroup/1/1@citizenspring.be>',
       };

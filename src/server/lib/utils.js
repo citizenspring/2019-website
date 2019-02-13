@@ -31,6 +31,19 @@ export const capitalize = str => {
 };
 
 /**
+ * Returns the email address of the first recipient of the email
+ * @PRE: email.To: "Name" <email>, "Name 2" <email2>
+ * @param {*} email
+ */
+export const getRecipientEmail = email => {
+  let recipient;
+  // when replying from gmail to "testgroup@citizenspring.be" <testgroup/28/29@citizenspring.be>,
+  // the email.recipient becomes testgroup/28/29@citizenspring.be, testgroup@citizenspring.be
+  const emails = extractNamesAndEmailsFromString(email.To);
+  return emails[0].email;
+};
+
+/**
  * Extracts names and emails from a string with multiple names and emails
  * @param {*} str eg. "Xavier <xavier@gmail.com>, email2@hotmail.com,"
  * @POST: [ {name, email}]

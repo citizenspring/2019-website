@@ -268,7 +268,8 @@ export async function handleIncomingEmail(email) {
   const parsedEmailAddress = libemail.parseHeaders(email);
 
   debug('handleIncomingEmail: parsedEmailAddress', parsedEmailAddress);
-  const { recipients, tags, groupSlug, action, ParentPostId, PostId } = parsedEmailAddress;
+  const { recipients, tags, action, ParentPostId, PostId } = parsedEmailAddress;
+  const groupSlug = get(parsedEmailAddress, 'group.slug');
   if (!groupSlug || !email.From) {
     throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email object`);
   }

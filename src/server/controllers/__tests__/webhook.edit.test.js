@@ -12,7 +12,7 @@ const req = {
   body: {
     From: 'First Sender <firstsender@gmail.com>',
     sender: 'firstsender@gmail.com',
-    recipient: 'testgroup/edit@citizenspring.be',
+    To: '"testgroup@citizenspring.be" <testgroup/edit@citizenspring.be>',
     subject: 'new group name',
     'stripped-text': 'new group description',
   },
@@ -49,12 +49,13 @@ describe('webhook edit', () => {
       expect(groups[1].description).toEqual(req.body['stripped-text']);
     });
   });
+
   describe('edit post', () => {
     let post;
     beforeEach(async () => {
       sendEmailSpy.resetHistory();
       post = await models.Post.create({ UserId: user.id, GroupId: group.id, title: 'title v1' });
-      req.body.recipient = `testgroup/${post.PostId}/edit@citizenspring.be`;
+      req.body.To = `"testgroup@citizenspring.be" <testgroup/${post.PostId}/edit@citizenspring.be>`;
       req.body.subject = 'Title v2';
       req.body['stripped-html'] = '<p>This is the v2 of my post</p>';
     });
