@@ -138,7 +138,7 @@ libemail.getHTML = function(email) {
     console.warn('html is empty for email', email);
     return '';
   }
-
+  debug('>>> html pre sanitize', html);
   // we remove the <a data-*> from copy pastes from facebook
   html = sanitizeHtml(html, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
@@ -147,10 +147,11 @@ libemail.getHTML = function(email) {
       img: ['src'],
     },
   });
+  debug('>>> html after sanitize', html);
 
   html = html
     // remove already linked urls (as they will be relinked with the markdown processor)
-    .replace(/<a[\s][^>]*href="([^"]+)"[^>]+>\1<\/a>/gm, '$1')
+    .replace(/<a[\s][^>]*href="([^"]+)"[^>]*>\1<\/a>/gm, '$1')
     // convert <p></p> to double new lines since they will be converted back by markdown processor
     .replace(/<p[^>]*>((?:(?!<\/?p)(.|\n))*)(<\/p>)/gm, '\r\n$1\r\n')
     // convert <div></div> to new lines since they will be converted back by markdown processor
@@ -159,7 +160,10 @@ libemail.getHTML = function(email) {
     .replace(/\no /gm, '\n  - ') // handle lists level 2
     .replace(/(<br[^>]*>)+(\r\n)*$/g, ''); // clean trailing new lines
 
+  debug('>>> html pre markdown', html);
+
   html = processor.processSync(html).toString();
+  debug('>>> html after markdown', html);
 
   // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail
   html = html
