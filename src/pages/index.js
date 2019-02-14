@@ -9,6 +9,7 @@ import { Box, Flex } from '@rebass/grid';
 
 const Cover = styled.div`
   margin: 2rem 0;
+  text-align: center;
 `;
 
 const Font = styled.div`
@@ -26,16 +27,16 @@ class HomePage extends React.Component {
         <TopBar />
         <Content>
           <Flex flexDirection={['column', 'row', 'row']} alignItems="center">
-            <Box mr={4}>
+            <Box mr={[0, 2, 4]} width={320}>
               <Cover>
                 <Font size={36}>March 21-24 2019</Font>
-                <Font size={32}>MEET THE CITIZENS</Font>
-                <Font size={27}>that are taking initiatives</Font>
-                <Font size={42}>🙋🏻‍♀️🙋🏼‍♂️🙋🏽‍♀️🙋🏿‍♂️🙋🏼‍♀️🙋🏾‍♀️🙋🏻‍♂️</Font>
+                <Font size={30}>MEET THE CITIZENS</Font>
+                <Font size={25}>that are taking initiatives</Font>
+                <img src="/static/images/citizens-emoji.png" height={48} />
               </Cover>
               <iframe
-                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCitizenSpringBelgium%2F&tabs=events&width=340&height=496&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=110203902358957"
-                width="340"
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCitizenSpringBelgium%2F&tabs=events&width=320&height=496&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=110203902358957"
+                width="320"
                 height="496"
                 style={{ border: 'none', overflow: 'hidden' }}
                 scrolling="no"
@@ -44,7 +45,7 @@ class HomePage extends React.Component {
                 allow="encrypted-media"
               />{' '}
             </Box>
-            <Box my={4}>
+            <Box my={[0, 2, 4]}>
               <PullQuote>
                 "The future is already here. It's just not evenly distributed yet" - somebody famous.
               </PullQuote>
