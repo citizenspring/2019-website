@@ -9,19 +9,23 @@ import Footer from '../components/Footer';
 
 import { Content, DescriptionBlock } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
+import EventsGroupPage from './EventsGroupPage';
 import EditableText from '../components/EditableText';
 import { mailto } from '../lib/utils';
 
 import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/Metadata';
-import SubgroupsMap from '../components/Group/SubgroupsMap';
-import SubgroupsTags from '../components/Group/SubgroupsTags';
+import MapMarkers from '../components/MapMarkers';
+import TagsSelector from '../components/TagsSelector';
+
+import { get } from 'lodash';
 
 class GroupPage extends React.Component {
   static propTypes = {
     groupSlug: PropTypes.string.isRequired,
     intl: PropTypes.object.isRequired,
+    tag: PropTypes.string,
   };
 
   constructor(props) {
@@ -31,16 +35,29 @@ class GroupPage extends React.Component {
   render() {
     const group = this.props.data.Group;
     if (!group) return <div>Loading</div>;
+    console.log('>>> group loaded', group);
+    const selectedTag = this.props.tag;
     const groupEmail = `${group.slug}@${env.DOMAIN}`;
+    const template = get(group, 'settings.template');
+
+    if (template === 'events') {
+      return <EventsGroupPage group={group} />;
+    }
+
     const actions = [
       {
         label: 'join',
-        href: mailto(groupEmail, 'join', `Join ${group.name}`, 'Please present yourself to the group in a few words.'),
+        href: mailto(
+          groupEmail,
+          'join',
+          `Join ${group.name}`,
+          'Just send this email to join the group and be notified whenever there is a new post.',
+        ),
         style: 'standard',
       },
       { label: '+ New Thread', href: mailto(groupEmail) },
     ];
-    console.log('>>> group loaded', group);
+
     return (
       <div>
         <TopBar group={group} />
@@ -54,8 +71,7 @@ class GroupPage extends React.Component {
               )}
             </EditableText>
           </DescriptionBlock>
-          <SubgroupsTags group={group} />
-          <SubgroupsMap group={group} />
+          <TagsSelector group={group} selected={selectedTag} />
           <PostList groupSlug={group.slug} posts={group.posts} />
         </Content>
         <Footer group={group} />
@@ -65,19 +81,13 @@ class GroupPage extends React.Component {
 }
 
 const getDataQuery = gql`
-  query Group(
-    $groupSlug: String!
-    $subGroupsLimit: Int
-    $subGroupsType: String
-    $subGroupsOffset: Int
-    $subGroupsHasLocation: Boolean
-    $subGroupsIncludeChildren: Boolean
-  ) {
+  query Group($groupSlug: String!, $onlyPostsWithLocation: Boolean, $tags: [String]) {
     Group(groupSlug: $groupSlug) {
       id
       slug
       name
       description
+      settings
       followers {
         total
         nodes {
@@ -87,7 +97,7 @@ const getDataQuery = gql`
           }
         }
       }
-      posts {
+      posts(hasLocation: $onlyPostsWithLocation, tags: $tags) {
         total
         nodes {
           id
@@ -95,16 +105,28 @@ const getDataQuery = gql`
             PostId
             title
             slug
+            type
             createdAt
+            startsAt
+            endsAt
             user {
               id
               name
             }
+            tags
             followers {
               total
             }
             replies {
               total
+            }
+            location {
+              name
+              address
+              zipcode
+              city
+              lat
+              long
             }
           }
         }
@@ -114,32 +136,6 @@ const getDataQuery = gql`
         zipcode
         lat
         long
-      }
-      groups(
-        type: $subGroupsType
-        limit: $subGroupsLimit
-        offset: $subGroupsOffset
-        hasLocation: $subGroupsHasLocation
-        includeChildren: $subGroupsIncludeChildren
-      ) {
-        total
-        nodes {
-          id
-          ... on Group {
-            GroupId
-            name
-            createdAt
-            slug
-            path
-            tags
-            location {
-              name
-              zipcode
-              lat
-              long
-            }
-          }
-        }
       }
     }
   }
@@ -154,8 +150,8 @@ export const addData = graphql(getDataQuery, {
         groupSlug: props.groupSlug,
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
-        subGroupsIncludeChildren: true,
-        subGroupsHasLocation: true,
+        onlyPostsWithLocation: true,
+        tags: props.tag && [props.tag],
       },
     };
   },

@@ -7,6 +7,8 @@ import { extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
 import debugLib from 'debug';
 import { inspectRows } from '../lib/jest';
 const debug = debugLib('post');
+import markdown from '../lib/markdown';
+import { isISO31661Alpha2 } from 'validator';
 
 module.exports = (sequelize, DataTypes) => {
   const { models } = sequelize;
@@ -86,12 +88,57 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'POST',
       },
       title: DataTypes.STRING,
-      html: DataTypes.TEXT,
+      html: {
+        type: DataTypes.TEXT,
+        get() {
+          if (this.getDataValue('html')) return this.getDataValue('html');
+          if (this.getDataValue('text')) return markdown(this.getDataValue('text'));
+          return '';
+        },
+      },
       text: DataTypes.TEXT,
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },
       email: DataTypes.JSON,
+      geoLocationLatLong: DataTypes.GEOMETRY('POINT'),
+      locationName: DataTypes.STRING,
+      address: DataTypes.STRING,
+      zipcode: DataTypes.STRING,
+      city: DataTypes.STRING,
+      countryCode: {
+        type: DataTypes.STRING,
+        length: 2,
+        validate: {
+          len: 2,
+          isValidCountryCode(value) {
+            if (!isISO31661Alpha2(value)) {
+              throw new Error('Invalid Country Code.');
+            }
+          },
+        },
+      },
+      startsAt: DataTypes.DATE,
+      endsAt: DataTypes.DATE,
+      website: DataTypes.STRING,
+      settings: DataTypes.JSON,
+      formData: DataTypes.JSONB,
+      location: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return {
+            name: this.locationName,
+            address: this.address,
+            zipcode: this.zipcode,
+            city: this.city,
+            countryCode: this.countryCode,
+            lat:
+              this.geoLocationLatLong && this.geoLocationLatLong.coordinates && this.geoLocationLatLong.coordinates[0],
+            long:
+              this.geoLocationLatLong && this.geoLocationLatLong.coordinates && this.geoLocationLatLong.coordinates[1],
+          };
+        },
+      },
     },
     {
       paranoid: true,
@@ -109,6 +156,21 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Post validation error: need to provide a slug or a title', post);
           }
           post.slug = post.slug || slugify(post.title);
+          const location = get(post, 'dataValues.location');
+          if (location) {
+            post.locationName = location.name;
+            post.address = location.address;
+            post.city = location.city;
+            post.countryCode = location.countryCode;
+            post.zipcode = location.zipcode;
+            if (location.lat) {
+              post.geoLocationLatLong = {
+                type: 'Point',
+                coordinates: [location.lat, location.long],
+              };
+            }
+          }
+          return post;
         },
         afterCreate: async post => {
           let action = 'CREATE';
@@ -153,8 +215,10 @@ module.exports = (sequelize, DataTypes) => {
    *   - sender and all recipients (To, Cc) added as followers of the Post
    */
   Post.createFromEmail = async email => {
-    const { groupSlug, recipients, ParentPostId } = libemail.parseHeaders(email);
-    const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`;
+    const parsedHeaders = libemail.parseHeaders(email);
+    const { recipients, ParentPostId } = parsedHeaders;
+    const groupSlug = get(parsedHeaders, 'group.slug');
+    const groupEmail = get(parsedHeaders, 'group.email');
 
     // if the content of the email is empty, we don't create any post
     if (isEmpty(email['stripped-text'])) {
@@ -232,13 +296,19 @@ module.exports = (sequelize, DataTypes) => {
       const cc = followers.filter(f => !recipientsEmails.includes(f.email)).map(u => u.email);
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
-        from: `${userData.name} <${groupEmail}>`,
+        from: `${user.name} <${groupEmail}>`,
         cc,
         headers,
       });
     } else {
-      // if it's part of a thread, we send the post to the followers of the parent post + recipients
-      const followers = await thread.getFollowers();
+      let followers;
+      if (get(parentPost, 'settings.type') === 'announcements') {
+        // if the post is of type announcements, only the admins can receive replies
+        followers = await thread.getAdmins();
+      } else {
+        // if it's part of a thread, we send the post to the followers of the parent post + recipients
+        followers = await thread.getFollowers();
+      }
       const unsubscribeLabel = `unfollow this thread`;
       data = {
         groupSlug,
@@ -248,13 +318,14 @@ module.exports = (sequelize, DataTypes) => {
       };
       await libemail.sendTemplate('post', data, groupEmail, {
         exclude: [user.email],
-        from: `${userData.name} <${groupEmail}>`,
+        from: `${user.name} <${groupEmail}>`,
         cc: followers.map(u => u.email),
         headers,
       });
     }
     return post;
   };
+
   /**
    * Edits a post and saves a new version
    */
@@ -310,9 +381,9 @@ module.exports = (sequelize, DataTypes) => {
     const group = await models.Group.findOne({ where: { GroupId: this.GroupId } });
     if (this.ParentPostId) {
       const thread = await models.Post.findOne({ where: { PostId: this.ParentPostId } });
-      return `/${group.slug}/${thread.slug}#${this.PostId}`;
+      return `/${group.slug}/posts/${thread.slug}#${this.PostId}`;
     } else {
-      return `/${group.slug}/${this.slug}`;
+      return `/${group.slug}/posts/${this.slug}`;
     }
   };
 
@@ -332,19 +403,28 @@ module.exports = (sequelize, DataTypes) => {
         const parentPost = await Post.findByPk(this.ParentPostId);
         this.path = `/${group.slug}/${parentPost.slug}`;
       } else {
-        this.path = `/${group.slug}/${this.slug}`;
+        this.path = `/${group.slug}/posts/${this.slug}`;
       }
     }
     return `${get(config, 'server.baseUrl')}${this.path}`;
   };
 
-  Post.associate = m => {
-    // post.getFollowers();
-    Post.belongsToMany(m.User, {
-      through: { model: m.Member, unique: false, scope: { role: 'FOLLOWER' } },
-      as: 'followers',
-      foreignKey: 'PostId',
+  Post.prototype.getMembers = async function(role) {
+    const where = { PostId: this.PostId, role };
+    const memberships = await models.Member.findAll({
+      where,
+      include: [{ model: models.User, as: 'user' }],
     });
+    return memberships.map(m => m.user);
   };
+
+  Post.prototype.getFollowers = async function() {
+    return this.getMembers('FOLLOWER');
+  };
+
+  Post.prototype.getAdmins = async function() {
+    return this.getMembers('ADMIN');
+  };
+
   return Post;
 };

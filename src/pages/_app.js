@@ -28,14 +28,11 @@ class OpenCollectiveEmail extends App {
 
     const scripts = {};
 
-    if (pageProps.scripts) {
-      if (pageProps.scripts.googleMaps) {
-        if (ctx.req) {
-          scripts['google-maps'] = getGoogleMapsScriptUrl();
-        } else {
-          await loadGoogleMaps();
-        }
-      }
+    // we always load the scripts otherwise it fails when we move from one page to another without server refresh
+    if (ctx.req) {
+      scripts['google-maps'] = getGoogleMapsScriptUrl();
+    } else {
+      await loadGoogleMaps();
     }
 
     return { pageProps, scripts };

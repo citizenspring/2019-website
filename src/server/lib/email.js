@@ -1,32 +1,16 @@
 import debugLib from 'debug';
 const debug = debugLib('email');
-import { get, uniq } from 'lodash';
+import { get, uniq, pick } from 'lodash';
 import nodemailer from 'nodemailer';
 import config from 'config';
-import { parseEmailAddress, extractNamesAndEmailsFromString } from '../lib/utils';
+import { parseEmailAddress, extractNamesAndEmailsFromString, getRecipientEmail } from '../lib/utils';
 import { createJwt } from '../lib/auth';
 import path from 'path';
 import fs from 'fs';
 import models from '../models';
 import sanitizeHtml from 'sanitize-html';
 import { render } from '../templates';
-import unified from 'unified';
-import markdown from 'remark-parse';
-import remark2rehype from 'remark-rehype';
-import raw from 'rehype-raw';
-import stringify from 'rehype-stringify';
-import minify from 'rehype-preset-minify';
-import toc from 'remark-toc';
-import slug from 'remark-slug';
-
-const processor = unified()
-  .use(markdown)
-  .use(slug)
-  .use(toc)
-  .use(remark2rehype, { allowDangerousHTML: true })
-  .use(raw)
-  .use(minify)
-  .use(stringify);
+import markdown from './markdown';
 
 const libemail = {};
 
@@ -92,10 +76,9 @@ libemail.getHTML = function(email) {
   if (html.indexOf('<!--StartFragment-->') !== -1) {
     html = html
       .substr(html.indexOf('<!--StartFragment-->') + 20)
-      .replace(/<((span|p|b|i|o:p))[^>]*>/g, '<$1>')
-      .replace(/<\/?(o:p|span)>/g, '')
-      .replace(/<\/?b>\s?(<\/?b>\s?)+/g, '')
-      .replace(/<!--[^>]+-->/g, '');
+      .replace(/\n/gm, ' ')
+      .replace(/( |&nbsp;)+/gm, ' ')
+      .replace(/<\/?b[^>]*>\s?(<\/?b[^>]*>\s?)+/g, '');
   }
 
   // Microsoft Word (yes, seriously)
@@ -103,6 +86,11 @@ libemail.getHTML = function(email) {
     html = html.substr(html.lastIndexOf('<![endif]-->') + 12);
     html = html.replace(/<o:p>([^<]*)<\/o:p>/gm, '<span>$1</span>');
     return html;
+  }
+
+  // Huawei phones
+  if (email['stripped-signature']) {
+    html = html.replace(email['stripped-signature'], '');
   }
 
   // Remove padding otherwise markdown consider it as <code> (e.g. Thunderbird)
@@ -134,10 +122,7 @@ libemail.getHTML = function(email) {
     console.warn('html is empty for email', email);
     return '';
   }
-
-  // remove already linked urls (as they will be relinked with the markdown processor)
-  html = html.replace(/<a[\s][^>]*href="([^"]+)"[^>]+>\1<\/a>/gm, '$1');
-
+  debug('>>> html pre sanitize', html);
   // we remove the <a data-*> from copy pastes from facebook
   html = sanitizeHtml(html, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
@@ -146,7 +131,23 @@ libemail.getHTML = function(email) {
       img: ['src'],
     },
   });
-  html = processor.processSync(html).toString();
+  debug('>>> html after sanitize', html);
+
+  html = html
+    // remove already linked urls (as they will be relinked with the markdown processor)
+    .replace(/<a[\s][^>]*href="([^"]+)"[^>]*>\1<\/a>/gm, '$1')
+    // convert <p></p> to double new lines since they will be converted back by markdown processor
+    .replace(/<p[^>]*>((?:(?!<\/?p)(.|\n))*)(<\/p>)/gm, '\r\n$1\r\n')
+    // convert <div></div> to new lines since they will be converted back by markdown processor
+    .replace(/<div[^>]*>((?:(?!<\/?div)(.|\n))*)(<\/div>)/gm, '<br>\r\n$1\r\n')
+    .replace(/(\r)?\n((\r)?\n)+/gm, '\r\n\r\n') // max 2 new lines in a row
+    .replace(/\no /gm, '\n  - ') // handle lists level 2
+    .replace(/(<br[^>]*>)+(\r\n)*$/g, ''); // clean trailing new lines
+
+  debug('>>> html pre markdown', html);
+
+  html = markdown(html);
+  debug('>>> html after markdown', html);
 
   // Remove trailing <p> and trailing <div dir=ltr><div><br clear=all></div></div> when removing signature from gmail
   html = html
@@ -192,36 +193,47 @@ libemail.generateSubscribeUrl = async function(email, memberData) {
 
 /**
  * returns headers of an email object as sent by mailgun
- * @POST { sender: email, groupSlug, tags: [string], recipients: [{name, email}], ParentPostId, PostId }
+ * note: we extract the group email from the list of recipients
+ * @POST { sender: email, recipients: [{name, email}],  group: { slug, email, domain }, action, tags: [string], ParentPostId, PostId }
  */
 libemail.parseHeaders = function(email) {
   if (!email.sender) {
     throw new Error('libemail.parseHeaders: invalid email object');
   }
   const sender = email.sender.toLowerCase();
-  const recipient = (email.recipient || email.recipients || '').toLowerCase(); // mailgun's inconsistent api
+  // note: we cannot use email.recipient since mailgun removes the /ThreadId/PostId as part of the recipient address
+  const recipientEmail = getRecipientEmail(email);
   const parsedSenderEmail = parseEmailAddress(sender);
-  const parsedRecipientEmail = parseEmailAddress(recipient);
+  const parsedRecipientEmail = parseEmailAddress(recipientEmail);
   let parsedGroupEmail = {};
   if (parsedRecipientEmail.domain === config.server.domain) {
     parsedGroupEmail = parsedRecipientEmail;
   }
-  const recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`).filter(r => {
+  let recipients = extractNamesAndEmailsFromString(`${email.To}, ${email.Cc}`);
+  recipients = recipients.filter(r => {
     if (!r.email) return false;
-    if (r.email === recipient) return false;
     const parsedEmail = parseEmailAddress(r.email);
-    if (parsedEmail.email === parsedRecipientEmail.email) return false;
-    if (parsedEmail.email === parsedSenderEmail.email) return false;
-    if (!parsedGroupEmail.email && parsedEmail.domain === config.server.domain) {
-      parsedGroupEmail = parsedEmail;
+    if (r.email === sender) return false;
+    if (parsedEmail.domain === config.server.domain) {
+      if (!parsedGroupEmail.email) {
+        parsedGroupEmail = parsedEmail;
+      }
       return false;
     }
     return true;
   });
-  if (!parsedGroupEmail.domain) {
-    parsedGroupEmail = { ...parsedRecipientEmail, groupSlug: undefined };
+
+  const res = {
+    sender,
+    recipients,
+    ...pick(parsedGroupEmail, ['action', 'ParentPostId', 'PostId', 'tags']),
+  };
+
+  if (parsedGroupEmail.domain) {
+    res.group = pick(parsedGroupEmail, ['email', 'domain']);
+    res.group.slug = parsedGroupEmail.groupSlug;
   }
-  return { sender, ...parsedGroupEmail, recipients };
+  return res;
 };
 
 /**

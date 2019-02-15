@@ -77,7 +77,7 @@ describe('webhook email', () => {
           },
           {
             redirect: url => {
-              expect(url).toContain('/testgroup/re-hello-new-thread');
+              expect(url).toContain('/testgroup/posts/re-hello-new-thread');
             },
           },
         );

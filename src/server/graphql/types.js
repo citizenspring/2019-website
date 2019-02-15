@@ -316,28 +316,20 @@ export const GroupType = new GraphQLObjectType({
             type: GraphQLBoolean,
             description: 'only return sub groups that have a location',
           },
-          includeChildren: {
-            type: GraphQLBoolean,
-            description: 'include children of sub groups (e.g. events)',
-          },
           limit: { type: GraphQLInt },
           offset: { type: GraphQLInt },
         },
         description: 'returns the list of sub groups (type GROUP or EVENT)',
         async resolve(group, args) {
-          const where = {};
-          if (args.includeChildren) {
-            where.path = { [Op.like]: `/${group.slug}/%` };
-          } else {
-            where.ParentGroupId = group.GroupId;
-          }
-          const query = { where };
+          const where = { status: 'PUBLISHED' };
+          where.ParentGroupId = group.GroupId;
           if (args.type) {
             where.type = args.type;
           }
           if (args.hasLocation) {
             where.geoLocationLatLong = { [Op.not]: null };
           }
+          const query = { where };
           query.limit = args.limit || 20;
           query.offset = args.offset || 0;
 
@@ -368,8 +360,47 @@ export const GroupType = new GraphQLObjectType({
       },
       posts: {
         type: NodeListType,
+        args: {
+          type: {
+            type: GraphQLString,
+            description: 'type of group to return (GROUP or EVENT). Default: ALL',
+          },
+          hasLocation: {
+            type: GraphQLBoolean,
+            description: 'only return posts that have a location',
+          },
+          tags: {
+            type: new GraphQLList(GraphQLString),
+            description: 'only return posts that have those tags',
+          },
+          limit: { type: GraphQLInt },
+          offset: { type: GraphQLInt },
+        },
         async resolve(group, args) {
-          return group.getPosts(args);
+          const where = { status: 'PUBLISHED' };
+          where.GroupId = group.GroupId;
+          if (args.type) {
+            where.type = args.type;
+          }
+          if (args.tags) {
+            where.tags = { [Op.contains]: args.tags };
+          }
+          if (args.hasLocation) {
+            where.geoLocationLatLong = { [Op.not]: null };
+          }
+          const query = { where };
+          query.limit = args.limit || 20;
+          query.offset = args.offset || 0;
+          query.logging = console.log;
+          const count = await models.Post.count(query);
+          const rows = await models.Post.findAll(query);
+          return {
+            total: count,
+            nodes: rows,
+            type: 'Post',
+            limit: args.limit,
+            offset: args.offset,
+          };
         },
       },
       version: {
@@ -401,12 +432,6 @@ export const GroupType = new GraphQLObjectType({
         type: GraphQLString,
         resolve(group) {
           return group.slug;
-        },
-      },
-      path: {
-        type: GraphQLString,
-        resolve(group) {
-          return group.path;
         },
       },
       name: {
@@ -559,6 +584,12 @@ export const PostType = new GraphQLObjectType({
           return post.title;
         },
       },
+      type: {
+        type: GraphQLString,
+        resolve(post) {
+          return post.type;
+        },
+      },
       text: {
         type: GraphQLString,
         resolve(post) {
@@ -571,10 +602,47 @@ export const PostType = new GraphQLObjectType({
           return post.html;
         },
       },
+      tags: {
+        type: new GraphQLList(GraphQLString),
+        resolve(post) {
+          return post.tags;
+        },
+      },
+      location: {
+        type: LocationType,
+        description: 'Name, address, lat, long of the location.',
+        resolve(post) {
+          return post.location;
+        },
+      },
+      settings: {
+        type: GraphQLJSON,
+        resolve(post) {
+          return post.settings;
+        },
+      },
+      formData: {
+        type: GraphQLJSON,
+        resolve(post) {
+          return post.formData;
+        },
+      },
       createdAt: {
         type: GraphQLString,
         resolve(post) {
           return new Date(post.createdAt);
+        },
+      },
+      startsAt: {
+        type: GraphQLString,
+        resolve(post) {
+          return new Date(post.startsAt);
+        },
+      },
+      endsAt: {
+        type: GraphQLString,
+        resolve(post) {
+          return new Date(post.endsAt);
         },
       },
     };

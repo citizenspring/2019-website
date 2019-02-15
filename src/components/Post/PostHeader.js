@@ -7,7 +7,10 @@ import { PostHeaderWrapper, Metadata, Reaction } from './Styles';
 
 export default function PostHeader(props) {
   const timestamp = new Date(Number(props.createdAt));
-  const str = props.reaction ? 'reacted' : 'replied';
+  let str = props.reaction ? 'reacted' : 'replied';
+  if (props.type === 'EVENT') {
+    str = 'submitted';
+  }
   return (
     <PostHeaderWrapper>
       {props.reaction && <Reaction>{props.reaction}</Reaction>}

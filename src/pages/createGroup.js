@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withIntl from '../lib/withIntl';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { pick } from 'lodash';
+import { get, pick } from 'lodash';
 
 import CreateGroup from '../containers/CreateGroupPage';
 import CreateGroupPending from '../containers/CreateGroupPending';
@@ -11,7 +11,7 @@ import CreateGroupPending from '../containers/CreateGroupPending';
 class CreateGroupPage extends React.Component {
   static getInitialProps({ query: { groupSlug } }) {
     const scripts = { googleMaps: true }; // Used in <InputTypeLocation>
-    return { scripts, path: `/${groupSlug}` };
+    return { scripts, groupSlug };
   }
   constructor(props) {
     super(props);
@@ -59,26 +59,26 @@ class CreateGroupPage extends React.Component {
       website: form.eventUrl,
       location: form.location,
       tags: form.tags,
-      formData: pick(form, ['languages', 'kidsFriendly']),
     };
     const res = await this.props.createGroup({ group, user, collective });
-    this.setState({ view: 'pending' });
+    this.setState({ view: 'pending', form });
   }
 
   render() {
     if (this.state.view === 'pending') {
-      return <CreateGroupPending email="myemail@gnail.com" />;
+      return <CreateGroupPending email={get(this.state, 'form.email')} group={get(res, 'data.createGroup.group')} />;
     } else {
-      return <CreateGroup onSubmit={this.onSubmit} />;
+      return <CreateGroup groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />;
     }
   }
 }
 
 const createGroupMutation = gql`
-  mutation createGroup($path: String, $user: UserInputType!, $collective: GroupInputType!, $group: GroupInputType!) {
-    createGroup(path: $path, user: $user, collective: $collective, group: $group) {
+  mutation createGroup($user: UserInputType!, $collective: GroupInputType!, $group: GroupInputType!) {
+    createGroup(user: $user, collective: $collective, group: $group) {
       id
       slug
+      name
       createdAt
     }
   }
@@ -88,7 +88,7 @@ const addMutation = graphql(createGroupMutation, {
   props: ({ ownProps, mutate }) => ({
     createGroup: async ({ user, collective, group }) => {
       return await mutate({
-        variables: { path: ownProps.path, group, user, collective },
+        variables: { group, user, collective },
       });
     },
   }),

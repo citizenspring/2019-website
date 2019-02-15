@@ -1,5 +1,11 @@
 import libemail from '../lib/email';
-import { parseEmailAddress, extractEmailsFromString, extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
+import {
+  getRecipientEmail,
+  parseEmailAddress,
+  extractEmailsFromString,
+  extractNamesAndEmailsFromString,
+  isEmpty,
+} from '../lib/utils';
 import { createJwt } from '../lib/auth';
 import models from '../models';
 import config from 'config';
@@ -44,15 +50,16 @@ async function handleFirstTimeUser(email, data, action) {
 
 export default async function webhook(req, res, next) {
   const email = req.body;
-  if (!email.recipient) {
-    throw new Error('Invalid webhook payload: missing "recipient"');
+  if (!email.To) {
+    throw new Error('Invalid webhook payload: missing "To"');
   }
   if (cache.get(email['Message-Id'])) {
     console.warn('!!! duplicate email', email['Message-Id']);
     return res.send('duplicate');
   }
   cache.set(email['Message-Id'], true);
-  debug('receiving email from:', email.sender, 'to:', email.recipient, 'subject:', email.subject);
+  const recipientEmail = getRecipientEmail(email);
+  debug('receiving email from:', email.sender, 'to:', recipientEmail, 'subject:', email.subject);
 
   // If there is an attachment, we respond with an error (TODO: support attachments)
   // if (email.attachments) {
@@ -69,12 +76,7 @@ export default async function webhook(req, res, next) {
   //   return res.send('ok');
   // }
 
-  // when replying from gmail to "testgroup@citizenspring.be" <testgroup/28/29@citizenspring.be>,
-  // the email.recipient becomes testgroup/28/29@citizenspring.be, testgroup@citizenspring.be
-  if (email.recipient.indexOf(', ') !== -1) {
-    email.recipient = email.recipient.split(', ')[0];
-  }
-  const { groupSlug, ParentPostId, action } = parseEmailAddress(email.recipient);
+  const { groupSlug, ParentPostId, action } = parseEmailAddress(recipientEmail);
   const groupEmail = `${groupSlug}@${get(config, 'server.domain')}`.toLowerCase();
 
   // Ignore emails coming from ourselves (since we send emails to the group and cc recipients)

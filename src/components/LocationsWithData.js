@@ -2,10 +2,8 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import withIntl from '../lib/withIntl';
-import GoogleMap from './GoogleMap';
 import Locations from './Locations';
 import { FormattedMessage } from 'react-intl';
-import { get } from 'lodash';
 import styled from 'styled-components';
 
 const LocationsWrapper = styled.div`
@@ -27,14 +25,7 @@ class LocationsWithData extends React.Component {
 }
 
 const getDataQuery = gql`
-  query Locations(
-    $groupSlug: String!
-    $type: String
-    $limit: Int
-    $offset: Int
-    $hasLocation: Boolean
-    $includeChildren: Boolean
-  ) {
+  query Locations($groupSlug: String!, $type: String, $limit: Int, $offset: Int, $hasLocation: Boolean) {
     Group(groupSlug: $groupSlug) {
       location {
         name
@@ -42,13 +33,7 @@ const getDataQuery = gql`
         lat
         long
       }
-      groups(
-        type: $type
-        limit: $limit
-        offset: $offset
-        hasLocation: $hasLocation
-        includeChildren: $includeChildren
-      ) {
+      groups(type: $type, limit: $limit, offset: $offset, hasLocation: $hasLocation) {
         total
         nodes {
           id
@@ -82,7 +67,6 @@ export const addData = graphql(getDataQuery, {
     return {
       variables: {
         groupSlug: props.groupSlug || 'citizenspring',
-        includeChildren: true,
         hasLocation: true,
         offset: 0,
         limit: props.limit || GROUPS_PER_PAGE * 2,

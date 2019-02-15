@@ -4,16 +4,20 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import withIntl from '../lib/withIntl';
 import Metadata from '../components/PostItem/Metadata';
+import EventMetadata from '../components/PostItem/EventMetadata';
 import Post from '../components/Post/Post';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 import { Content } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
+import TagsList from '../components/TagsList';
 import env from '../env.frontend';
 import { mailto } from '../lib/utils';
 import { capitalize } from '../server/lib/utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Box } from '@rebass/grid';
+import GoogleMap from '../components/Map/GoogleMap';
+import FormData from '../components/FormData';
 
 class ThreadPage extends React.Component {
   static propTypes = {
@@ -61,12 +65,26 @@ class ThreadPage extends React.Component {
         <Content>
           <TitleWithActions title={thread.title} actions={actions} />
           <Box mt={[-2, -2, -3]}>
-            <Metadata user={thread.user.name} createdAt={thread.createdAt} followersCount={thread.followers.total} />
+            {thread.type === 'POST' && (
+              <Metadata user={thread.user.name} createdAt={thread.createdAt} followersCount={thread.followers.total} />
+            )}
+            {thread.type === 'EVENT' && (
+              <EventMetadata startsAt={thread.startsAt} endsAt={thread.endsAt} location={thread.location} />
+            )}
+            <TagsList tags={thread.tags} groupSlug={thread.group.slug} />
           </Box>
           <Post group={thread.group} thread={thread} post={thread} />
           {thread.replies.nodes.map((post, i) => (
             <Post key={i} group={thread.group} thread={thread} post={post} />
           ))}
+          {thread.type === 'EVENT' && (
+            <div>
+              <GoogleMap lat={thread.location.lat} lng={thread.location.long} zoom={16} markerSize={'34px'} />
+              <Box width={[1, null, 1 / 2]} mt={4}>
+                <FormData data={thread.formData} />
+              </Box>
+            </div>
+          )}
         </Content>
         <Footer group={thread.group} post={thread} />
       </div>
@@ -78,11 +96,16 @@ const getDataQuery = gql`
   query Post($postSlug: String) {
     Post(postSlug: $postSlug) {
       PostId
+      type
       slug
       title
       html
       text
+      tags
+      formData
       createdAt
+      startsAt
+      endsAt
       group {
         id
         name
@@ -91,6 +114,14 @@ const getDataQuery = gql`
       user {
         id
         name
+      }
+      location {
+        name
+        address
+        lat
+        long
+        zipcode
+        city
       }
       followers {
         total

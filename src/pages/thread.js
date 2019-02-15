@@ -16,7 +16,6 @@ class ThreadPage extends React.Component {
   static propTypes = {
     threadSlug: PropTypes.string, // from getInitialProps
     query: PropTypes.object, // from getInitialProps
-    data: PropTypes.object.isRequired, // from withData
   };
 
   constructor(props) {

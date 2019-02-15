@@ -8,24 +8,23 @@ import { Box, Flex } from '@rebass/grid';
 import { Title, Content, Description } from '../styles/layout';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
-class CreateGroupPending extends React.Component {
+class CreateEventPending extends React.Component {
   static propTypes = {
     email: PropTypes.string.isRequired,
-    group: PropTypes.object,
   };
 
   render() {
-    const { email, group } = this.props;
+    const { email } = this.props;
     return (
       <div>
-        <TopBar group={group} />
+        <TopBar />
         <Content>
           <Title>
-            <FormattedMessage id="createGroup.title" defaultMessage="One last step" />
+            <FormattedMessage id="createEvent.title" defaultMessage="One last step" />
           </Title>
           <p>
             <FormattedMessage
-              id="createGroup.pending"
+              id="createEvent.pending"
               defaultMessage="Please confirm your registration using the link we just sent to {email}"
               values={{ email }}
             />
@@ -37,4 +36,4 @@ class CreateGroupPending extends React.Component {
   }
 }
 
-export default withIntl(CreateGroupPending);
+export default withIntl(CreateEventPending);

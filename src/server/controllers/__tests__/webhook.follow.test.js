@@ -12,7 +12,7 @@ const req = {
   body: {
     From: 'First Sender <firstsender@gmail.com>',
     sender: 'firstsender@gmail.com',
-    recipient: 'testgroup/follow@citizenspring.be',
+    To: 'testgroup/follow@citizenspring.be',
     subject: 'follow group name',
     'stripped-text': 'random email text',
     'message-url': 'https://api.mailgun.com/3213211212',
@@ -57,7 +57,7 @@ describe('webhook follow', () => {
     describe('follow thread', () => {
       beforeAll(async () => {
         sendEmailSpy.resetHistory();
-        req.body.recipient = `testgroup/${post.PostId}/follow@citizenspring.be`;
+        req.body.To = `testgroup/${post.PostId}/follow@citizenspring.be`;
         req.body['Message-Id'] = Math.round(Math.random() * 1000000);
         await webhook(req, res);
       });
@@ -78,7 +78,7 @@ describe('webhook follow', () => {
       beforeAll(async () => {
         sendEmailSpy.resetHistory();
         await models.User.findOrCreate({ email: 'firstsender@gmail.com' });
-        req.body.recipient = `testgroup/follow@citizenspring.be`;
+        req.body.To = `testgroup/follow@citizenspring.be`;
         req.body['Message-Id'] = Math.round(Math.random() * 1000000);
         await webhook(req, res);
       });
@@ -97,7 +97,7 @@ describe('webhook follow', () => {
       beforeAll(async () => {
         sendEmailSpy.resetHistory();
         await models.User.findOrCreate({ email: 'firstsender@gmail.com' });
-        req.body.recipient = `testgroup/${post.PostId}/follow@citizenspring.be`;
+        req.body.To = `testgroup/${post.PostId}/follow@citizenspring.be`;
         req.body['Message-Id'] = Math.round(Math.random() * 1000000);
         await webhook(req, res);
       });

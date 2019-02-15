@@ -29,7 +29,7 @@ class TopBar extends Component {
           {group && (
             <TopBarItem>
               <Link href={`/${group.slug}`} color="#ddd">
-                {group.name}
+                {group.name || group.slug}
               </Link>
             </TopBarItem>
           )}

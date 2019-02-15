@@ -17,7 +17,8 @@
         "messagesDir": "./build/messages/"
       }
     ],
-    "styled-components"
+    "styled-components",
+    ["@babel/plugin-proposal-decorators", { "legacy": true }]
   ],
   "env": {
     "development": {

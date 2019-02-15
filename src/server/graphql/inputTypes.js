@@ -92,8 +92,17 @@ export const PostInputType = new GraphQLInputObjectType({
   description: 'Input type for Post',
   fields: () => ({
     id: { type: GraphQLInt },
+    type: { type: GraphQLString },
     title: { type: GraphQLString },
-    body: { type: GraphQLString },
+    html: { type: GraphQLString },
+    text: { type: GraphQLString },
     color: { type: GraphQLString },
+    location: { type: LocationInputType },
+    startsAt: { type: GraphQLString },
+    endsAt: { type: GraphQLString },
+    website: { type: GraphQLString },
+    color: { type: GraphQLString },
+    tags: { type: new GraphQLList(GraphQLString) },
+    formData: { type: GraphQLJSON },
   }),
 });

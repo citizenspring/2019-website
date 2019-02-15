@@ -4,6 +4,7 @@ import models from '../models';
 import { isEmpty, extractNamesAndEmailsFromString, parseEmailAddress, capitalize } from '../lib/utils';
 import libemail from '../lib/email';
 import { createJwt } from '../lib/auth';
+import { get } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('email');
 
@@ -190,17 +191,22 @@ export async function handleIncomingEmail(email) {
   const parsedEmailAddress = libemail.parseHeaders(email);
 
   debug('handleIncomingEmail: parsedEmailAddress', parsedEmailAddress);
-  const { recipients, tags, groupSlug, action, ParentPostId, PostId } = parsedEmailAddress;
+  const { recipients, tags, action, ParentPostId, PostId } = parsedEmailAddress;
+  const groupSlug = get(parsedEmailAddress, 'group.slug');
   if (!groupSlug || !email.From) {
     throw new Error(`handleIncomingEmail> cannot handle incoming email: invalid email object`);
   }
 
   const userData = extractNamesAndEmailsFromString(email.From)[0];
   const user = await models.User.findOrCreate(userData);
+
   // if we didn't have the name of the user before (i.e. because added by someone else just by email),
   // we add it
-  if (user.name === 'anonymous' && userData.name) {
+  const emailAccount = parseEmailAddress(userData.email).groupSlug;
+  if (userData.name && (user.name === 'anonymous' || user.name === emailAccount)) {
     user.setName(userData.name);
+  } else if (user.name === 'anonymous') {
+    user.setName(emailAccount);
   }
 
   let group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');

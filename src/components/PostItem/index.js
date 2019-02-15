@@ -4,6 +4,7 @@ import { get } from 'lodash';
 import { ListItemWrapper } from './Styles';
 import Title from './Title';
 import Metadata from './Metadata';
+import EventMetadata from './EventMetadata';
 
 class PostListItem extends Component {
   static propTypes = {
@@ -15,7 +16,7 @@ class PostListItem extends Component {
 
   render() {
     const { groupSlug, post, followersCount, repliesCount } = this.props;
-    let path = `/${groupSlug || get(post, 'group.slug')}/${get(post, 'parent.slug', post.slug)}`;
+    let path = `/${groupSlug || get(post, 'group.slug')}/posts/${get(post, 'parent.slug', post.slug)}`;
     if (get(post, 'parent.slug')) {
       path += `#${post.PostId}`;
     }
@@ -26,13 +27,18 @@ class PostListItem extends Component {
     return (
       <ListItemWrapper>
         <Title title={post.title} path={path} createdAt={post.createdAt} />
-        <Metadata
-          user={post.user.name}
-          createdAt={post.createdAt}
-          group={post.group}
-          followersCount={followersCount}
-          repliesCount={repliesCount}
-        />
+        {post.type === 'EVENT' && (
+          <EventMetadata startsAt={post.startsAt} endsAt={post.endsAt} location={post.location} />
+        )}
+        {post.type !== 'EVENT' && (
+          <Metadata
+            user={post.user.name}
+            createdAt={post.createdAt}
+            group={post.group}
+            followersCount={followersCount}
+            repliesCount={repliesCount}
+          />
+        )}
       </ListItemWrapper>
     );
   }

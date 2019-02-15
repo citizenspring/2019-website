@@ -41,5 +41,7 @@ export const DescriptionBlock = styled.div`
 
 export const PullQuote = styled.p`
   font-size: 2rem;
-  font-style: italic;
+  max-width: 400px;
+  color: #555;
+  font-weight: 300;
 `;

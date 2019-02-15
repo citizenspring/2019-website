@@ -21,8 +21,8 @@ describe('user', () => {
 
   describe('createGroup', () => {
     const createGroupQuery = `
-    mutation createGroup($path: String, $user: UserInputType!, $collective: GroupInputType!, $group: GroupInputType!) {
-      createGroup(path: $path, user: $user, collective: $collective, group: $group) {
+    mutation createGroup($user: UserInputType!, $collective: GroupInputType!, $group: GroupInputType!) {
+      createGroup(user: $user, collective: $collective, group: $group) {
         id
         slug
         name
@@ -77,7 +77,6 @@ describe('user', () => {
       };
 
       const res = await graphqlQuery(createGroupQuery, {
-        path: '/brussels',
         group,
         user: userData,
         collective,
@@ -86,7 +85,6 @@ describe('user', () => {
       const groups = await models.Group.findAll();
       expect(groups.length).toEqual(3);
       expect(groups[1].type).toEqual('COLLECTIVE');
-      expect(groups[1].path).toEqual('/brussels');
       expect(groups[2].type).toEqual('EVENT');
       expect(groups[1].status).toEqual('PENDING');
       expect(groups[2].status).toEqual('PENDING');
@@ -94,12 +92,11 @@ describe('user', () => {
       expect(groups[2].address).toEqual(group.location.address);
       expect(groups[2].city).toEqual(group.location.city);
       expect(groups[2].zipcode).toEqual(group.location.zipcode);
-      expect(groups[2].path).toEqual(`/brussels/${collective.slug}`);
       expect(groups[2].geoLocationLatLong.coordinates).toEqual([group.location.lat, group.location.long]);
       expect(sendEmailSpy.callCount).toEqual(1);
       expect(sendEmailSpy.firstCall.args[0]).toEqual(userData.email);
       expect(sendEmailSpy.firstCall.args[1]).toEqual('Confirmation of your registration to Citizen Spring');
-      expect(sendEmailSpy.firstCall.args[2]).toContain(`/api/approve?path=%2Fbrussels%2F${collective.slug}`);
+      expect(sendEmailSpy.firstCall.args[2]).toContain(`/api/approve?groupSlug=${collective.slug}`);
       expect(sendEmailSpy.firstCall.args[2]).toContain(`&token=`);
       expect(groups[2].formData).toEqual({ kidsFriendly: ['babies'], languages: ['French', 'English'] });
     });

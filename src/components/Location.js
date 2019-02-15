@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import GoogleMap from './GoogleMap';
+import GoogleMap from './Map/GoogleMap';
 import colors from '../constants/colors';
 
 import styled from 'styled-components';
 
 const LocationWrapper = styled.div`
   margin: 1rem 0;
+  overflow: hidden;
+  height: 100%;
 `;
-const Map = styled.div`
-  height: 300px;
-`;
+const MapWrapper = styled.div``;
 
 class Location extends React.Component {
   static propTypes = {
@@ -37,9 +37,9 @@ class Location extends React.Component {
           </div>
         </div>
         {lat && long && (
-          <Map>
-            <GoogleMap lat={lat} long={long} />
-          </Map>
+          <MapWrapper>
+            <GoogleMap lat={lat} lng={long} zoom={15} />
+          </MapWrapper>
         )}
       </LocationWrapper>
     );

@@ -3,11 +3,10 @@ import nextRoutes from 'next-routes';
 const pages = nextRoutes();
 
 pages
-  .add('create', '/:groupSlug?/create')
+  .add('createEvent', '/:groupSlug?/events/new')
   .add('groups')
-  .add('group', '/:groupSlug')
-  .add('thread', '/:groupSlug/:threadSlug')
-  .add('subgroup', '/:groupSlug/events/:eventSlug', 'group')
+  .add('group', '/:groupSlug/:tag?')
+  .add('thread', '/:groupSlug/(posts|events)/:threadSlug')
   .add('index', '/');
 
 export default pages;

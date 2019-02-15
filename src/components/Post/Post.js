@@ -26,7 +26,7 @@ class Post extends Component {
       <PostWrapper id={post.PostId}>
         <ContentWrapper>
           {thread.PostId !== post.PostId && (
-            <PostHeader reaction={reaction} user={post.user} createdAt={post.createdAt} />
+            <PostHeader type={post.type} reaction={reaction} user={post.user} createdAt={post.createdAt} />
           )}
           {!reaction && (
             <div>
@@ -39,7 +39,9 @@ class Post extends Component {
                 )}
                 html={html}
               />
-              {post.html.length > 14 && <PostReactions group={group} thread={thread} post={post} size={16} />}
+              {post.type === 'POST' && post.html.length > 14 && (
+                <PostReactions group={group} thread={thread} reply={post} size={16} />
+              )}
             </div>
           )}
         </ContentWrapper>

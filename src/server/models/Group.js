@@ -70,7 +70,6 @@ module.exports = (sequelize, DataTypes) => {
           }
         },
       },
-      path: { type: DataTypes.STRING, allowNull: true },
       type: {
         type: DataTypes.STRING, // GROUP, EVENT
         defaultValue: 'GROUP',
@@ -180,16 +179,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     return Group.findOne({ where, order: [['id', 'DESC']] });
   };
-  Group.findByPath = (path, slug, status) => {
-    const where = { path: path.toLowerCase() };
-    if (slug) {
-      where.slug = slug.toLowerCase();
-    }
-    if (status) {
-      where.status = status;
-    }
-    return Group.findOne({ where, order: [['id', 'DESC']] });
-  };
 
   Group.findByGroupId = (GroupId, status) => {
     const where = { GroupId };
@@ -282,12 +271,20 @@ module.exports = (sequelize, DataTypes) => {
     return this.addMembers(recipients, { role: 'FOLLOWER' });
   };
 
-  Group.prototype.getFollowers = async function() {
+  Group.prototype.getMembers = async function(role) {
     const memberships = await models.Member.findAll({
-      where: { GroupId: this.GroupId, role: 'FOLLOWER' },
+      where: { GroupId: this.GroupId, role },
       include: [{ model: models.User, as: 'user' }],
     });
     return memberships.map(m => m.user);
+  };
+
+  Group.prototype.getFollowers = async function() {
+    return this.getMembers('FOLLOWER');
+  };
+
+  Group.prototype.getAdmins = async function() {
+    return this.getMembers('ADMIN');
   };
 
   return Group;

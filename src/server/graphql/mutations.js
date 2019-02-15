@@ -61,21 +61,8 @@ const mutations = {
 
       const groupName = groupData.name || `${collective.name} open door`; // move to frontend
 
-      // Add a post to the /registrations group for notification
-      const registrationsGroup = await models.Group.findByPath(path, 'registrations');
-      if (registrationsGroup) {
-        const postData = {
-          title: groupName,
-          html: json2html(groupData),
-          text: JSON.stringify(groupData, null, '  '),
-          GroupId: registrationsGroup.GroupId,
-          tags: groupData.tags,
-        };
-        const post = await user.createPost(postData);
-      }
-
       // fetch templates and copy them to the new group created (e.g. for how-to-contribute and/or code-of-conduct);
-      const templatesGroup = await models.Group.findByPath(path, 'templates');
+      const templatesGroup = await models.Group.findBySlug('templates');
       if (templatesGroup) {
         const templates = await models.Post.findAll({
           where: { status: 'PUBLISHED', GroupId: templatesGroup.GroupId },
@@ -114,9 +101,7 @@ const mutations = {
       groupCreated.group = collective;
       const tokenData = { type: 'group', TargetId: collective.id, includeChildren: true };
       const token = createJwt('confirmCreateGroup', { data: tokenData }, '1h');
-      const confirmationUrl = `${config.server.baseUrl}/api/approve?path=${encodeURIComponent(path)}groupSlug=${
-        collective.slug
-      }&token=${token}`;
+      const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${collective.slug}&token=${token}`;
       await libemail.sendTemplate(
         `confirmCreateGroup`,
         { collective, path, group: groupCreated, confirmationUrl },
@@ -127,11 +112,33 @@ const mutations = {
   },
   createPost: {
     type: PostType,
+    description: 'Create a Post of any type (POST / EVENT)',
     args: {
+      user: { type: new GraphQLNonNull(UserInputType) },
       post: { type: new GraphQLNonNull(PostInputType) },
+      group: { type: new GraphQLNonNull(GroupInputType) },
     },
-    resolve(_, args, req) {
-      return models.Post.create(args.post);
+    async resolve(_, args, req) {
+      const user = await models.User.findOrCreate(args.user);
+      const group = await models.Group.findBySlug(args.group.slug);
+      if (!group) {
+        throw new Error('Group not found');
+      }
+      const postData = {
+        ...args.post,
+        GroupId: group.id,
+        status: 'PENDING',
+        settings: { type: 'announcements' },
+      };
+      console.log('>>> creating post', postData);
+      const postCreated = await user.createPost(postData);
+      const tokenData = { type: 'post', TargetId: postCreated.id };
+      const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
+      const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
+        postCreated.slug
+      }&token=${token}`;
+      await libemail.sendTemplate(`confirmCreatePost`, { post: postCreated, confirmationUrl }, user.email);
+      return postCreated;
     },
   },
 };

@@ -38,7 +38,7 @@ describe('webhook empty email, existing user', () => {
         {
           body: {
             ...req.body,
-            recipient: 'testgroup/follow@citizenspring.be',
+            To: 'testgroup/follow@citizenspring.be',
           },
         },
         res,
@@ -84,14 +84,14 @@ describe('webhook empty email, existing user', () => {
           body: {
             ...req.body,
             'Message-Id': `${Math.round(Math.random() * 10000000)}`,
-            recipient: 'testgroup2@citizenspring.be',
+            To: 'testgroup2@citizenspring.be',
           },
         },
         res,
       );
       expect(sendEmailSpy.callCount).toEqual(1);
       expect(sendEmailSpy.firstCall.args[1]).toEqual('testgroup2 group info');
-      expect(sendEmailSpy.firstCall.args[3]).toContain('testgroup2@citizenspring.be has 3 followers and 5 posts');
+      expect(sendEmailSpy.firstCall.args[3]).toContain('testgroup2@citizenspring.be has 2 followers and 5 posts');
       await group.destroy();
       await models.Post.truncate();
     });
