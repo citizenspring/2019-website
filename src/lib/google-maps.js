@@ -29,6 +29,7 @@ const loadGoogleMaps = async () => {
   }
   const googleMapsApiKey = getEnvVar('GOOGLE_MAPS_API_KEY');
   if (!googleMapsApiKey) {
+    console.log(get(window, '__NEXT_DATA__.runtimeConfig'));
     throw new Error("'GOOGLE_MAPS_API_KEY' is undefined.");
   } else {
     await loadGoogleMapsAsync(googleMapsApiKey);

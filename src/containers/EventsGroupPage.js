@@ -14,7 +14,7 @@ import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/EventsMetadata';
 import MapMarkers from '../components/MapMarkers';
-import TagsSelector from '../components/TagsSelector';
+import TagsSelector from '../components/TagsSelectorWithData';
 
 import { get } from 'lodash';
 import { Box, Flex } from '@rebass/grid';
@@ -64,7 +64,7 @@ class EventsGroupPage extends React.Component {
               )}
             </EditableText>
           </DescriptionBlock>
-          <TagsSelector group={group} selected={tag} />
+          <TagsSelector groupSlug={group.slug} selected={tag} />
           <Box mb={3}>
             <MapMarkers group={group} />
           </Box>

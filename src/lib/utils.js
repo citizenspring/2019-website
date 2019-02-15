@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import loadScript from 'load-script';
 
 export const requireAttributes = (obj, attributes, getErrorMsg) => {
   attributes.map(attr => {
@@ -45,8 +46,9 @@ export const keepAnchorsShort = (html, maxLength = 44) => {
   );
 };
 
-export const getEnvVar = v =>
-  process.browser ? get(window, ['__NEXT_DATA__', 'runTimeConfig', v]) : get(process, ['env', v]);
+export const getEnvVar = v => {
+  return process.browser ? get(window, ['__NEXT_DATA__', 'runtimeConfig', v]) : get(process, ['env', v]);
+};
 
 export const loadScriptAsync = (url, opts = {}) =>
   new Promise((resolve, reject) => {

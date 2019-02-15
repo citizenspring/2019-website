@@ -24,6 +24,7 @@ const Tag = styled.a`
   margin-right: 0.3rem;
   border-radius: 4px;
   padding: 2px 4px;
+  cursor: pointer;
   color: ${props => (props.selected ? '#FF0044' : '#1f87ff')};
   background: ${props => (props.selected ? '#FFF0F0' : '#e0f1ff')};
 `;

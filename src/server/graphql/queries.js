@@ -19,6 +19,10 @@ const queries = {
     type: NodeListType,
     args: {
       groupSlug: { type: GraphQLString },
+      hasLocation: {
+        type: GraphQLBoolean,
+        description: 'only return posts that have a location',
+      },
       limit: { type: GraphQLInt },
       offset: { type: GraphQLInt },
     },
@@ -28,6 +32,7 @@ const queries = {
         const GroupId = await getIdFromSlug('Group', args.groupSlug);
         query.where.GroupId = GroupId;
       }
+      query.where.ParentPostId = { [Op.is]: null };
       query.limit = args.limit || 20;
       query.offset = args.offset || 0;
       query.order = [['createdAt', 'DESC']];

@@ -19,8 +19,6 @@ class MapMarkers extends React.Component {
   render() {
     const { group } = this.props;
     const posts = get(group, 'posts.nodes');
-    console.log('>>> group', group);
-    console.log('>>> posts', posts);
     if (!posts) {
       return <div />;
     }
@@ -39,8 +37,6 @@ class MapMarkers extends React.Component {
       }
     });
     const location = get(group, 'location', {});
-    console.log('>>> markers', markers);
-    console.log('>>> location', location);
     if (!location.lat && markers.length === 0) {
       return <div />;
     }

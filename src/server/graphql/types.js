@@ -388,6 +388,7 @@ export const GroupType = new GraphQLObjectType({
           if (args.hasLocation) {
             where.geoLocationLatLong = { [Op.not]: null };
           }
+          where.ParentPostId = { [Op.is]: null };
           const query = { where };
           query.limit = args.limit || 20;
           query.offset = args.offset || 0;

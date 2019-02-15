@@ -16,8 +16,7 @@ import { mailto } from '../lib/utils';
 import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/Metadata';
-import MapMarkers from '../components/MapMarkers';
-import TagsSelector from '../components/TagsSelector';
+import TagsSelector from '../components/TagsSelectorWithData';
 
 import { get } from 'lodash';
 
@@ -41,7 +40,7 @@ class GroupPage extends React.Component {
     const template = get(group, 'settings.template');
 
     if (template === 'events') {
-      return <EventsGroupPage group={group} />;
+      return <EventsGroupPage group={group} tag={selectedTag} />;
     }
 
     const actions = [
@@ -71,7 +70,7 @@ class GroupPage extends React.Component {
               )}
             </EditableText>
           </DescriptionBlock>
-          <TagsSelector group={group} selected={selectedTag} />
+          <TagsSelector groupSlug={group.slug} selected={selectedTag} />
           <PostList groupSlug={group.slug} posts={group.posts} />
         </Content>
         <Footer group={group} />
@@ -81,7 +80,7 @@ class GroupPage extends React.Component {
 }
 
 const getDataQuery = gql`
-  query Group($groupSlug: String!, $onlyPostsWithLocation: Boolean, $tags: [String]) {
+  query Group($groupSlug: String!, $tags: [String]) {
     Group(groupSlug: $groupSlug) {
       id
       slug
@@ -97,7 +96,7 @@ const getDataQuery = gql`
           }
         }
       }
-      posts(hasLocation: $onlyPostsWithLocation, tags: $tags) {
+      posts(tags: $tags) {
         total
         nodes {
           id
@@ -150,7 +149,6 @@ export const addData = graphql(getDataQuery, {
         groupSlug: props.groupSlug,
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
-        onlyPostsWithLocation: true,
         tags: props.tag && [props.tag],
       },
     };
