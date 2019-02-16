@@ -16,7 +16,11 @@ class PostListItem extends Component {
 
   render() {
     const { groupSlug, post, followersCount, repliesCount } = this.props;
-    let path = `/${groupSlug || get(post, 'group.slug')}/posts/${get(post, 'parent.slug', post.slug)}`;
+    let path = `/${groupSlug || get(post, 'group.slug')}/${post.type.toLowerCase()}s/${get(
+      post,
+      'parent.slug',
+      post.slug,
+    )}`;
     if (get(post, 'parent.slug')) {
       path += `#${post.PostId}`;
     }

@@ -116,7 +116,7 @@ class ThreadPage extends React.Component {
               )}
             </Box>
             <Box width={300}>
-              <Members type="POST" members={thread.followers} />
+              <Members type={thread.type} members={thread.followers} />
             </Box>
           </Flex>
         </Content>

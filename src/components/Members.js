@@ -53,6 +53,7 @@ export default class Members extends Component {
       <Wrapper>
         <Subtitle mt={0} pt={0}>
           {type === 'GROUP' && <FormattedMessage id="group.membersList.title" defaultMessage="Members" />}
+          {type === 'EVENT' && <FormattedMessage id="event.membersList.title" defaultMessage="Interested" />}
           {type === 'POST' && <FormattedMessage id="post.membersList.title" defaultMessage="Followers" />}
         </Subtitle>
         <List>
