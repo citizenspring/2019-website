@@ -59,7 +59,7 @@ class TagsList extends React.Component {
       <TagsListWrapper>
         {showLabel && <Label>Filter by tag:</Label>}
         <List>
-          {tags.map((tag, key) => (
+          {(tags || []).map((tag, key) => (
             <Tag key={key} selected={tag === selected} onClick={() => this.onClick(tag)}>
               {tag}
             </Tag>
