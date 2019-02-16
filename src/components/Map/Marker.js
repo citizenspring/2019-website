@@ -11,7 +11,9 @@ const Title = styled.h1`
 `;
 
 const MarkerWrapper = styled.div`
-  position: relative;
+  position: absolute;
+  left: -18px;
+  top: -28px;
 `;
 
 const BalloonWrapper = styled.div`
@@ -32,7 +34,9 @@ const Balloon = ({ marker }) =>
       <Title>{marker.event.title}</Title>
       <EventMetadata startsAt={marker.event.startsAt} endsAt={marker.event.endsAt} location={marker.event.location} />
     </BalloonWrapper>
-  ) : <div />;
+  ) : (
+    <div />
+  );
 
 @controllable(['hoverState', 'showBalloon'])
 export default class Marker extends React.Component {

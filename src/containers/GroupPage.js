@@ -54,7 +54,7 @@ class GroupPage extends React.Component {
         ),
         style: 'standard',
       },
-      { label: '+ New Thread', href: mailto(groupEmail) },
+      { label: 'new message', href: mailto(groupEmail) },
     ];
 
     return (

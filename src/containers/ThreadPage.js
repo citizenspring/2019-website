@@ -33,6 +33,17 @@ class ThreadPage extends React.Component {
         id: 'thread.follow.email.body',
         defaultMessage: 'Just send this email to start following this thread',
       },
+      interested: { id: 'event.interested.btn', defaultMessage: "I'm interested" },
+      'interested.body': {
+        id: 'event.interested.email.body',
+        defaultMessage:
+          'Just send this email to show your interest and stay posted as more information come in about this event',
+      },
+      post: { id: 'event.post.btn', defaultMessage: 'post a message' },
+      'post.body': {
+        id: 'event.post.email.body',
+        defaultMessage: 'Post a message about this event.',
+      },
       reply: { id: 'thread.reply.btn', defaultMessage: 'reply' },
       'reply.body': {
         id: 'thread.reply.email.body',
@@ -58,7 +69,22 @@ class ThreadPage extends React.Component {
       `${capitalize(intl.formatMessage(this.messages['follow']))} ${thread.title}`,
       intl.formatMessage(this.messages['follow.body']),
     );
-    const actions = [{ label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' }];
+    const interestedEmail = mailto(
+      threadEmail,
+      'follow',
+      `${capitalize(intl.formatMessage(this.messages['interested']))} ${thread.title}`,
+      intl.formatMessage(this.messages['interested.body']),
+    );
+    const actions = [];
+    if (thread.type === 'EVENT') {
+      actions.push({
+        label: intl.formatMessage(this.messages['interested']),
+        href: interestedEmail,
+        style: 'standard',
+      });
+    } else {
+      actions.push({ label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' });
+    }
     return (
       <div>
         <TopBar group={thread.group} />
