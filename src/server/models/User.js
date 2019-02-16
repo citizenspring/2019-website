@@ -3,6 +3,22 @@
 import * as auth from '../lib/auth';
 import libemail from '../lib/email';
 import { isISO31661Alpha2 } from 'validator';
+import crypto from 'crypto';
+import request from 'request-promise';
+import { parseEmailAddress } from '../lib/utils';
+import LRU from 'lru-cache';
+import debugLib from 'debug';
+const debug = debugLib('user');
+
+// We keep the response from gravatar for 2h
+const cache = new LRU({
+  maxAge: 1000 * 60 * 60 * 2,
+  max: 50,
+  stale: true,
+  dispose: (key, val) => {
+    User.fetchGravatar(key);
+  },
+});
 
 module.exports = (sequelize, DataTypes) => {
   const { models, Op } = sequelize;
@@ -14,11 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.VIRTUAL,
         get() {
-          if (this.getDataValue('name')) return this.getDataValue('name');
           const nameParts = [];
           if (this.getDataValue('firstName')) nameParts.push(this.getDataValue('firstName'));
           if (this.getDataValue('lastName')) nameParts.push(this.getDataValue('lastName'));
-          return nameParts.length > 0 ? nameParts.join(' ') : 'anonymous';
+          if (nameParts.length > 0 && nameParts[0] !== 'anonymous') return nameParts.join(' ');
+
+          const emailAccount = parseEmailAddress(this.email).groupSlug;
+          return this.setName(emailAccount);
         },
       },
       email: {
@@ -39,7 +57,15 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      image: DataTypes.STRING,
+      image: {
+        type: DataTypes.STRING,
+        get() {
+          if (this.getDataValue('image')) {
+            return this.getDataValue('image');
+          }
+          return User.fetchGravatar(this.email);
+        },
+      },
       token: DataTypes.STRING,
       gender: DataTypes.STRING,
       zipcode: DataTypes.STRING,
@@ -94,7 +120,11 @@ module.exports = (sequelize, DataTypes) => {
     let user;
     user = await User.findByEmail(userData.email);
     if (!user) {
-      user = await User.create(userData);
+      try {
+        user = await User.create(userData);
+      } catch (e) {
+        console.error('>>> User.signin error: ', e.message);
+      }
     }
     // If the user hasn't provided a token, we send a short code by email
     if (!userData.token) {
@@ -132,13 +162,40 @@ module.exports = (sequelize, DataTypes) => {
   /**
    * Instance Methods
    */
-  User.prototype.setName = async function(name) {
+  User.prototype.setName = function(name) {
     const tokens = name.match(/^([^(.| )]+)(?: |\.)?(.*)$/);
     this.firstName = tokens[1];
+    let res = tokens[1];
     if (tokens.length > 1) {
       this.lastName = tokens[2];
+      res += ' ' + tokens[2];
     }
-    return await this.save();
+    this.save();
+    return res;
+  };
+
+  /**
+   * We check if there is a gravatar associatied to the user's email
+   * We
+   */
+  User.fetchGravatar = async function(email) {
+    email = email || this.email;
+    debug('>>> User.fetchGravatar', email, cache.get(email));
+    if (cache.get(email) && cache.get(email) !== 404) return cache.get(email);
+    const md5 = crypto
+      .createHash('md5')
+      .update(email)
+      .digest('hex');
+    const imageUrl = `https://www.gravatar.com/avatar/${md5}?d=404`;
+    request(imageUrl)
+      .then(() => {
+        console.info(`Saving avatar in memory cache: ${imageUrl}`);
+        cache.set(email, imageUrl);
+      })
+      .catch(e => {
+        console.info(`No avatar found.`);
+        cache.set(email, 404);
+      });
   };
 
   User.prototype.generateToken = async function(redirect) {
@@ -155,7 +212,6 @@ module.exports = (sequelize, DataTypes) => {
 
   User.prototype.isAdmin = async function(group) {
     const membership = await models.Member.count({
-      logging: console.log,
       where: { UserId: this.id, GroupId: group.id, role: 'ADMIN' },
     });
     return membership === 1;
