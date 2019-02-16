@@ -39,7 +39,6 @@ describe('webhook bugs', () => {
       await user2.follow({ PostId: post.PostId });
 
       // sending first email which creates one group, one post
-      console.log('>>> email From', req.body.From, 'To', req.body.To, 'Cc', req.body.Cc);
       await webhook(req, res);
 
       // sending reply
@@ -57,7 +56,7 @@ describe('webhook bugs', () => {
       const users = await models.User.findAll();
       expect(users.length).toEqual(2);
     });
-    it.skip('only send to the first sender', async () => {
+    it('only send to the first sender', async () => {
       expect(sendEmailSpy.callCount).toEqual(1);
       expect(sendEmailSpy.firstCall.args[0]).toEqual('testgroup@citizenspring.be');
       expect(sendEmailSpy.firstCall.args[4].cc).toEqual(email6.sender);

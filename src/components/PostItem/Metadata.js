@@ -17,7 +17,7 @@ function Metadata({ repliesCount, followersCount, createdAt, user, group }) {
         </span>
       )}
       <span>
-        <FormattedMessage id="post.metadata.started" defaultMessage="Started" /> <Moment fromNow>{timestamp}</Moment>{' '}
+        📝 <FormattedMessage id="post.metadata.started" defaultMessage="Started" /> <Moment fromNow>{timestamp}</Moment>{' '}
         <FormattedMessage id="post.metadata.by" defaultMessage="by" />
       </span>
       <span>

@@ -16,7 +16,7 @@ function EventMetadata({ startsAt, endsAt, group, location }) {
         </span>
       )}
       <span>
-        <Moment format="dddd D MMMM HH:mm">{new Date(Number(startsAt))}</Moment>{' '}
+        📆 <Moment format="dddd D MMMM HH:mm">{new Date(Number(startsAt))}</Moment>{' '}
         <FormattedMessage id="event.metadata.till" defaultMessage="till" />{' '}
         <Moment format="HH:mm">{new Date(Number(endsAt))}</Moment>{' '}
         <FormattedMessage id="event.metadata.at" defaultMessage="at" /> {location.name}, {location.address}{' '}

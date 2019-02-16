@@ -124,7 +124,6 @@ class GoogleMap extends Component {
         title={marker.text}
         // any user props
         showBalloon={index === this.state.openBalloonIndex}
-        scale={K_SCALE_NORMAL}
         marker={marker}
       >
         🌱
@@ -142,8 +141,6 @@ class GoogleMap extends Component {
           onChildClick={this._onChildClick}
           onChildMouseEnter={this._onChildMouseEnter}
           onChildMouseLeave={this._onChildMouseLeave}
-          margin={[K_MARGIN_TOP, K_MARGIN_RIGHT, K_MARGIN_BOTTOM, K_MARGIN_LEFT]}
-          hoverDistance={K_HOVER_DISTANCE}
         >
           {Markers}
         </GoogleMapReact>
