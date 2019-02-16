@@ -5,7 +5,7 @@ import libemail from '../lib/email';
 import { isISO31661Alpha2 } from 'validator';
 import crypto from 'crypto';
 import request from 'request-promise';
-import { parseEmailAddress } from '../lib/utils';
+import { parseEmailAddress, capitalize } from '../lib/utils';
 import LRU from 'lru-cache';
 import debugLib from 'debug';
 const debug = debugLib('user');
@@ -30,13 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.VIRTUAL,
         get() {
-          const nameParts = [];
-          if (this.getDataValue('firstName')) nameParts.push(this.getDataValue('firstName'));
-          if (this.getDataValue('lastName')) nameParts.push(this.getDataValue('lastName'));
-          if (nameParts.length > 0 && nameParts[0] !== 'anonymous') return nameParts.join(' ');
-
-          const emailAccount = parseEmailAddress(this.email).groupSlug;
-          return this.setName(emailAccount);
+          return this.getName();
         },
       },
       email: {
@@ -162,15 +156,20 @@ module.exports = (sequelize, DataTypes) => {
   /**
    * Instance Methods
    */
-  User.prototype.setName = function(name) {
+  User.prototype.getName = async function() {
+    const nameParts = [];
+    if (this.getDataValue('firstName')) nameParts.push(this.getDataValue('firstName'));
+    if (this.getDataValue('lastName')) nameParts.push(this.getDataValue('lastName'));
+    if (nameParts.length > 0 && nameParts[0] !== 'anonymous') return nameParts.join(' ');
+
+    const name = parseEmailAddress(this.email).groupSlug;
     const tokens = name.match(/^([^(.| )]+)(?: |\.)?(.*)$/);
-    this.firstName = tokens[1];
+    this.firstName = capitalize(tokens[1]);
     let res = tokens[1];
     if (tokens.length > 1) {
-      this.lastName = tokens[2];
+      this.lastName = capitalize(tokens[2]);
       res += ' ' + tokens[2];
     }
-    this.save();
     return res;
   };
 
