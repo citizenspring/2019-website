@@ -23,9 +23,10 @@ export const Title = children => {
 
 export const Subtitle = styled.h1`
   font-size: 2rem;
+  font-weight: 300;
   margin-right: 1rem;
-  margin-top: 2rem;
-  padding-top: 2rem;
+  margin-top: ${props => (props.mt !== undefined ? props.mt : '2rem')};
+  padding-top: ${props => (props.pt !== undefined ? props.pt : '2rem')};
 `;
 
 export const Description = styled.p`

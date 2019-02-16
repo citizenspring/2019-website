@@ -393,7 +393,6 @@ export const GroupType = new GraphQLObjectType({
           query.limit = args.limit || 20;
           query.offset = args.offset || 0;
           query.order = [['createdAt', 'DESC']];
-          query.logging = console.log;
           const count = await models.Post.count(query);
           const rows = await models.Post.findAll(query);
           return {

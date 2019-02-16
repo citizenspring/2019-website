@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const PostWrapper = styled.div`
   background-color: white;
   display: flex;
-  margin: 3rem 0 1rem 0;
+  margin: 0rem 0 4rem 0;
 `;
 
 export const ContentWrapper = styled.div`

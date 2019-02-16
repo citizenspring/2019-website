@@ -7,10 +7,12 @@ import PostList from './PostList';
 import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 
+import { Box, Flex } from '@rebass/grid';
 import { Content, DescriptionBlock } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
 import EventsGroupPage from './EventsGroupPage';
 import EditableText from '../components/EditableText';
+import Members from '../components/Members';
 import { mailto } from '../lib/utils';
 
 import env from '../env.frontend';
@@ -34,7 +36,6 @@ class GroupPage extends React.Component {
   render() {
     const group = this.props.data.Group;
     if (!group) return <div>Loading</div>;
-    console.log('>>> group loaded', group);
     const selectedTag = this.props.tag;
     const groupEmail = `${group.slug}@${env.DOMAIN}`;
     const template = get(group, 'settings.template');
@@ -63,15 +64,25 @@ class GroupPage extends React.Component {
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
           <Metadata group={group} />
-          <DescriptionBlock>
-            <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)} html={group.description}>
-              {!group.description && (
-                <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
-              )}
-            </EditableText>
-          </DescriptionBlock>
-          <TagsSelector groupSlug={group.slug} selected={selectedTag} />
-          <PostList groupSlug={group.slug} posts={group.posts} />
+          <Flex flexDirection={['column', 'row', 'row']}>
+            <Box width={1} mr={[0, 2, 3]}>
+              <DescriptionBlock>
+                <EditableText
+                  mailto={mailto(groupEmail, 'edit', group.name, group.description)}
+                  html={group.description}
+                >
+                  {!group.description && (
+                    <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
+                  )}
+                </EditableText>
+              </DescriptionBlock>
+              <TagsSelector groupSlug={group.slug} selected={selectedTag} />
+              <PostList groupSlug={group.slug} posts={group.posts} />
+            </Box>
+            <Box width={300}>
+              <Members type="GROUP" members={group.followers} />
+            </Box>
+          </Flex>
         </Content>
         <Footer group={group} />
       </div>
@@ -93,6 +104,7 @@ const getDataQuery = gql`
           ... on User {
             id
             name
+            image
           }
         }
       }

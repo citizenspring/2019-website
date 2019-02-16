@@ -15,9 +15,10 @@ import env from '../env.frontend';
 import { mailto } from '../lib/utils';
 import { capitalize } from '../server/lib/utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Box } from '@rebass/grid';
+import { Flex, Box } from '@rebass/grid';
 import GoogleMap from '../components/Map/GoogleMap';
 import FormData from '../components/FormData';
+import Members from '../components/Members';
 
 class ThreadPage extends React.Component {
   static propTypes = {
@@ -99,18 +100,25 @@ class ThreadPage extends React.Component {
             )}
             <TagsList tags={thread.tags} groupSlug={thread.group.slug} />
           </Box>
-          <Post group={thread.group} thread={thread} post={thread} />
-          {thread.replies.nodes.map((post, i) => (
-            <Post key={i} group={thread.group} thread={thread} post={post} />
-          ))}
-          {thread.type === 'EVENT' && (
-            <div>
-              <GoogleMap lat={thread.location.lat} lng={thread.location.long} zoom={16} markerSize={'34px'} />
-              <Box width={[1, null, 1 / 2]} mt={4}>
-                <FormData data={thread.formData} />
-              </Box>
-            </div>
-          )}
+          <Flex flexDirection={['column', 'row', 'row']}>
+            <Box width={1} mr={[0, 2, 3]}>
+              <Post group={thread.group} thread={thread} post={thread} />
+              {thread.replies.nodes.map((post, i) => (
+                <Post key={i} group={thread.group} thread={thread} post={post} />
+              ))}
+              {thread.type === 'EVENT' && (
+                <div>
+                  <GoogleMap lat={thread.location.lat} lng={thread.location.long} zoom={16} markerSize={'34px'} />
+                  <Box width={[1, null, 1 / 2]} mt={4}>
+                    <FormData data={thread.formData} />
+                  </Box>
+                </div>
+              )}
+            </Box>
+            <Box width={300}>
+              <Members type="POST" members={thread.followers} />
+            </Box>
+          </Flex>
         </Content>
         <Footer group={thread.group} post={thread} />
       </div>
