@@ -125,14 +125,6 @@ class CreateEventPage extends React.Component {
     this.kidsFriendlyValues = ['babies', 'toddlers', 'kids'];
   }
 
-  componentDidMount() {
-    if (this.props.data.startsAt) {
-      const startsAt = new Date(Number(this.props.data.startsAt));
-      window.startsAt = startsAt;
-      window.data = this.props.data;
-    }
-  }
-
   getFieldError(fieldname) {
     return this.state.errors[fieldname];
   }
