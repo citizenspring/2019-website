@@ -128,16 +128,36 @@ const mutations = {
         ...args.post,
         GroupId: group.id,
         status: 'PENDING',
-        settings: { type: 'announcements' },
+        // settings: { type: 'announcements' },
       };
-      console.log('>>> creating post', postData);
-      const postCreated = await user.createPost(postData);
-      const tokenData = { type: 'post', TargetId: postCreated.id };
-      const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
-      const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
-        postCreated.slug
-      }&token=${token}`;
-      await libemail.sendTemplate(`confirmCreatePost`, { post: postCreated, confirmationUrl }, user.email);
+      if (args.PostId) {
+        console.log('>>> editing post', postData);
+        const post = await models.Post.findByPostId(args.PostId);
+        if (!post) {
+          throw new Error('Post not found');
+        }
+        const editedPost = await post.edit(postData);
+        const type = editedPost.type.toLowerCase();
+        const tokenData = { type: 'post', TargetId: editedPost.id };
+        const token = createJwt('approveEdit', { data: tokenData }, '1h');
+        const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
+          editedPost.slug
+        }&token=${token}`;
+        await libemail.sendTemplate(
+          `approveEdit`,
+          { type, currentVersion: post, newVersion: editedPost, confirmationUrl },
+          user.email,
+        );
+      } else {
+        console.log('>>> creating post', postData);
+        const postCreated = await user.createPost(postData);
+        const tokenData = { type: 'post', TargetId: postCreated.id };
+        const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
+        const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
+          postCreated.slug
+        }&token=${token}`;
+        await libemail.sendTemplate(`confirmCreatePost`, { post: postCreated, confirmationUrl }, user.email);
+      }
       return postCreated;
     },
   },

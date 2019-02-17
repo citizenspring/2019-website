@@ -62,9 +62,25 @@ export const body = withIntl(data => {
     <Layout data={data}>
       <p>
         <FormattedMessage
-          id="emails.approvePostEdit.firstLine"
+          id="emails.approveEdit.userHadEdited"
           values={{ user: user.name, title: currentVersion.title }}
-          defaultMessage='{user} has edited the post "{title}". Please review the changes below and approve or ignore.'
+          defaultMessage="{user} has edited"
+        />{' '}
+        {currentVersion.type === 'POST' && (
+          <FormattedMessage id="emails.approveEdit.type.post" defaultMessage="the post" />
+        )}
+        {currentVersion.type === 'EVENT' && (
+          <FormattedMessage id="emails.approveEdit.type.event" defaultMessage="the event" />
+        )}
+        {currentVersion.type === 'GROUP' && (
+          <FormattedMessage id="emails.approveEdit.type.event" defaultMessage="the group" />
+        )}
+        {'  '}"{title}"
+        <FormattedMessage
+          id="emails.approveEdit.pleaseReview"
+          values={{ user: user.name, title: currentVersion.title }}
+          defaultMessage="Please review the changes below and approve or ignore."
+        />
         />
       </p>
       <div style={styles.editBox}>
@@ -73,13 +89,13 @@ export const body = withIntl(data => {
             <TR>
               <TD>
                 <b>
-                  <FormattedMessage id="emails.approvePostEdit.currentVersion.title" defaultMessage="current" />
+                  <FormattedMessage id="emails.approveEdit.currentVersion.title" defaultMessage="current" />
                 </b>
               </TD>
               <TD>&nbsp;→&nbsp;</TD>
               <TD>
                 <b>
-                  <FormattedMessage id="emails.approvePostEdit.newVersion.title" defaultMessage="proposed change" />
+                  <FormattedMessage id="emails.approveEdit.newVersion.title" defaultMessage="proposed change" />
                 </b>
               </TD>
             </TR>
@@ -94,6 +110,26 @@ export const body = withIntl(data => {
                 <p dangerouslySetInnerHTML={{ __html: newVersion.html }} />
               </TD>
             </TR>
+            {newVersion.formData && (
+              <TR>
+                <TD>
+                  <h2>
+                    <FormattedMessage id="emails.approveEdit.formData.title" defaultMessage="Form data" />
+                  </h2>
+                  <p dangerouslySetInnerHTML={{ __html: json2html(currentVersion.formData) }} />
+                </TD>
+                <TD>&nbsp;</TD>
+                <TD>
+                  <h2>
+                    <FormattedMessage
+                      id="emails.approveEdit.updatedFormData.title"
+                      defaultMessage="Updated form data"
+                    />
+                  </h2>
+                  <p dangerouslySetInnerHTML={{ __html: json2html(newVersion.formData) }} />
+                </TD>
+              </TR>
+            )}
           </TBody>
         </Table>
       </div>
@@ -103,14 +139,14 @@ export const body = withIntl(data => {
             <TR>
               <TD>
                 <a style={styles.btn} href={approveUrl}>
-                  <FormattedMessage id="emails.approvePostEdit.approveEditBtn" defaultMessage="approve edit" />
+                  <FormattedMessage id="emails.approveEdit.approveEditBtn" defaultMessage="approve edit" />
                 </a>
               </TD>
               <TD>&nbsp;</TD>
               <TD>
                 <a style={styles.secondBtn} href={alwaysApproveUrl}>
                   <FormattedMessage
-                    id="emails.approvePostEdit.alwaysApproveEditBtn"
+                    id="emails.approveEdit.alwaysApproveEditBtn"
                     values={{ user: user.name }}
                     defaultMessage="always approve edits from {user}"
                   />

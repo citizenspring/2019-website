@@ -91,7 +91,7 @@ export const PostInputType = new GraphQLInputObjectType({
   name: 'PostInputType',
   description: 'Input type for Post',
   fields: () => ({
-    id: { type: GraphQLInt },
+    PostId: { type: GraphQLInt },
     type: { type: GraphQLString },
     title: { type: GraphQLString },
     html: { type: GraphQLString },

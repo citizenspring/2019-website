@@ -35,7 +35,8 @@ const defaultData = {
     },
     user: { name: 'Xavier' },
   },
-  approvePostEdit: {
+  approveEdit: {
+    type: 'post',
     currentVersion: {
       title: 'title v1',
       text: 'Text v1',

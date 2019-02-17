@@ -202,6 +202,15 @@ module.exports = (sequelize, DataTypes) => {
     return Post.findOne({ where, order: [['id', 'DESC']] });
   };
 
+  // Get the latest version of the post by PostId (and optional status PUBLISHED/ARCHIVED/PENDING)
+  Post.findByPostId = (PostId, status) => {
+    const where = { PostId: PostId.toLowerCase() };
+    if (status) {
+      where.status = status;
+    }
+    return Post.findOne({ where, order: [['id', 'DESC']] });
+  };
+
   Post.findByEmailMessageId = EmailMessageId => {
     return Post.findOne({ where: { EmailMessageId }, order: [['version', 'DESC']] });
   };
@@ -231,7 +240,7 @@ module.exports = (sequelize, DataTypes) => {
 
     let parentPost;
     if (ParentPostId) {
-      parentPost = await models.Post.findOne({ where: { PostId: ParentPostId, status: 'PUBLISHED' } });
+      parentPost = await Post.findByPostId(ParentPostId, 'PUBLISHED');
     } else {
       if (email['In-Reply-To']) {
         // if it's a reply to a thread
@@ -261,12 +270,10 @@ module.exports = (sequelize, DataTypes) => {
       'Reply-To': `${groupEmail} <${groupSlug}/${thread.PostId}/${post.PostId}@${get(config, 'server.domain')}>`,
     };
 
-    let data;
     // If it's a new thread,
     if (!parentPost) {
       // if the group is of type announcements, only the admins can create new threads
       if (get(group, 'settings.type') === 'announcements') {
-        const members = await models.Member.findAll({ where: { GroupId: group.id, role: 'ADMIN' } });
         const isAdmin = await user.isAdmin(group);
         if (!isAdmin) {
           data = {
@@ -278,7 +285,45 @@ module.exports = (sequelize, DataTypes) => {
           return;
         }
       }
-      const followers = await group.getFollowers();
+    }
+    post.group = group;
+    post.parentPost = parentPost;
+    post.notifyFollowers();
+
+    return post;
+  };
+
+  Post.prototype.populate = async function(attrs) {
+    const promises = [];
+    attrs.map(attr => {
+      switch (attr) {
+        case 'parentPost':
+          this.ParentPostId &&
+            promises.push(() =>
+              models.Post.findByPostId(ParentPostId, 'PUBLISHED').then(post => (this.parentPost = post)),
+            );
+          break;
+        case 'group':
+          this.GroupId &&
+            promises.push(() => models.Group.findByPostId(GroupId, 'PUBLISHED').then(group => (this.group = group)));
+          break;
+      }
+    });
+    await Promise.all(promises);
+    return this;
+  };
+
+  Post.prototype.notifyFollowers = async function() {
+    // We don't notify followers when editing an existing post
+    if (this.version !== 1) return Promise.resolve();
+    await this.populate(['parentPost', 'group']);
+    const thread = this.parentPost ? this.parentPost : this.post;
+    const groupSlug = this.group.slug;
+    const groupEmail = `${groupSlug}@${config.server.domain}`;
+    let data;
+    // If it's a new thread,
+    if (!this.parentPost) {
+      const followers = await this.group.getFollowers();
       const url = await post.getUrl();
       data = { groupSlug, followersCount: followers.length, post, url };
       await libemail.sendTemplate('threadCreated', data, user.email);
@@ -302,7 +347,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     } else {
       let followers;
-      if (get(parentPost, 'settings.type') === 'announcements') {
+      if (get(this.parentPost, 'settings.type') === 'announcements') {
         // if the post is of type announcements, only the admins can receive replies
         followers = await thread.getAdmins();
       } else {
@@ -323,7 +368,6 @@ module.exports = (sequelize, DataTypes) => {
         headers,
       });
     }
-    return post;
   };
 
   /**
@@ -374,7 +418,9 @@ module.exports = (sequelize, DataTypes) => {
     if (currentlyPublishedPost) {
       await currentlyPublishedPost.update({ status: 'ARCHIVED' });
     }
-    return await this.update({ status: 'PUBLISHED' });
+    await this.update({ status: 'PUBLISHED' });
+    this.notifyFollowers();
+    return this;
   };
 
   Post.prototype.getPath = async function() {
