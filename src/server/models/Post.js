@@ -204,7 +204,10 @@ module.exports = (sequelize, DataTypes) => {
 
   // Get the latest version of the post by PostId (and optional status PUBLISHED/ARCHIVED/PENDING)
   Post.findByPostId = (PostId, status) => {
-    const where = { PostId: PostId.toLowerCase() };
+    if (!PostId) {
+      throw new Error('Post.findByPostId: missing PostId');
+    }
+    const where = { PostId };
     if (status) {
       where.status = status;
     }

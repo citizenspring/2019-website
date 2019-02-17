@@ -1,7 +1,6 @@
 import config from 'config';
 import { omit, pick, get } from 'lodash';
 import { createJwt } from '../lib/auth';
-import json2html from '../lib/json2table';
 import moment from 'moment';
 import libemail from '../lib/email';
 import { GraphQLNonNull, GraphQLList, GraphQLString, GraphQLInt } from 'graphql';
@@ -130,35 +129,39 @@ const mutations = {
         status: 'PENDING',
         // settings: { type: 'announcements' },
       };
-      if (args.PostId) {
+      if (args.post.PostId) {
         console.log('>>> editing post', postData);
-        const post = await models.Post.findByPostId(args.PostId);
+        const post = await models.Post.findByPostId(args.post.PostId);
         if (!post) {
           throw new Error('Post not found');
         }
         const editedPost = await post.edit(postData);
-        const type = editedPost.type.toLowerCase();
+        const templateData = {
+          user,
+          type: editedPost.type.toLowerCase(),
+          currentVersion: post,
+          newVersion: editedPost,
+        };
         const tokenData = { type: 'post', TargetId: editedPost.id };
         const token = createJwt('approveEdit', { data: tokenData }, '1h');
-        const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
+        const token2 = createJwt('alwaysApproveEdit', { data: { ...tokenData, always: true } }, '1h');
+        templateData.approveUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}&postSlug=${
           editedPost.slug
         }&token=${token}`;
-        await libemail.sendTemplate(
-          `approveEdit`,
-          { type, currentVersion: post, newVersion: editedPost, confirmationUrl },
-          user.email,
-        );
+        templateData.alwaysApproveUrl = `${config.server.baseUrl}/api/approve?token=${token2}`;
+        await libemail.sendTemplate(`approveEdit`, templateData, user.email);
+        return editedPost;
       } else {
         console.log('>>> creating post', postData);
         const postCreated = await user.createPost(postData);
         const tokenData = { type: 'post', TargetId: postCreated.id };
         const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
-        const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
+        const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}&postSlug=${
           postCreated.slug
         }&token=${token}`;
         await libemail.sendTemplate(`confirmCreatePost`, { post: postCreated, confirmationUrl }, user.email);
+        return postCreated;
       }
-      return postCreated;
     },
   },
 };

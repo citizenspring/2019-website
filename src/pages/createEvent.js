@@ -48,7 +48,7 @@ class CreateEventPage extends React.Component {
   async componentDidMount() {}
 
   async onSubmit(form) {
-    console.log('>>> form', form);
+    console.log('>>> createEvent.onSubmit', form);
     const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
     const startsAt = new Date(`2019-03-${startsAtDate} ${form.startsAtTime.replace('h', ':00')}`);
     const endsAt = new Date(`2019-03-${startsAtDate} ${form.endsAtTime.replace('h', ':00')}`);
@@ -78,18 +78,20 @@ class CreateEventPage extends React.Component {
   }
 
   render() {
-    <div>
-      <TopBar group={{ slug: this.props.groupSlug }} />
-      <Content>
-        <Title>
-          <FormattedMessage id="event.create.title" defaultMessage="Register your Citizen Initiative" />
-        </Title>
-        {this.state.view === 'pending' && (
-          <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />
-        )}
-        {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
-      </Content>
-    </div>;
+    return (
+      <div>
+        <TopBar group={{ slug: this.props.groupSlug }} />
+        <Content>
+          <Title>
+            <FormattedMessage id="event.create.title" defaultMessage="Register your Citizen Initiative" />
+          </Title>
+          {this.state.view === 'pending' && (
+            <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />
+          )}
+          {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
+        </Content>
+      </div>
+    );
   }
 }
 

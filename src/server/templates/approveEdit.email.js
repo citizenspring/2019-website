@@ -3,6 +3,7 @@ import Layout from './email.layout';
 import { Table, TBody, TR, TD } from 'oy-vey';
 import { FormattedMessage } from 'react-intl';
 import withIntl from '../lib/withIntl';
+import json2html from '../lib/json2table';
 
 const styles = {
   btn: {
@@ -37,7 +38,7 @@ export const subject = ({ type }) => {
   return `please approve edit to ${type}`;
 };
 export const text = ({ user, type, currentVersion, newVersion, approveUrl, alwaysApproveUrl }) => {
-  return `${user.name} has edited the post "${
+  return `${user.name} has edited the ${currentVersion.type.toLowerCase()} "${
     currentVersion.title
   }". Please review the changes below and approve or ignore.
 
@@ -73,9 +74,9 @@ export const body = withIntl(data => {
           <FormattedMessage id="emails.approveEdit.type.event" defaultMessage="the event" />
         )}
         {currentVersion.type === 'GROUP' && (
-          <FormattedMessage id="emails.approveEdit.type.event" defaultMessage="the group" />
+          <FormattedMessage id="emails.approveEdit.type.group" defaultMessage="the group" />
         )}
-        {'  '}"{title}"
+        {'  '}"{currentVersion.title}"
         <FormattedMessage
           id="emails.approveEdit.pleaseReview"
           values={{ user: user.name, title: currentVersion.title }}
