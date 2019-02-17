@@ -267,11 +267,6 @@ module.exports = (sequelize, DataTypes) => {
     const thread = parentPost ? parentPost : post;
     // We always add people explicitly mentioned in To or Cc as followers of the thread
     await thread.addFollowers(recipients);
-    const headers = {
-      'Message-Id': `${groupSlug}/${thread.PostId}/${post.PostId}@${get(config, 'server.domain')}`,
-      References: `${groupSlug}/${thread.PostId}@${get(config, 'server.domain')}`,
-      'Reply-To': `${groupEmail} <${groupSlug}/${thread.PostId}/${post.PostId}@${get(config, 'server.domain')}>`,
-    };
 
     // If it's a new thread,
     if (!parentPost) {
@@ -279,19 +274,23 @@ module.exports = (sequelize, DataTypes) => {
       if (get(group, 'settings.type') === 'announcements') {
         const isAdmin = await user.isAdmin(group);
         if (!isAdmin) {
-          data = {
+          const templateData = {
             subject: 'Cannot send email to group (must be an admin)',
             body: 'Only the administrators can post a new message to this group.',
             email: { html: postData.html, text: postData.text },
           };
-          await libemail.sendTemplate('error', data, user.email);
+          await libemail.sendTemplate('error', templateData, user.email);
           return;
         }
       }
     }
+
     post.group = group;
+    post.user = user;
     post.parentPost = parentPost;
-    post.notifyFollowers();
+
+    const excludeEmails = recipients.map(r => r.email);
+    await post.notifyFollowers(excludeEmails);
 
     return post;
   };
@@ -302,13 +301,20 @@ module.exports = (sequelize, DataTypes) => {
       switch (attr) {
         case 'parentPost':
           this.ParentPostId &&
+            !this.parentPost &&
             promises.push(() =>
               models.Post.findByPostId(ParentPostId, 'PUBLISHED').then(post => (this.parentPost = post)),
             );
           break;
         case 'group':
           this.GroupId &&
-            promises.push(() => models.Group.findByPostId(GroupId, 'PUBLISHED').then(group => (this.group = group)));
+            !this.group &&
+            promises.push(() => models.Group.findByGroupId(GroupId, 'PUBLISHED').then(group => (this.group = group)));
+          break;
+        case 'user':
+          this.UserId &&
+            !this.user &&
+            promises.push(() => models.Group.findById(UserId).then(user => (this.user = user)));
           break;
       }
     });
@@ -316,35 +322,41 @@ module.exports = (sequelize, DataTypes) => {
     return this;
   };
 
-  Post.prototype.notifyFollowers = async function() {
+  Post.prototype.notifyFollowers = async function(excludeEmails = []) {
     // We don't notify followers when editing an existing post
     if (this.version !== 1) return Promise.resolve();
-    await this.populate(['parentPost', 'group']);
-    const thread = this.parentPost ? this.parentPost : this.post;
+    await this.populate(['parentPost', 'group', 'user']);
+    const thread = this.parentPost ? this.parentPost : this;
     const groupSlug = this.group.slug;
     const groupEmail = `${groupSlug}@${config.server.domain}`;
-    let data;
+
+    const headers = {
+      'Message-Id': `${groupSlug}/${thread.PostId}/${this.PostId}@${get(config, 'server.domain')}`,
+      References: `${groupSlug}/${thread.PostId}@${get(config, 'server.domain')}`,
+      'Reply-To': `${groupEmail} <${groupSlug}/${thread.PostId}/${this.PostId}@${get(config, 'server.domain')}>`,
+    };
+
+    let templateData;
     // If it's a new thread,
     if (!this.parentPost) {
       const followers = await this.group.getFollowers();
-      const url = await post.getUrl();
-      data = { groupSlug, followersCount: followers.length, post, url };
-      await libemail.sendTemplate('threadCreated', data, user.email);
+      const url = await this.getUrl();
+      templateData = { groupSlug, followersCount: followers.length, post: this.dataValues, url };
+      await libemail.sendTemplate('threadCreated', templateData, this.user.email);
       // We send the new post to followers of the group + the recipients
       const unsubscribeLabel = `unfollow this group`;
       const subscribeLabel = `follow this thread`;
-      data = {
+      templateData = {
         groupSlug,
         url,
-        post: post.dataValues,
-        subscribe: { label: subscribeLabel, data: { UserId: user.id, PostId: post.PostId } },
-        unsubscribe: { label: unsubscribeLabel, data: { UserId: user.id, GroupId: group.id } },
+        post: this.dataValues,
+        subscribe: { label: subscribeLabel, data: { UserId: this.user.id, PostId: this.PostId } },
+        unsubscribe: { label: unsubscribeLabel, data: { UserId: this.user.id, GroupId: this.group.id } },
       };
-      const recipientsEmails = recipients.map(r => r.email);
-      const cc = followers.filter(f => !recipientsEmails.includes(f.email)).map(u => u.email);
-      await libemail.sendTemplate('post', data, groupEmail, {
-        exclude: [user.email],
-        from: `${user.name} <${groupEmail}>`,
+      const cc = followers.filter(f => !excludeEmails.includes(f.email)).map(u => u.email);
+      await libemail.sendTemplate('post', templateData, groupEmail, {
+        exclude: [this.user.email],
+        from: `${this.user.name} <${groupEmail}>`,
         cc,
         headers,
       });
@@ -358,15 +370,15 @@ module.exports = (sequelize, DataTypes) => {
         followers = await thread.getFollowers();
       }
       const unsubscribeLabel = `unfollow this thread`;
-      data = {
+      templateData = {
         groupSlug,
-        url: `${get(config, 'server.baseUrl')}/${groupSlug}/${thread.slug}`,
-        post: post.dataValues,
+        url: `${get(config, 'server.baseUrl')}/${groupSlug}/${this.type.toLowerCase()}s/${thread.slug}`,
+        post: this.dataValues,
         unsubscribe: { label: unsubscribeLabel, data: { PostId: thread.PostId } },
       };
-      await libemail.sendTemplate('post', data, groupEmail, {
-        exclude: [user.email],
-        from: `${user.name} <${groupEmail}>`,
+      await libemail.sendTemplate('post', templateData, groupEmail, {
+        exclude: [this.user.email],
+        from: `${this.user.name} <${groupEmail}>`,
         cc: followers.map(u => u.email),
         headers,
       });

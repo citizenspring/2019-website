@@ -132,7 +132,6 @@ const mutations = {
           throw new Error('Post not found');
         }
         const editedPost = await post.edit(postData);
-        console.log('>>> editedPost', editedPost.dataValues);
         const templateData = {
           user,
           type: editedPost.type.toLowerCase(),

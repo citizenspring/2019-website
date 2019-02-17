@@ -14,7 +14,7 @@ describe('user model', () => {
     try {
       await models.User.create({ email: 'invalidemail' });
     } catch (e) {
-      expect(e.message).toContain('Email must be valid');
+      expect(e.message).toContain('Invalid email address');
     }
   });
 
