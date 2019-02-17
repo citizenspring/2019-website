@@ -78,18 +78,20 @@ class CreateEventPage extends React.Component {
   }
 
   render() {
-    <div>
-      <TopBar group={{ slug: this.props.groupSlug }} />
-      <Content>
-        <Title>
-          <FormattedMessage id="event.create.title" defaultMessage="Register your Citizen Initiative" />
-        </Title>
-        {this.state.view === 'pending' && (
-          <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />
-        )}
-        {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
-      </Content>
-    </div>;
+    return (
+      <div>
+        <TopBar group={{ slug: this.props.groupSlug }} />
+        <Content>
+          <Title>
+            <FormattedMessage id="event.create.title" defaultMessage="Register your Citizen Initiative" />
+          </Title>
+          {this.state.view === 'pending' && (
+            <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />
+          )}
+          {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
+        </Content>
+      </div>
+    );
   }
 }
 
