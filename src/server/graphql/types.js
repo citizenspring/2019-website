@@ -603,6 +603,12 @@ export const PostType = new GraphQLObjectType({
           return post.html;
         },
       },
+      website: {
+        type: GraphQLString,
+        resolve(post) {
+          return post.website;
+        },
+      },
       tags: {
         type: new GraphQLList(GraphQLString),
         resolve(post) {

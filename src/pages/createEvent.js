@@ -4,9 +4,12 @@ import withIntl from '../lib/withIntl';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { get, pick } from 'lodash';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import CreateEvent from '../containers/CreateEventPage';
 import CreateEventPending from '../containers/CreateEventPending';
+import TopBar from '../components/TopBar';
+import { Title, Content, Description } from '../styles/layout';
 
 class CreateEventPage extends React.Component {
   static getInitialProps({ query: { groupSlug } }) {
@@ -55,11 +58,11 @@ class CreateEventPage extends React.Component {
     const post = {
       type: 'EVENT',
       title: form.title,
-      text: form.eventDescription,
+      text: form.text,
+      website: form.website,
+      location: form.location,
       startsAt,
       endsAt,
-      website: form.eventUrl,
-      location: form.location,
       tags: form.tags,
       formData: pick(form, [
         'languages',
@@ -75,11 +78,18 @@ class CreateEventPage extends React.Component {
   }
 
   render() {
-    if (this.state.view === 'pending') {
-      return <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />;
-    } else {
-      return <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />;
-    }
+    <div>
+      <TopBar group={{ slug: this.props.groupSlug }} />
+      <Content>
+        <Title>
+          <FormattedMessage id="event.create.title" defaultMessage="Register your Citizen Initiative" />
+        </Title>
+        {this.state.view === 'pending' && (
+          <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />
+        )}
+        {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
+      </Content>
+    </div>;
   }
 }
 

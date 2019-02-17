@@ -101,7 +101,7 @@ class ThreadPage extends React.Component {
             <TagsList tags={thread.tags} groupSlug={thread.group.slug} />
           </Box>
           <Flex flexDirection={['column', 'row', 'row']}>
-            <Box width={1} mr={[0, 2, 3]}>
+            <Box width={1} mr={[0, 3, 4]}>
               <Post group={thread.group} thread={thread} post={thread} />
               {thread.replies.nodes.map((post, i) => (
                 <Post key={i} group={thread.group} thread={thread} post={post} />
@@ -115,7 +115,7 @@ class ThreadPage extends React.Component {
                 </div>
               )}
             </Box>
-            <Box width={300}>
+            <Box width={300} mt={[4, 1, 1]}>
               <Members type={thread.type} members={thread.followers} />
             </Box>
           </Flex>
@@ -148,6 +148,7 @@ const getDataQuery = gql`
       user {
         id
         name
+        image
       }
       location {
         name
@@ -179,6 +180,7 @@ const getDataQuery = gql`
             user {
               id
               name
+              image
             }
           }
         }

@@ -42,7 +42,7 @@ class TagsList extends React.Component {
   static propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     selected: PropTypes.string,
-    showLabel: PropTypes.boolean,
+    showLabel: PropTypes.bool,
   };
   constructor(props) {
     super(props);

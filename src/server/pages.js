@@ -7,6 +7,7 @@ pages
   .add('groups')
   .add('group', '/:groupSlug/:tag?')
   .add('thread', '/:groupSlug/(posts|events)/:threadSlug')
+  .add('editEvent', '/:groupSlug/events/:eventSlug/edit')
   .add('index', '/');
 
 export default pages;

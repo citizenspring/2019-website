@@ -30,7 +30,7 @@ PropTypes.nodeType = nodeType =>
   createChainableTypeChecker((props, propName, componentName) => {
     componentName = componentName || 'ANONYMOUS';
     const nodeList = props[propName];
-    if (nodeList.__typename !== `${nodeType}Type`) {
+    if (nodeList.__typename !== nodeType && nodeList.__typename !== `${nodeType}Type`) {
       return new Error(`${propName} in ${componentName} __typename is ${nodeList.__typename}, must be ${nodeType}Type`);
     }
     requireAttributes(

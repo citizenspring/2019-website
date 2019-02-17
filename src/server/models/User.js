@@ -10,16 +10,6 @@ import LRU from 'lru-cache';
 import debugLib from 'debug';
 const debug = debugLib('user');
 
-// We keep the response from gravatar for 2h
-const cache = new LRU({
-  maxAge: 1000 * 60 * 60 * 2,
-  max: 50,
-  stale: true,
-  dispose: (key, val) => {
-    User.fetchGravatar(key);
-  },
-});
-
 module.exports = (sequelize, DataTypes) => {
   const { models, Op } = sequelize;
   const User = sequelize.define(
@@ -103,6 +93,12 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
+  // We keep the response from gravatar for 2h
+  const cache = new LRU({
+    max: 50,
+    stale: true,
+  });
+
   User.findByEmail = email => User.findOne({ where: { email: `${email}`.toLowerCase() } });
 
   /**
@@ -180,7 +176,8 @@ module.exports = (sequelize, DataTypes) => {
   User.fetchGravatar = async function(email) {
     email = email || this.email;
     debug('>>> User.fetchGravatar', email, cache.get(email));
-    if (cache.get(email) && cache.get(email) !== 404) return cache.get(email);
+    if (cache.get(email) === 404) return null;
+    if (cache.get(email)) return cache.get(email);
     const md5 = crypto
       .createHash('md5')
       .update(email)
@@ -192,7 +189,7 @@ module.exports = (sequelize, DataTypes) => {
         cache.set(email, imageUrl);
       })
       .catch(e => {
-        console.info(`No avatar found.`);
+        console.info(`No avatar found.`, imageUrl);
         cache.set(email, 404);
       });
   };

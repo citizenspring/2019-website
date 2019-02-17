@@ -65,7 +65,7 @@ class GroupPage extends React.Component {
           <TitleWithActions title={group.name} actions={actions} />
           <Metadata group={group} />
           <Flex flexDirection={['column', 'row', 'row']}>
-            <Box width={1} mr={[0, 2, 3]}>
+            <Box width={1} mr={[0, 3, 4]}>
               <DescriptionBlock>
                 <EditableText
                   mailto={mailto(groupEmail, 'edit', group.name, group.description)}
@@ -79,7 +79,7 @@ class GroupPage extends React.Component {
               <TagsSelector groupSlug={group.slug} selected={selectedTag} />
               <PostList groupSlug={group.slug} posts={group.posts} />
             </Box>
-            <Box width={300}>
+            <Box width={300} mt={[4, 1, 1]}>
               <Members type="GROUP" members={group.followers} />
             </Box>
           </Flex>
@@ -123,6 +123,7 @@ const getDataQuery = gql`
             user {
               id
               name
+              image
             }
             tags
             followers {

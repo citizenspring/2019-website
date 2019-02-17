@@ -4,6 +4,7 @@ import Geosuggest from 'react-geosuggest';
 import classNames from 'classnames';
 import Location from './Location';
 import '../static/styles/geosuggest.css';
+import { get } from 'lodash';
 
 const pick = (htmlString, attr) => {
   if (htmlString.indexOf(attr) === -1) return null;
@@ -14,6 +15,7 @@ const pick = (htmlString, attr) => {
 class InputTypeLocation extends React.Component {
   static propTypes = {
     value: PropTypes.object,
+    defaultValue: PropTypes.object,
     className: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     options: PropTypes.object,
@@ -22,7 +24,7 @@ class InputTypeLocation extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.state = { value: props.value || {} };
+    this.state = { value: props.defaultValue || props.value || {} };
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -66,6 +68,7 @@ class InputTypeLocation extends React.Component {
         <Geosuggest
           onSuggestSelect={event => this.handleChange(event)}
           placeholder={this.props.placeholder}
+          initialValue={get(this.props, 'defaultValue.name')}
           {...options}
         />
         <Location location={this.state.value} showTitle={false} />
