@@ -83,6 +83,7 @@ describe('webhook replies', () => {
       expect(sendEmailSpy.callCount).toEqual(1);
       expect(sendEmailSpy.firstCall.args[0]).toEqual('testgroup@citizenspring.be');
       expect(sendEmailSpy.firstCall.args[4].cc).toEqual(email1.sender);
+      expect(sendEmailSpy.firstCall.args[4].from).toEqual('First Recipient <testgroup@citizenspring.be>');
       expect(sendEmailSpy.firstCall.args[1]).toEqual(email2.subject);
     });
 

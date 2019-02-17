@@ -153,6 +153,7 @@ module.exports = (sequelize, DataTypes) => {
    * Instance Methods
    */
   User.prototype.getName = function() {
+    if (this.getDataValue('name')) return this.getDataValue('name');
     const nameParts = [];
     if (this.getDataValue('firstName')) nameParts.push(this.getDataValue('firstName'));
     if (this.getDataValue('lastName')) nameParts.push(this.getDataValue('lastName'));
