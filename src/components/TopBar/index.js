@@ -13,7 +13,10 @@ class TopBar extends Component {
 
   render() {
     const { group } = this.props;
-    const pinnedPosts = [{ path: '/brussels/faq-86', title: 'FAQ' }, { path: '/groups', title: 'working groups' }];
+    const pinnedPosts = [
+      { path: '/brussels/posts/faq-86', title: 'FAQ' },
+      { path: '/groups', title: 'working groups' },
+    ];
 
     return (
       <TopBarWrapper>

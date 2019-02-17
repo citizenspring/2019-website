@@ -49,7 +49,6 @@ export default class Marker extends React.Component {
   };
 
   render() {
-    console.log('>>> Marker props', this.props);
     return (
       <MarkerWrapper>
         {this.props.showBalloon && <Balloon marker={this.props.marker} />}

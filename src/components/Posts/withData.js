@@ -35,8 +35,16 @@ const getDataQuery = gql`
         ... on Post {
           PostId
           title
+          type
           createdAt
           slug
+          startsAt
+          endsAt
+          location {
+            name
+            city
+            zipcode
+          }
           group {
             slug
             settings
