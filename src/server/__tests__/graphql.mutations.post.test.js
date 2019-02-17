@@ -18,6 +18,11 @@ describe('user', () => {
     group = await models.Group.create({ slug: 'testgroup', UserId: user.id });
   });
 
+  beforeEach(async () => {
+    await models.Post.truncate();
+    sendEmailSpy.resetHistory();
+  });
+
   afterAll(() => sandbox.restore());
 
   describe('createPost', () => {
@@ -75,7 +80,6 @@ describe('user', () => {
       });
       expect(res.errors).toBeUndefined();
       const posts = await models.Post.findAll();
-      inspectSpy(sendEmailSpy, 3);
       expect(posts.length).toEqual(1);
       expect(posts[0].type).toEqual('EVENT');
       expect(posts[0].status).toEqual('PENDING');
@@ -92,7 +96,7 @@ describe('user', () => {
       expect(posts[0].formData).toEqual({ kidsFriendly: ['babies'], languages: ['French', 'English'] });
     });
 
-    it.only('edits a published post and emails a confirmation url', async () => {
+    it('edits a published post and emails a confirmation url', async () => {
       const userData = { email: 'bienetresolidaire@email.com' };
 
       const postData = {
@@ -132,7 +136,6 @@ describe('user', () => {
       res.errors && console.error(res.errors[0]);
       expect(res.errors).toBeUndefined();
       const posts = await models.Post.findAll();
-      inspectSpy(sendEmailSpy, 3);
       expect(posts.length).toEqual(2);
       expect(posts[0].type).toEqual('EVENT');
       expect(posts[0].status).toEqual('PUBLISHED');
@@ -143,7 +146,7 @@ describe('user', () => {
       expect(posts[0].zipcode).toEqual(post.location.zipcode);
       expect(posts[0].geoLocationLatLong.coordinates).toEqual([post.location.lat, post.location.long]);
       expect(sendEmailSpy.callCount).toEqual(1);
-      expect(sendEmailSpy.firstCall.args[0]).toEqual(userData.email);
+      expect(sendEmailSpy.firstCall.args[0]).toEqual(user.email); // we ask the author of the post to approve the edit
       expect(sendEmailSpy.firstCall.args[1]).toEqual('please approve edit to event');
       expect(sendEmailSpy.firstCall.args[2]).toContain(`Bienetresolidaire has edited the event`);
       expect(sendEmailSpy.firstCall.args[2]).toContain(`/api/approve?groupSlug=testgroup&postSlug=${posts[0].slug}`);

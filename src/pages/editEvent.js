@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import withIntl from '../lib/withIntl';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import { get, pick } from 'lodash';
+import { get, pick, omit } from 'lodash';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
 import CreateEvent from '../containers/CreateEventPage';
 import CreateEventPending from '../containers/CreateEventPending';
+import Footer from '../components/Footer';
 import TopBar from '../components/TopBar';
 import { Title, Content, Description } from '../styles/layout';
 
@@ -57,10 +58,11 @@ class CreateEventPage extends React.Component {
     const group = { slug: this.props.groupSlug };
     const post = {
       type: 'EVENT',
+      PostId: get(this.props, 'data.Post.PostId'),
       title: form.title,
       text: form.text,
       website: form.website,
-      location: form.location,
+      location: omit(form.location, ['__typename']),
       startsAt,
       endsAt,
       tags: form.tags,
@@ -72,14 +74,24 @@ class CreateEventPage extends React.Component {
         'collectiveWebsite',
       ]),
     };
-    const res = await this.props.createPost({ post, user, group });
-    console.log('>>> res', res);
-    this.setState({ view: 'pending', form, post: get(res, 'data.createPost') });
+    try {
+      console.log('>>> graphql query with post', post);
+      const res = await this.props.createPost({ post, user, group });
+      console.log('>>> res', res);
+      this.setState({ view: 'pending', form, post: get(res, 'data.createPost') });
+    } catch (e) {
+      console.error('>>> editEvent.onSubmit error', e);
+    }
   }
 
   render() {
     const { data } = this.props;
-    if (data.loading) return <div>Loading...</div>;
+    if (data.loading)
+      return (
+        <div>
+          <FormattedMessage id="loading" defaultMessage="loading" />
+        </div>
+      );
     const event = data.Post;
     console.log('>>> event to edit', data);
     return (
@@ -96,6 +108,7 @@ class CreateEventPage extends React.Component {
             <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} data={event} />
           )}
         </Content>
+        <Footer />
       </div>
     );
   }
@@ -129,8 +142,8 @@ const getDataQuery = gql`
   query Post($eventSlug: String) {
     Post(postSlug: $eventSlug) {
       id
-      slug
       PostId
+      slug
       title
       text
       tags

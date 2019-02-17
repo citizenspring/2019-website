@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from '../lib/propTypes';
 import withIntl from '../lib/withIntl';
-import Footer from '../components/Footer';
 import { get } from 'lodash';
 import { Box, Flex } from '@rebass/grid';
 
@@ -42,13 +41,13 @@ class CreateEventPage extends React.Component {
   constructor(props) {
     super(props);
     const data = props.data || {};
+    console.log('>>> CreateEventPage.constructor data:', data);
     if (data.startsAt) {
       const startsAt = new Date(Number(this.props.data.startsAt));
       data.startsAt = startsAtOptions[startsAt.getDate() - 21];
       data.startsAtTime = startsAt.getHours() + 'h';
       const endsAt = new Date(Number(this.props.data.endsAt));
       data.endsAtTime = endsAt.getHours() + 'h';
-      console.log('>>> data', data);
     }
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -369,11 +368,15 @@ class CreateEventPage extends React.Component {
               fontWeight="600"
               loading={loading}
             >
-              <FormattedMessage id="createGroup.submitBtn" defaultMessage="Register" />
+              {get(this.props, 'data.PostId') && (
+                <FormattedMessage id="editGroup.submitBtn" defaultMessage="suggest edit" />
+              )}
+              {!get(this.props, 'data.PostId') && (
+                <FormattedMessage id="createGroup.submitBtn" defaultMessage="Register" />
+              )}
             </StyledButton>
           </Box>
         </Box>
-        <Footer />
       </div>
     );
   }

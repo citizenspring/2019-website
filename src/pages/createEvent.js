@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { get, pick } from 'lodash';
 import { FormattedMessage, defineMessages } from 'react-intl';
+import Footer from '../components/Footer';
 
 import CreateEvent from '../containers/CreateEventPage';
 import CreateEventPending from '../containers/CreateEventPending';
@@ -90,6 +91,7 @@ class CreateEventPage extends React.Component {
           )}
           {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
         </Content>
+        <Footer />
       </div>
     );
   }

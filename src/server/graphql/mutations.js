@@ -34,7 +34,6 @@ const mutations = {
       },
     },
     async resolve(_, args, req) {
-      console.log('>>> createGroup', args);
       const groupData = args.group;
       const user = await models.User.findOrCreate(args.user);
       let path = args.path || '';
@@ -53,7 +52,6 @@ const mutations = {
         collectiveData.type = 'COLLECTIVE';
         collectiveData.path = path;
         collectiveData.status = 'PENDING';
-        console.log('>>> creating collective', collectiveData);
         collective = await user.createGroup(collectiveData);
         path += '/' + collective.slug;
       }
@@ -95,7 +93,6 @@ const mutations = {
         status: 'PENDING',
       };
 
-      console.log('>>> creating event group', inputGroupData);
       const groupCreated = await user.createGroup(inputGroupData);
       groupCreated.group = collective;
       const tokenData = { type: 'group', TargetId: collective.id, includeChildren: true };
@@ -130,12 +127,12 @@ const mutations = {
         // settings: { type: 'announcements' },
       };
       if (args.post.PostId) {
-        console.log('>>> editing post', postData);
         const post = await models.Post.findByPostId(args.post.PostId);
         if (!post) {
           throw new Error('Post not found');
         }
         const editedPost = await post.edit(postData);
+        console.log('>>> editedPost', editedPost.dataValues);
         const templateData = {
           user,
           type: editedPost.type.toLowerCase(),
@@ -149,10 +146,10 @@ const mutations = {
           editedPost.slug
         }&token=${token}`;
         templateData.alwaysApproveUrl = `${config.server.baseUrl}/api/approve?token=${token2}`;
-        await libemail.sendTemplate(`approveEdit`, templateData, user.email);
+        const admin = await models.User.findByPk(post.UserId);
+        await libemail.sendTemplate(`approveEdit`, templateData, admin.email);
         return editedPost;
       } else {
-        console.log('>>> creating post', postData);
         const postCreated = await user.createPost(postData);
         const tokenData = { type: 'post', TargetId: postCreated.id };
         const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
