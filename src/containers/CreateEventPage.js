@@ -155,9 +155,9 @@ class CreateEventPage extends React.Component {
   }
 
   getFieldProps(fieldname, value) {
-    let checked;
+    let defaultChecked;
     if (value) {
-      checked = (get(this.props, `data.formData[${fieldname}]`) || []).includes(value);
+      defaultChecked = (get(this.props, `data.formData[${fieldname}]`) || []).includes(value);
     }
 
     return {
@@ -165,7 +165,7 @@ class CreateEventPage extends React.Component {
       lineHeight: 'Paragraph',
       onChange: event => this.onChange(fieldname, event.target.value),
       type: 'text',
-      checked,
+      defaultChecked,
       defaultValue: this.state.form[fieldname],
       width: 1,
       px: [1, 2, 3],

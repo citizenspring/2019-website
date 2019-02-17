@@ -134,7 +134,7 @@ const mutations = {
       const postCreated = await user.createPost(postData);
       const tokenData = { type: 'post', TargetId: postCreated.id };
       const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
-      const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}postSlug=${
+      const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}&postSlug=${
         postCreated.slug
       }&token=${token}`;
       await libemail.sendTemplate(`confirmCreatePost`, { post: postCreated, confirmationUrl }, user.email);

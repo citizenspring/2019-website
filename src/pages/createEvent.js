@@ -48,7 +48,7 @@ class CreateEventPage extends React.Component {
   async componentDidMount() {}
 
   async onSubmit(form) {
-    console.log('>>> form', form);
+    console.log('>>> createEvent.onSubmit', form);
     const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
     const startsAt = new Date(`2019-03-${startsAtDate} ${form.startsAtTime.replace('h', ':00')}`);
     const endsAt = new Date(`2019-03-${startsAtDate} ${form.endsAtTime.replace('h', ':00')}`);
