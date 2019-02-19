@@ -179,11 +179,11 @@ export default class MyDocument extends Document {
                       
             body {
               font-family: Inter, sans-serif;
-              font-size: 1.4rem;
+              font-size: 1.6rem;
               height: 100%;
               margin: 0;
               padding: 0;
-              line-height: 1.3;
+              line-height: 1.5;
             }
 
             a {

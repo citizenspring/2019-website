@@ -26,14 +26,19 @@ class HomePage extends React.Component {
       <div className="home">
         <TopBar />
         <Content>
-          <Flex flexDirection={['column', 'row', 'row']} alignItems="center">
+          <Box my={4}>
+            <center>
+              <img src="/static/images/citizenspring-logo.svg" width="100%" style={{ maxWidth: '300px' }} />
+            </center>
+            <Cover>
+              <Font size={36}>March 21-24 2019</Font>
+              <Font size={30}>MEET THE CITIZENS</Font>
+              <Font size={25}>that are taking initiatives</Font>
+              <img src="/static/images/citizens-emoji.png" height={48} />
+            </Cover>
+          </Box>
+          <Flex flexDirection={['column', 'row', 'row']} my={[0, 2, 4]}>
             <Box mr={[0, 2, 4]} width={320}>
-              <Cover>
-                <Font size={36}>March 21-24 2019</Font>
-                <Font size={30}>MEET THE CITIZENS</Font>
-                <Font size={25}>that are taking initiatives</Font>
-                <img src="/static/images/citizens-emoji.png" height={48} />
-              </Cover>
               <iframe
                 src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCitizenSpringBelgium%2F&tabs=events&width=320&height=496&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=110203902358957"
                 width="320"
@@ -45,7 +50,7 @@ class HomePage extends React.Component {
                 allow="encrypted-media"
               />{' '}
             </Box>
-            <Box my={[0, 2, 4]}>
+            <Box>
               <PullQuote>
                 "The future is already here. It's just not evenly distributed yet" - somebody famous.
               </PullQuote>

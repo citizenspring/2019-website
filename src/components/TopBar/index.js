@@ -22,7 +22,7 @@ class TopBar extends Component {
       <TopBarWrapper>
         <LeftMenu>
           <TopBarItem>
-            <Icon height={18} />
+            <img src="/static/images/citizenspring-logo-white-icon.png" height={18} />
           </TopBarItem>
           <TopBarItem>
             <Link href="/" color="white">

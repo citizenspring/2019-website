@@ -36,7 +36,7 @@ class GroupsPage extends React.Component {
         <TopBar pinnedPosts={pinnedPosts} />
         <Content>
           <Flex justifyContent={['center', 'left', 'left']}>
-            <Title>#CitizenSpring🌱 - Groups</Title>
+            <Title>Citizen Spring - Groups</Title>
           </Flex>
           <Subtitle>
             <FormattedMessage id="homepage.latestMessages" defaultMessage="Latest messages" />
