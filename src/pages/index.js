@@ -36,21 +36,21 @@ class HomePage extends React.Component {
               <Font size={25}>that are taking initiatives</Font>
               <img src="/static/images/citizens-emoji.png" height={48} />
             </Cover>
+            <Flex mt={4} flexDirection={'row'} justifyContent="center">
+              <Box mx={2}>
+                <StyledLink href="/antwerp" buttonStyle="standard" buttonSize="medium">
+                  Antwerp
+                </StyledLink>
+              </Box>
+              <Box mx={2}>
+                <StyledLink href="/brussels" buttonStyle="standard" buttonSize="medium">
+                  Brussels
+                </StyledLink>
+              </Box>
+            </Flex>
           </Box>
           <Flex flexDirection={['column', 'row', 'row']} my={[0, 2, 4]}>
-            <Box mr={[0, 2, 4]} width={320}>
-              <iframe
-                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCitizenSpringBelgium%2F&tabs=events&width=320&height=496&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=110203902358957"
-                width="320"
-                height="496"
-                style={{ border: 'none', overflow: 'hidden' }}
-                scrolling="no"
-                frameborder="0"
-                allowTransparency="true"
-                allow="encrypted-media"
-              />{' '}
-            </Box>
-            <Box>
+            <Box p={1}>
               <PullQuote>
                 "The future is already here. It's just not evenly distributed yet" - somebody famous.
               </PullQuote>
@@ -83,8 +83,10 @@ class HomePage extends React.Component {
                 <a href="https://www.facebook.com/events/2356473224576228">Facebook Event</a>) and stay in the loop! ♾
                 <ul>
                   <li>
-                    If you are a citizen initiative,{' '}
-                    <a href="https://goo.gl/forms/LmPU19GNVkzCYxTu1">register your initiative using this form</a>.
+                    If you are a citizen initiative, register your citizen initiative in{' '}
+                    <StyledLink href="/antwerp/events/new">Antwerp</StyledLink>, or{' '}
+                    <StyledLink href="/brussels/events/new">Brussels</StyledLink>. If you are in another city,{' '}
+                    <a href="https://goo.gl/forms/LmPU19GNVkzCYxTu1">use this form</a>.
                   </li>
                   <li>
                     If you want to help us organize or become a local coordinator for your city, join the{' '}
@@ -101,12 +103,7 @@ class HomePage extends React.Component {
               </p>
 
               <Flex flexDirection={['column', 'row', 'row']} alignItems="center" justifyContent="center">
-                <Box py={4} mx={2}>
-                  <StyledLink href="https://goo.gl/forms/LmPU19GNVkzCYxTu1" buttonStyle="primary" buttonSize="medium">
-                    Register your citizen initiative
-                  </StyledLink>
-                </Box>
-                <Box mx={2}>
+                <Box mx={2} my={2}>
                   <StyledLink
                     href={mailto(
                       'newsletter@citizenspring.be',
@@ -122,6 +119,20 @@ class HomePage extends React.Component {
                 </Box>
               </Flex>
             </Box>
+            <Flex alignSelf={['center', 'auto', 'auto']}>
+              <Box mt={[5, 0, 0]} ml={[0, 2, 4]} width={320}>
+                <iframe
+                  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCitizenSpringBelgium%2F&tabs=events&width=320&height=496&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=true&appId=110203902358957"
+                  width="320"
+                  height="496"
+                  style={{ border: 'none', overflow: 'hidden' }}
+                  scrolling="no"
+                  frameborder="0"
+                  allowTransparency="true"
+                  allow="encrypted-media"
+                />
+              </Box>
+            </Flex>
           </Flex>
         </Content>
         <Footer />
