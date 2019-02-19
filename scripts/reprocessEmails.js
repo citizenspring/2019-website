@@ -10,6 +10,9 @@ const run = async () => {
       // console.log('> no email for post id', p.id, '- skipping');
       return;
     }
+    if (!p.email['body-html']) {
+      console.log('>>> missing body-html for Post.id', p.id);
+    }
     const html = libemail.getHTML(p.email);
     if (html === p.html) {
       // console.log('> no change for post id', p.id);

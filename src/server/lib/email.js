@@ -58,7 +58,7 @@ libemail.removeEmailSignature = function(html) {
 };
 
 libemail.getHTML = function(email) {
-  let html = email['stripped-html'] || '';
+  let html = email['body-html'] || email['stripped-html'] || '';
   html = libemail.removeEmailResponse(html);
   html = libemail.removeEmailSignature(html);
   html = html.replace(/<head>.*<\/head>/i, '');
