@@ -12,6 +12,9 @@ export default class MyDocument extends Document {
       <html>
         <Head>
           <meta charSet="UTF-8" />
+          <meta property="twitter:creator" content="citizen_spring" />
+          <meta property="twitter:site" content="opencollect" />
+          <meta property="og:image" content="/static/images/citizenspring-logo.png" />
           <meta name="viewport" content="width=device-width, user-scalable=no" />
           <link rel="stylesheet" href="/static/styles/geosuggest.css" />
           <link rel="stylesheet" href="/static/styles/react-tags.css" />
