@@ -166,7 +166,7 @@ export default class MyDocument extends Document {
             }
             #nprogress {
               position: absolute;
-              top: 34px;
+              top: 37px;
               left: 0;
               height: 5px;
               width: 100%;

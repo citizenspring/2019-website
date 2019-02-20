@@ -3,6 +3,7 @@ import TopBar from '../components/TopBar/index.js';
 import Footer from '../components/Footer/index.js';
 import { Title, Content, PullQuote } from '../styles/layout';
 import StyledLink from '../components/StyledLink';
+import Link from '../components/Link';
 import styled from 'styled-components';
 import { mailto } from '../lib/utils';
 import { Box, Flex } from '@rebass/grid';
@@ -38,14 +39,18 @@ class HomePage extends React.Component {
             </Cover>
             <Flex mt={4} flexDirection={'row'} justifyContent="center">
               <Box mx={2}>
-                <StyledLink href="/antwerp" buttonStyle="standard" buttonSize="medium">
-                  Antwerp
-                </StyledLink>
+                <Link prefetch href="/antwerp">
+                  <StyledLink buttonStyle="standard" buttonSize="medium">
+                    Antwerp
+                  </StyledLink>
+                </Link>
               </Box>
               <Box mx={2}>
-                <StyledLink href="/brussels" buttonStyle="standard" buttonSize="medium">
-                  Brussels
-                </StyledLink>
+                <Link prefetch href="/brussels">
+                  <StyledLink buttonStyle="standard" buttonSize="medium">
+                    Brussels
+                  </StyledLink>
+                </Link>
               </Box>
             </Flex>
           </Box>
