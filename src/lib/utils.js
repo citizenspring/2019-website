@@ -24,7 +24,8 @@ export const mailto = (to, action, subject = '', body = '') => {
   if (action) {
     email = email.replace('@', `/${action}@`);
   }
-  let encodedBody = encodeURIComponent(body || '').replace(/%0A/g, '%0D%0A'); // proper RFC recommendation but ignored by gmail on iOS
+  let encodedBody = encodeURIComponent(body || '');
+  // replace(/%0A/g, '%0A'); // proper RFC recommendation but ignored by gmail on iOS. Brave adds double new lines :-/
   if (iOS) {
     encodedBody = encodedBody.replace(/%20%20/g, '%26nbsp%3B%26nbsp%3B'); // iOS Mail App considers the body as HTML
   }
