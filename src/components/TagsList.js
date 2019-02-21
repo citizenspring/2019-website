@@ -8,6 +8,7 @@ import { Router } from '../server/pages';
 
 const TagsListWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   margin: 1rem 0;
 `;
@@ -22,6 +23,7 @@ const Tag = styled.a`
   letter-spacing: 0.4px;
   text-transform: uppercase;
   margin-right: 0.3rem;
+  margin-bottom: 0.3rem;
   border-radius: 4px;
   padding: 2px 4px;
   cursor: pointer;
@@ -31,6 +33,7 @@ const Tag = styled.a`
 
 const List = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const Label = styled.div`

@@ -20,7 +20,6 @@ class TagsSelector extends React.Component {
 
   render() {
     const { data, selected, groupSlug } = this.props;
-    console.log('>>> data', data);
     const posts = get(data, 'allPosts.nodes');
     if (!posts) {
       return <div />;
@@ -46,7 +45,6 @@ class TagsSelector extends React.Component {
       return <div />;
     }
     tagsArray[0].selected = true;
-    console.log('>>> tags:', tags, 'tagsArray:', tagsArray);
     return (
       <TagsSelectorWrapper>
         <TagsList groupSlug={groupSlug} tags={Object.keys(tags)} showLabel={true} selected={selected} />
