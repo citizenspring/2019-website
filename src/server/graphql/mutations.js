@@ -122,7 +122,7 @@ const mutations = {
       }
       const postData = {
         ...args.post,
-        GroupId: group.id,
+        GroupId: group.GroupId,
         status: 'PENDING',
         // settings: { type: 'announcements' },
       };
