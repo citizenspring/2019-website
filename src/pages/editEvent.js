@@ -13,9 +13,9 @@ import TopBar from '../components/TopBar';
 import { Title, Content, Description } from '../styles/layout';
 
 class CreateEventPage extends React.Component {
-  static getInitialProps({ query: { eventSlug } }) {
+  static getInitialProps({ query: { groupSlug, eventSlug } }) {
     const scripts = { googleMaps: true }; // Used in <InputTypeLocation>
-    return { scripts, eventSlug };
+    return { scripts, groupSlug, eventSlug };
   }
   constructor(props) {
     super(props);
@@ -49,10 +49,17 @@ class CreateEventPage extends React.Component {
   async componentDidMount() {}
 
   async onSubmit(form) {
-    console.log('>>> form', form);
     const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
-    const startsAt = new Date(`2019-03-${startsAtDate} ${form.startsAtTime.replace('h', ':00')}`);
-    const endsAt = new Date(`2019-03-${startsAtDate} ${form.endsAtTime.replace('h', ':00')}`);
+    const startsAt = new Date();
+    startsAt.setMonth(2);
+    startsAt.setDate(startsAtDate);
+    startsAt.setHours(form.startsAtTime.replace('h', ''));
+    startsAt.setMinutes(0);
+    const endsAt = new Date();
+    endsAt.setMonth(2);
+    endsAt.setDate(startsAtDate);
+    endsAt.setHours(form.endsAtTime.replace('h', ''));
+    endsAt.setMinutes(0);
     const user = { email: form.email };
 
     const group = { slug: this.props.groupSlug };
@@ -75,12 +82,12 @@ class CreateEventPage extends React.Component {
       ]),
     };
     try {
-      console.log('>>> graphql query with post', post);
       const res = await this.props.createPost({ post, user, group });
       console.log('>>> res', res);
       this.setState({ view: 'pending', form, post: get(res, 'data.createPost') });
     } catch (e) {
-      console.error('>>> editEvent.onSubmit error', e);
+      console.error('>>> editEvent.onSubmit error', JSON.stringify(e));
+      throw e;
     }
   }
 

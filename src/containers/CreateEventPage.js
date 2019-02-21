@@ -41,21 +41,31 @@ class CreateEventPage extends React.Component {
   constructor(props) {
     super(props);
     const data = props.data || {};
-    console.log('>>> CreateEventPage.constructor data:', data);
-    if (data.startsAt) {
-      const startsAt = new Date(Number(this.props.data.startsAt));
-      data.startsAt = startsAtOptions[startsAt.getDate() - 21];
-      data.startsAtTime = startsAt.getHours() + 'h';
-      const endsAt = new Date(Number(this.props.data.endsAt));
-      data.endsAtTime = endsAt.getHours() + 'h';
+    if (props.data) {
+      if (data.formData) {
+        Object.keys(data.formData).map(key => {
+          data[key] = data.formData[key];
+        });
+      }
+      if (!data.startsAt || data.startsAt === '0') {
+        delete data.startsAt;
+        delete data.startsAtTime;
+        delete data.endAtTime;
+      } else {
+        const startsAt = new Date(Number(this.props.data.startsAt));
+        data.startsAt = startsAtOptions[startsAt.getDate() - 21];
+        data.startsAtTime = startsAt.getHours() + 'h';
+        const endsAt = new Date(Number(this.props.data.endsAt));
+        data.endsAtTime = endsAt.getHours() + 'h';
+      }
     }
 
     this.onSubmit = this.onSubmit.bind(this);
     this.state = {
       form: {
-        startsAt: 'Thu March 21st',
-        startsAtTime: '10h',
-        endsAtTime: '11h',
+        startsAt: startsAtOptions[0],
+        startsAtTime: timeOptions[2],
+        endsAtTime: timeOptions[3],
         ...data,
       },
       edited: {},

@@ -173,6 +173,9 @@ module.exports = (sequelize, DataTypes) => {
 
   // Get the latest version of the group by slug (and optional status PUBLISHED/ARCHIVED/PENDING)
   Group.findBySlug = (slug, status) => {
+    if (!slug) {
+      return null;
+    }
     const where = { slug: slug.toLowerCase() };
     if (status) {
       where.status = status;

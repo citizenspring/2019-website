@@ -49,10 +49,17 @@ class CreateEventPage extends React.Component {
   async componentDidMount() {}
 
   async onSubmit(form) {
-    console.log('>>> createEvent.onSubmit', form);
     const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
-    const startsAt = new Date(`2019-03-${startsAtDate} ${form.startsAtTime.replace('h', ':00')}`);
-    const endsAt = new Date(`2019-03-${startsAtDate} ${form.endsAtTime.replace('h', ':00')}`);
+    const startsAt = new Date();
+    startsAt.setMonth(2);
+    startsAt.setDate(startsAtDate);
+    startsAt.setHours(form.startsAtTime.replace('h', ''));
+    startsAt.setMinutes(0);
+    const endsAt = new Date();
+    endsAt.setMonth(2);
+    endsAt.setDate(startsAtDate);
+    endsAt.setHours(form.endsAtTime.replace('h', ''));
+    endsAt.setMinutes(0);
     const user = { email: form.email };
 
     const group = { slug: this.props.groupSlug };
@@ -102,6 +109,8 @@ const createPostMutation = gql`
     createPost(user: $user, post: $post, group: $group) {
       id
       slug
+      startsAt
+      endsAt
       group {
         slug
         name
