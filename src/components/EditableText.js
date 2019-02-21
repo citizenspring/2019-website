@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import autolinker from 'autolinker';
 import { FormattedMessage } from 'react-intl';
+import Link from './Link';
 
 const Wrapper = styled.div`
   div {
@@ -36,7 +37,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function EditableText({ mailto, html, children }) {
+export default function EditableText({ mailto, href, html, children }) {
   return (
     <Wrapper>
       {html && (
@@ -56,10 +57,10 @@ export default function EditableText({ mailto, html, children }) {
         />
       )}
       {children && <div>{children}</div>}
-      <a href={mailto} className="edit">
+      <Link href={mailto || href} className="edit">
         ✏️
         <FormattedMessage id="edit" defaultMessage="edit" />
-      </a>
+      </Link>
     </Wrapper>
   );
 }

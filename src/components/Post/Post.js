@@ -30,15 +30,7 @@ class Post extends Component {
           )}
           {!reaction && (
             <div>
-              <EditableText
-                mailto={mailto(
-                  `${group.slug}/${thread.PostId}/${post.PostId}@${env.DOMAIN}`,
-                  'edit',
-                  post.title,
-                  post.text,
-                )}
-                html={html}
-              />
+              <EditableText href={`/${group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`} html={html} />
               {post.type === 'POST' && post.html.length > 14 && (
                 <PostReactions group={group} thread={thread} reply={post} size={16} />
               )}

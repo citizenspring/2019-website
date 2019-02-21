@@ -1,10 +1,13 @@
 import Document, { Head, Main, NextScript } from 'next/document';
 import settings from '../../settings.json';
+import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
-  static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
+  static async getInitialProps({ renderPage }) {
+    const sheet = new ServerStyleSheet();
+    const page = renderPage(App => props => sheet.collectStyles(<App {...props} />));
+    const styleTags = sheet.getStyleElement();
+    return { ...page, styleTags };
   }
 
   render() {
@@ -166,7 +169,7 @@ export default class MyDocument extends Document {
             }
             #nprogress {
               position: absolute;
-              top: 37px;
+              top: 36px;
               left: 0;
               height: 5px;
               width: 100%;
@@ -244,6 +247,7 @@ export default class MyDocument extends Document {
             }
 
           `}</style>
+          {this.props.styleTags}
         </Head>
         <body className="custom_class">
           <Main />
