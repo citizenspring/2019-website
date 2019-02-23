@@ -12,6 +12,7 @@ export const GroupBoxWrapper = styled.div`
 `;
 
 export const Name = styled.h2`
+  margin-top: 0;
   color: black;
 `;
 
