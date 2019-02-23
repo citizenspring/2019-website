@@ -122,75 +122,71 @@ class CreateEventPage extends React.Component {
         defaultMessage:
           'Facebook event / Eventbrite - optional - please make sure you mention #CitizenSpring in the title/description of the event',
       },
-      'tags.food': { id: 'tags.food', defaultMessage: 'food' },
-      'tags.shopping': { id: 'tags.shopping', defaultMessage: 'shopping' },
-      'tags.mobility': { id: 'tags.mobility', defaultMessage: 'mobility' },
-      'tags.coliving': { id: 'tags.coliving', defaultMessage: 'coliving' },
-      'tags.coworking': { id: 'tags.coworking', defaultMessage: 'coworking' },
-      'tags.homelessness': { id: 'tags.homelessness', defaultMessage: 'homelessness' },
-      'tags.integration': { id: 'tags.integration', defaultMessage: 'integration' },
-      'tags.workshop': { id: 'tags.workshop', defaultMessage: 'workshop' },
-      'tags.community place': { id: 'tags.communityPlace', defaultMessage: 'community place' },
-      'tags.permaculture': { id: 'tags.permaculture', defaultMessage: 'permaculture' },
-      'tags.recycling': { id: 'tags.recycling', defaultMessage: 'recycling' },
-      'tags.gardening': { id: 'tags.gardening', defaultMessage: 'gardening' },
-      'tags.transition': { id: 'tags.transition', defaultMessage: 'transition' },
-      'tags.energy': { id: 'tags.energy', defaultMessage: 'energy' },
-      'tags.culture': { id: 'tags.culture', defaultMessage: 'culture' },
-      'tags.education': { id: 'tags.education', defaultMessage: 'education' },
-      'tags.family': { id: 'tags.family', defaultMessage: 'family' },
-      'tags.art': { id: 'tags.art', defaultMessage: 'art' },
-      'tags.well being': { id: 'tags.wellBeing', defaultMessage: 'well being' },
-      'tags.technology': { id: 'tags.technology', defaultMessage: 'technology' },
-      'tags.research': { id: 'tags.research', defaultMessage: 'research' },
-      'tags.creative communities': { id: 'tags.creativeCommunities', defaultMessage: 'creative communities' },
-      'tags.other communities': { id: 'tags.otherCommunities', defaultMessage: 'other communities' },
-      'tags.local economy': { id: 'tags.localEconomy', defaultMessage: 'local economy' },
-      'tags.circular economy': { id: 'tags.circularEconomy', defaultMessage: 'circular economy' },
-      'tags.sustainability': { id: 'tags.sustainability', defaultMessage: 'sustainability' },
-      'tags.zero waste': { id: 'tags.zeroWaste', defaultMessage: 'zero waste' },
-      'tags.second hand': { id: 'tags.secondHand', defaultMessage: 'second hand' },
-      'tags.art': { id: 'tags.art', defaultMessage: 'art' },
-      'tags.repair café': { id: 'tags.repairCafe', defaultMessage: 'repair café' },
-      'tags.fablab': { id: 'tags.food', defaultMessage: 'food' },
-      'tags.citizenship': { id: 'tags.citizenship', defaultMessage: 'citizenship' },
-      'tags.solidarity': { id: 'tags.solidarity', defaultMessage: 'solidarity' },
-      'tags.housing': { id: 'tags.housing', defaultMessage: 'housing' },
-      'tags.collective': { id: 'tags.collective', defaultMessage: 'collective' },
-      'tags.cooperative': { id: 'tags.cooperative', defaultMessage: 'cooperative' },
-      'tags.social business': { id: 'tags.socialBusiness', defaultMessage: 'social business' },
-      'tags.vegan': { id: 'tags.vegan', defaultMessage: 'vegan' },
-      'tags.cafe': { id: 'tags.cafe', defaultMessage: 'cafe' },
-      'language.English': { id: 'language.English', defaultMessage: 'English' },
-      'language.French': { id: 'language.French', defaultMessage: 'French' },
-      'language.Dutch': { id: 'language.Dutch', defaultMessage: 'Dutch' },
-      'language.Arabic': { id: 'language.Arabic', defaultMessage: 'Arabic' },
-      'language.Italian': { id: 'language.Italian', defaultMessage: 'Italian' },
-      'language.Polish': { id: 'language.Polish', defaultMessage: 'Polish' },
-      'language.Romanian': { id: 'language.Romanian', defaultMessage: 'Romanian' },
-      'language.Spanish': { id: 'language.Spanish', defaultMessage: 'Spanish' },
-      'language.Turkish': { id: 'language.Turkish', defaultMessage: 'Turkish' },
-      'language.Brusseleer': { id: 'language.Brusseleer', defaultMessage: 'Brusseleer' },
-      'kidsFriendly.babies': { id: 'kidsFriendly.babies', defaultMessage: 'babies' },
-      'kidsFriendly.toddlers': { id: 'kidsFriendly.toddlers', defaultMessage: 'toddlers' },
-      'kidsFriendly.kids': { id: 'kidsFriendly.kids', defaultMessage: 'kids' },
+      'tags.options.food': { id: 'tags.food', defaultMessage: 'food' },
+      'tags.options.shopping': { id: 'tags.shopping', defaultMessage: 'shopping' },
+      'tags.options.mobility': { id: 'tags.mobility', defaultMessage: 'mobility' },
+      'tags.options.coliving': { id: 'tags.coliving', defaultMessage: 'coliving' },
+      'tags.options.coworking': { id: 'tags.coworking', defaultMessage: 'coworking' },
+      'tags.options.homelessness': { id: 'tags.homelessness', defaultMessage: 'homelessness' },
+      'tags.options.integration': { id: 'tags.integration', defaultMessage: 'integration' },
+      'tags.options.workshop': { id: 'tags.workshop', defaultMessage: 'workshop' },
+      'tags.options.community place': { id: 'tags.communityPlace', defaultMessage: 'community place' },
+      'tags.options.permaculture': { id: 'tags.permaculture', defaultMessage: 'permaculture' },
+      'tags.options.recycling': { id: 'tags.recycling', defaultMessage: 'recycling' },
+      'tags.options.gardening': { id: 'tags.gardening', defaultMessage: 'gardening' },
+      'tags.options.transition': { id: 'tags.transition', defaultMessage: 'transition' },
+      'tags.options.energy': { id: 'tags.energy', defaultMessage: 'energy' },
+      'tags.options.culture': { id: 'tags.culture', defaultMessage: 'culture' },
+      'tags.options.education': { id: 'tags.education', defaultMessage: 'education' },
+      'tags.options.family': { id: 'tags.family', defaultMessage: 'family' },
+      'tags.options.art': { id: 'tags.art', defaultMessage: 'art' },
+      'tags.options.well being': { id: 'tags.wellBeing', defaultMessage: 'well being' },
+      'tags.options.technology': { id: 'tags.technology', defaultMessage: 'technology' },
+      'tags.options.research': { id: 'tags.research', defaultMessage: 'research' },
+      'tags.options.creative communities': { id: 'tags.creativeCommunities', defaultMessage: 'creative communities' },
+      'tags.options.other communities': { id: 'tags.otherCommunities', defaultMessage: 'other communities' },
+      'tags.options.local economy': { id: 'tags.localEconomy', defaultMessage: 'local economy' },
+      'tags.options.circular economy': { id: 'tags.circularEconomy', defaultMessage: 'circular economy' },
+      'tags.options.sustainability': { id: 'tags.sustainability', defaultMessage: 'sustainability' },
+      'tags.options.zero waste': { id: 'tags.zeroWaste', defaultMessage: 'zero waste' },
+      'tags.options.second hand': { id: 'tags.secondHand', defaultMessage: 'second hand' },
+      'tags.options.art': { id: 'tags.art', defaultMessage: 'art' },
+      'tags.options.repair café': { id: 'tags.repairCafe', defaultMessage: 'repair café' },
+      'tags.options.fablab': { id: 'tags.food', defaultMessage: 'food' },
+      'tags.options.citizenship': { id: 'tags.citizenship', defaultMessage: 'citizenship' },
+      'tags.options.solidarity': { id: 'tags.solidarity', defaultMessage: 'solidarity' },
+      'tags.options.housing': { id: 'tags.housing', defaultMessage: 'housing' },
+      'tags.options.collective': { id: 'tags.collective', defaultMessage: 'collective' },
+      'tags.options.cooperative': { id: 'tags.cooperative', defaultMessage: 'cooperative' },
+      'tags.options.social business': { id: 'tags.socialBusiness', defaultMessage: 'social business' },
+      'tags.options.vegan': { id: 'tags.vegan', defaultMessage: 'vegan' },
+      'tags.options.cafe': { id: 'tags.cafe', defaultMessage: 'cafe' },
+      'language.options.English': { id: 'language.English', defaultMessage: 'English' },
+      'language.options.French': { id: 'language.French', defaultMessage: 'French' },
+      'language.options.Dutch': { id: 'language.Dutch', defaultMessage: 'Dutch' },
+      'language.options.Arabic': { id: 'language.Arabic', defaultMessage: 'Arabic' },
+      'language.options.Italian': { id: 'language.Italian', defaultMessage: 'Italian' },
+      'language.options.Polish': { id: 'language.Polish', defaultMessage: 'Polish' },
+      'language.options.Romanian': { id: 'language.Romanian', defaultMessage: 'Romanian' },
+      'language.options.Spanish': { id: 'language.Spanish', defaultMessage: 'Spanish' },
+      'language.options.Turkish': { id: 'language.Turkish', defaultMessage: 'Turkish' },
+      'language.options.Brusseleer': { id: 'language.Brusseleer', defaultMessage: 'Brusseleer' },
+      'kidsFriendly.options.babies': { id: 'kidsFriendly.babies', defaultMessage: 'babies' },
+      'kidsFriendly.options.toddlers': { id: 'kidsFriendly.toddlers', defaultMessage: 'toddlers' },
+      'kidsFriendly.options.kids': { id: 'kidsFriendly.kids', defaultMessage: 'kids' },
     });
 
     this.languagesValues = Object.keys(this.messages)
-      .filter(key => key.match(/^language\./))
-      .map(key => key.replace(/^language\./, ''));
+      .filter(key => key.match(/^language\.options\./))
+      .map(key => key.replace(/^language\.options\./, ''));
     this.kidsFriendlyValues = Object.keys(this.messages)
-      .filter(key => key.match(/^kidsFriendly\./))
-      .map(key => key.replace(/^kidsFriendly\./, ''));
+      .filter(key => key.match(/^kidsFriendly\.options\./))
+      .map(key => key.replace(/^kidsFriendly\.options\./, ''));
     const suggestionsArray = Object.keys(this.messages)
-      .filter(key => key.match(/^tags\./))
-      .map(key => key.replace(/^tags\./, ''));
-    console.log('>>> this.languagesValues', this.languagesValues);
-    console.log('>>> this.languagesValues', this.kidsFriendlyValues);
-    console.log('>>> suggestionsArray', suggestionsArray);
+      .filter(key => key.match(/^tags\.options\./))
+      .map(key => key.replace(/^tags\.options\./, ''));
     this.suggestions = suggestionsArray.map(s => {
-      console.log('>>> formatMessage id', `tags.${s}`);
-      return { id: s, text: props.intl.formatMessage(this.messages[`tags.${s}`]) };
+      return { id: s, text: props.intl.formatMessage(this.messages[`tags.options.${s}`]) };
     });
   }
 
@@ -384,7 +380,7 @@ class CreateEventPage extends React.Component {
                     this.languagesValues.map(value => (
                       <Box my={2}>
                         <StyledCheckbox
-                          label={intl.formatMessage(this.messages[`language.${value}`])}
+                          label={intl.formatMessage(this.messages[`language.options.${value}`])}
                           {...inputProps}
                           {...this.getFieldProps(inputProps.name, value)}
                           onChange={val => this.onChange(inputProps.name, value, val.checked)}
@@ -406,7 +402,7 @@ class CreateEventPage extends React.Component {
                     this.kidsFriendlyValues.map(value => (
                       <Box my={2}>
                         <StyledCheckbox
-                          label={intl.formatMessage(this.messages[`kidsFriendly.${value}`])}
+                          label={intl.formatMessage(this.messages[`kidsFriendly.options.${value}`])}
                           {...inputProps}
                           {...this.getFieldProps(inputProps.name, value)}
                           onChange={val => this.onChange(inputProps.name, value, val.checked)}
