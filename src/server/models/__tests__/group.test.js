@@ -1,13 +1,23 @@
 import models from '../';
 import { db } from '../../lib/jest';
-let user, group;
+let user;
 describe('group model', async () => {
   beforeAll(db.reset);
   beforeAll(async () => {
     user = await models.User.create({ email: 'user@gmail.com' });
   });
   afterAll(db.close);
-
+  it('creates a group with tags in group name and description', async () => {
+    const group = await models.Group.create({
+      name: 'This is a great group #education #todo',
+      description: '#anothertag, and so more description',
+      tags: ['tag1'],
+      UserId: user.id,
+    });
+    expect(group.name).toEqual('This is a great group');
+    expect(group.slug).toEqual('this-is-a-great-group');
+    expect(group.tags).toEqual(['tag1', 'education', 'todo', 'anothertag']);
+  });
   it('creates a new version when editing a group data', async () => {
     const group = await models.Group.create({
       slug: 'test',
@@ -15,7 +25,7 @@ describe('group model', async () => {
       name: 'test group',
     });
     const newVersion = await group.edit({ description: 'new description' });
-    expect(newVersion.GroupId).toEqual(1);
+    expect(newVersion.GroupId).toEqual(group.id);
     expect(newVersion.version).toEqual(2);
     const versions = await models.Group.findAll({ where: { slug: 'test' } });
     expect(versions.length).toEqual(2);
@@ -42,6 +52,7 @@ describe('group model', async () => {
       }
     });
     it('works if valid country code', async () => {
+      let group;
       try {
         group = await user.createGroup({
           slug: 'newgroup',

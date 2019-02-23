@@ -1,7 +1,7 @@
 'use strict';
 import config from 'config';
 import slugify from 'limax';
-import { get, omit } from 'lodash';
+import { get, omit, uniq } from 'lodash';
 import debugLib from 'debug';
 const debug = debugLib('group');
 import { isISO31661Alpha2 } from 'validator';
@@ -135,6 +135,17 @@ module.exports = (sequelize, DataTypes) => {
           if (!group.slug && !group.name) {
             throw new Error('Group validation error: need to provide a slug or a name', group);
           }
+          const tagsStr = `${get(group, 'dataValues.name', '')} ${get(group, 'dataValues.description', '')}`;
+          const tags = tagsStr.match(/#[a-z0-9_]+/g);
+          if (tags) {
+            group.tags = group.tags || [];
+            tags.map(t => {
+              group.tags.push(t.toLowerCase().substr(1));
+            });
+            group.tags = uniq(group.tags);
+            group.name = group.dataValues.name.replace(/ ?#[a-z0-9_]+/g, '');
+          }
+
           group.slug = group.slug || slugify(group.name);
           const location = get(group, 'dataValues.location');
           if (location) {

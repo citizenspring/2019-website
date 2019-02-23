@@ -1,7 +1,7 @@
 'use strict';
 import config from 'config';
 import slugify from 'limax';
-import { omit, get } from 'lodash';
+import { omit, get, uniq } from 'lodash';
 import libemail from '../lib/email';
 import { extractNamesAndEmailsFromString, isEmpty } from '../lib/utils';
 import debugLib from 'debug';
@@ -161,6 +161,7 @@ module.exports = (sequelize, DataTypes) => {
             tags.map(t => {
               post.tags.push(t.toLowerCase().substr(1));
             });
+            post.tags = uniq(post.tags);
             post.title = post.dataValues.title.replace(/ ?#[a-z0-9_]+/g, '');
           }
           post.slug = post.slug || slugify(post.title);
