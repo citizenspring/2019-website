@@ -72,66 +72,122 @@ class CreateEventPage extends React.Component {
       errors: {},
     };
 
-    const suggestionsArray = [
-      'food',
-      'shopping',
-      'mobility',
-      'coliving',
-      'coworking',
-      'homelessness',
-      'integration',
-      'workshop',
-      'community place',
-      'permaculture',
-      'recycling',
-      'gardening',
-      'transition',
-      'energy',
-      'culture',
-      'education',
-      'family',
-      'art',
-      'well being',
-      'technology',
-      'research',
-      'creative communities',
-      'other communities',
-      'local economy',
-      'circular economy',
-      'sustainability',
-      'zero waste',
-      'recycling',
-      'second hand',
-      'art',
-      'repair café',
-      'fablab',
-      'citizenship',
-      'solidarity',
-      'housing',
-      'collective',
-      'cooperative',
-      'social business',
-      'vegan',
-      'cafe',
-    ];
-
-    this.suggestions = suggestionsArray.map(s => {
-      return { id: s, text: s };
+    this.messages = defineMessages({
+      'email.label': { id: 'form.createEvent.email.label', defaultMessage: 'Your personal email address' },
+      'title.label': { id: 'form.createEvent.title.label', defaultMessage: 'Name of your collective' },
+      'collectiveDescription.label': {
+        id: 'form.createEvent.collectiveDescription.label',
+        defaultMessage: 'Short description of your collective',
+      },
+      'collectiveDescription.description': {
+        id: 'form.createEvent.collectiveDescription.description',
+        defaultMessage: "(don't worry, you can refine this later)",
+      },
+      'collectiveWebsite.label': { id: 'form.createEvent.collectiveWebsite.label', defaultMessage: 'Website' },
+      'collectiveWebsite.description': {
+        id: 'form.createEvent.collectiveWebsite.description',
+        defaultMessage: 'URL of your website or of your Facebook page',
+      },
+      'text.label': { id: 'form.createEvent.text.label', defaultMessage: 'Description of your open door' },
+      'text.description': {
+        id: 'form.createEvent.text.description',
+        defaultMessage: 'What will you do at your open door? What will people learn?',
+      },
+      'startsAt.label': { id: 'form.createEvent.startsAt.label', defaultMessage: 'When is your open door?' },
+      'startsAtTime.label': { id: 'form.createEvent.startsAtTime.label', defaultMessage: 'From' },
+      'endsAtTime.label': { id: 'form.createEvent.endsAtTime.label', defaultMessage: 'Till' },
+      'location.label': { id: 'form.createEvent.location.label', defaultMessage: 'Location' },
+      'location.description': {
+        id: 'form.createEvent.location.description',
+        defaultMessage: 'Where will your open door take place?',
+      },
+      'language.label': { id: 'form.createEvent.language.label', defaultMessage: 'Languages' },
+      'language.description': {
+        id: 'form.createEvent.language.description',
+        defaultMessage: 'What languages can you accommodate?',
+      },
+      'kidsFriendly.label': { id: 'form.createEvent.kidsFriendly.label', defaultMessage: 'Kids friendly' },
+      'kidsFriendly.description': {
+        id: 'form.createEvent.kidsFriendly.description',
+        defaultMessage: 'Is your open door kid friendly?',
+      },
+      'tags.label': { id: 'form.createEvent.tags.label', defaultMessage: 'Tags' },
+      'tags.description': {
+        id: 'form.createEvent.tags.description',
+        defaultMessage: 'Tags help people browse through all the citizen initiatives',
+      },
+      'website.label': { id: 'form.createEvent.website.label', defaultMessage: 'Registration URL if any' },
+      'website.description': {
+        id: 'form.createEvent.website.description',
+        defaultMessage:
+          'Facebook event / Eventbrite - optional - please make sure you mention #CitizenSpring in the title/description of the event',
+      },
+      'tags.options.food': { id: 'tags.food', defaultMessage: 'food' },
+      'tags.options.shopping': { id: 'tags.shopping', defaultMessage: 'shopping' },
+      'tags.options.mobility': { id: 'tags.mobility', defaultMessage: 'mobility' },
+      'tags.options.coliving': { id: 'tags.coliving', defaultMessage: 'coliving' },
+      'tags.options.coworking': { id: 'tags.coworking', defaultMessage: 'coworking' },
+      'tags.options.homelessness': { id: 'tags.homelessness', defaultMessage: 'homelessness' },
+      'tags.options.integration': { id: 'tags.integration', defaultMessage: 'integration' },
+      'tags.options.workshop': { id: 'tags.workshop', defaultMessage: 'workshop' },
+      'tags.options.community place': { id: 'tags.communityPlace', defaultMessage: 'community place' },
+      'tags.options.permaculture': { id: 'tags.permaculture', defaultMessage: 'permaculture' },
+      'tags.options.recycling': { id: 'tags.recycling', defaultMessage: 'recycling' },
+      'tags.options.gardening': { id: 'tags.gardening', defaultMessage: 'gardening' },
+      'tags.options.transition': { id: 'tags.transition', defaultMessage: 'transition' },
+      'tags.options.energy': { id: 'tags.energy', defaultMessage: 'energy' },
+      'tags.options.culture': { id: 'tags.culture', defaultMessage: 'culture' },
+      'tags.options.education': { id: 'tags.education', defaultMessage: 'education' },
+      'tags.options.family': { id: 'tags.family', defaultMessage: 'family' },
+      'tags.options.art': { id: 'tags.art', defaultMessage: 'art' },
+      'tags.options.well being': { id: 'tags.wellBeing', defaultMessage: 'well being' },
+      'tags.options.technology': { id: 'tags.technology', defaultMessage: 'technology' },
+      'tags.options.research': { id: 'tags.research', defaultMessage: 'research' },
+      'tags.options.creative communities': { id: 'tags.creativeCommunities', defaultMessage: 'creative communities' },
+      'tags.options.other communities': { id: 'tags.otherCommunities', defaultMessage: 'other communities' },
+      'tags.options.local economy': { id: 'tags.localEconomy', defaultMessage: 'local economy' },
+      'tags.options.circular economy': { id: 'tags.circularEconomy', defaultMessage: 'circular economy' },
+      'tags.options.sustainability': { id: 'tags.sustainability', defaultMessage: 'sustainability' },
+      'tags.options.zero waste': { id: 'tags.zeroWaste', defaultMessage: 'zero waste' },
+      'tags.options.second hand': { id: 'tags.secondHand', defaultMessage: 'second hand' },
+      'tags.options.art': { id: 'tags.art', defaultMessage: 'art' },
+      'tags.options.repair café': { id: 'tags.repairCafe', defaultMessage: 'repair café' },
+      'tags.options.fablab': { id: 'tags.food', defaultMessage: 'food' },
+      'tags.options.citizenship': { id: 'tags.citizenship', defaultMessage: 'citizenship' },
+      'tags.options.solidarity': { id: 'tags.solidarity', defaultMessage: 'solidarity' },
+      'tags.options.housing': { id: 'tags.housing', defaultMessage: 'housing' },
+      'tags.options.collective': { id: 'tags.collective', defaultMessage: 'collective' },
+      'tags.options.cooperative': { id: 'tags.cooperative', defaultMessage: 'cooperative' },
+      'tags.options.social business': { id: 'tags.socialBusiness', defaultMessage: 'social business' },
+      'tags.options.vegan': { id: 'tags.vegan', defaultMessage: 'vegan' },
+      'tags.options.cafe': { id: 'tags.cafe', defaultMessage: 'cafe' },
+      'language.options.English': { id: 'language.English', defaultMessage: 'English' },
+      'language.options.French': { id: 'language.French', defaultMessage: 'French' },
+      'language.options.Dutch': { id: 'language.Dutch', defaultMessage: 'Dutch' },
+      'language.options.Arabic': { id: 'language.Arabic', defaultMessage: 'Arabic' },
+      'language.options.Italian': { id: 'language.Italian', defaultMessage: 'Italian' },
+      'language.options.Polish': { id: 'language.Polish', defaultMessage: 'Polish' },
+      'language.options.Romanian': { id: 'language.Romanian', defaultMessage: 'Romanian' },
+      'language.options.Spanish': { id: 'language.Spanish', defaultMessage: 'Spanish' },
+      'language.options.Turkish': { id: 'language.Turkish', defaultMessage: 'Turkish' },
+      'language.options.Brusseleer': { id: 'language.Brusseleer', defaultMessage: 'Brusseleer' },
+      'kidsFriendly.options.babies': { id: 'kidsFriendly.babies', defaultMessage: 'babies' },
+      'kidsFriendly.options.toddlers': { id: 'kidsFriendly.toddlers', defaultMessage: 'toddlers' },
+      'kidsFriendly.options.kids': { id: 'kidsFriendly.kids', defaultMessage: 'kids' },
     });
 
-    this.languagesValues = [
-      'English',
-      'French',
-      'Dutch',
-      'Arabic',
-      'Italian',
-      'Polish',
-      'Romanian',
-      'Spanish',
-      'Turkish',
-      'Brusseleer',
-    ];
-    this.kidsFriendlyValues = ['babies', 'toddlers', 'kids'];
+    this.languagesValues = Object.keys(this.messages)
+      .filter(key => key.match(/^language\.options\./))
+      .map(key => key.replace(/^language\.options\./, ''));
+    this.kidsFriendlyValues = Object.keys(this.messages)
+      .filter(key => key.match(/^kidsFriendly\.options\./))
+      .map(key => key.replace(/^kidsFriendly\.options\./, ''));
+    const suggestionsArray = Object.keys(this.messages)
+      .filter(key => key.match(/^tags\.options\./))
+      .map(key => key.replace(/^tags\.options\./, ''));
+    this.suggestions = suggestionsArray.map(s => {
+      return { id: s, text: props.intl.formatMessage(this.messages[`tags.options.${s}`]) };
+    });
   }
 
   getFieldError(fieldname) {
@@ -182,28 +238,36 @@ class CreateEventPage extends React.Component {
   }
 
   render() {
-    const { groupSlug, onSubmit, loading } = this.props;
+    const { groupSlug, onSubmit, loading, intl } = this.props;
     return (
       <div>
         <Box px={[1, 2, 2]}>
           <Box as="form" m={[0, 2, 2]} onSubmit={this.onSubmit} method="POST">
             <Box mb={3}>
-              <StyledInputField label="Your personal email" htmlFor="email" error={this.getFieldError('email')}>
+              <StyledInputField
+                label={intl.formatMessage(this.messages['email.label'])}
+                htmlFor="email"
+                error={this.getFieldError('email')}
+              >
                 {inputProps => (
                   <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} type="email" required />
                 )}
               </StyledInputField>
             </Box>
             <Box mb={3}>
-              <StyledInputField label="Name of your collective" htmlFor="title" error={this.getFieldError('title')}>
+              <StyledInputField
+                label={intl.formatMessage(this.messages['title.label'])}
+                htmlFor="title"
+                error={this.getFieldError('title')}
+              >
                 {inputProps => <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} />}
               </StyledInputField>
             </Box>
 
             <Box mb={3}>
               <StyledInputField
-                label="Quick description of your collective"
-                description="(don't worry, you can refine this later)"
+                label={intl.formatMessage(this.messages['collectiveDescription.label'])}
+                description={intl.formatMessage(this.messages['collectiveDescription.description'])}
                 htmlFor="collectiveDescription"
                 error={this.getFieldError('collectiveDescription')}
               >
@@ -213,8 +277,8 @@ class CreateEventPage extends React.Component {
 
             <Box mb={3}>
               <StyledInputField
-                label="Website"
-                description="URL of your website or of your Facebook page"
+                label={intl.formatMessage(this.messages['collectiveWebsite.label'])}
+                description={intl.formatMessage(this.messages['collectiveWebsite.description'])}
                 htmlFor="collectiveWebsite"
                 error={this.getFieldError('collectiveWebsite')}
               >
@@ -224,8 +288,8 @@ class CreateEventPage extends React.Component {
 
             <Box mb={3}>
               <StyledInputField
-                label="Description of your open door"
-                description="What will you do at your open door? What will people learn?"
+                label={intl.formatMessage(this.messages['text.label'])}
+                description={intl.formatMessage(this.messages['text.description'])}
                 htmlFor="text"
                 error={this.getFieldError('text')}
               >
@@ -236,7 +300,7 @@ class CreateEventPage extends React.Component {
             <Flex>
               <Box mb={4} width={1 / 2}>
                 <StyledInputField
-                  label="When is your open door?"
+                  label={intl.formatMessage(this.messages['startsAt.label'])}
                   htmlFor="startsAt"
                   error={this.getFieldError('startsAt')}
                 >
@@ -252,7 +316,11 @@ class CreateEventPage extends React.Component {
                 </StyledInputField>
               </Box>
               <Box mb={4} width={1 / 4}>
-                <StyledInputField label="From" htmlFor="startsAtTime" error={this.getFieldError('startsAtTime')}>
+                <StyledInputField
+                  label={intl.formatMessage(this.messages['startsAtTime.label'])}
+                  htmlFor="startsAtTime"
+                  error={this.getFieldError('startsAtTime')}
+                >
                   {inputProps => (
                     <StyledSelect
                       options={timeOptions}
@@ -266,7 +334,11 @@ class CreateEventPage extends React.Component {
               </Box>
 
               <Box mb={4} width={1 / 4}>
-                <StyledInputField label="Till" htmlFor="endsAtTime" error={this.getFieldError('endsAtTime')}>
+                <StyledInputField
+                  label={intl.formatMessage(this.messages['endsAtTime.label'])}
+                  htmlFor="endsAtTime"
+                  error={this.getFieldError('endsAtTime')}
+                >
                   {inputProps => (
                     <StyledSelect
                       options={timeOptions}
@@ -282,8 +354,8 @@ class CreateEventPage extends React.Component {
 
             <Box mb={4}>
               <StyledInputField
-                label="Location"
-                description="Where will your open door take place?"
+                label={intl.formatMessage(this.messages['location.label'])}
+                description={intl.formatMessage(this.messages['location.description'])}
                 htmlFor="location"
                 error={this.getFieldError('location')}
               >
@@ -299,16 +371,16 @@ class CreateEventPage extends React.Component {
             <Flex>
               <Box mb={4} width={2 / 3}>
                 <StyledInputField
-                  label="Languages"
-                  description="What languages can you accommodate?"
-                  htmlFor="languages"
-                  error={this.getFieldError('languages')}
+                  label={intl.formatMessage(this.messages['language.label'])}
+                  description={intl.formatMessage(this.messages['language.description'])}
+                  htmlFor="language"
+                  error={this.getFieldError('language')}
                 >
                   {inputProps =>
                     this.languagesValues.map(value => (
                       <Box my={2}>
                         <StyledCheckbox
-                          label={value}
+                          label={intl.formatMessage(this.messages[`language.options.${value}`])}
                           {...inputProps}
                           {...this.getFieldProps(inputProps.name, value)}
                           onChange={val => this.onChange(inputProps.name, value, val.checked)}
@@ -321,8 +393,8 @@ class CreateEventPage extends React.Component {
 
               <Box mb={4} width={1 / 3}>
                 <StyledInputField
-                  label="Kids friendly"
-                  description="Is your open door kid friendly?"
+                  label={intl.formatMessage(this.messages['kidsFriendly.label'])}
+                  description={intl.formatMessage(this.messages['kidsFriendly.description'])}
                   htmlFor="kidsFriendly"
                   error={this.getFieldError('kidsFriendly')}
                 >
@@ -330,7 +402,7 @@ class CreateEventPage extends React.Component {
                     this.kidsFriendlyValues.map(value => (
                       <Box my={2}>
                         <StyledCheckbox
-                          label={value}
+                          label={intl.formatMessage(this.messages[`kidsFriendly.options.${value}`])}
                           {...inputProps}
                           {...this.getFieldProps(inputProps.name, value)}
                           onChange={val => this.onChange(inputProps.name, value, val.checked)}
@@ -344,8 +416,8 @@ class CreateEventPage extends React.Component {
 
             <Box mb={4}>
               <StyledInputField
-                label="Tags"
-                description="Tags help people browse through all the citizen initiatives"
+                label={intl.formatMessage(this.messages['tags.label'])}
+                description={intl.formatMessage(this.messages['tags.description'])}
                 htmlFor="tags"
                 error={this.getFieldError('tags')}
               >
@@ -361,8 +433,8 @@ class CreateEventPage extends React.Component {
 
             <Box mb={4}>
               <StyledInputField
-                label="Registration URL if any"
-                description="Facebook event / Eventbrite - optional - please make sure you mention #CitizenSpring in the title/description of the event"
+                label={intl.formatMessage(this.messages['website.label'])}
+                description={intl.formatMessage(this.messages['website.description'])}
                 htmlFor="website"
                 error={this.getFieldError('website')}
               >

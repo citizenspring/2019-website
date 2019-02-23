@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { mailto } from '../lib/utils';
 import { Box, Flex } from '@rebass/grid';
 import { FormattedMessage } from 'react-intl';
+import withIntl from '../lib/withIntl';
 
 const Cover = styled.div`
   margin: 2rem 0;
@@ -175,8 +176,8 @@ class HomePage extends React.Component {
                   height="496"
                   style={{ border: 'none', overflow: 'hidden' }}
                   scrolling="no"
-                  frameborder="0"
-                  allowTransparency="true"
+                  frameBorder="0"
+                  allowtransparency="true"
                   allow="encrypted-media"
                 />
               </Box>
@@ -189,4 +190,4 @@ class HomePage extends React.Component {
   }
 }
 
-export default HomePage;
+export default withIntl(HomePage);

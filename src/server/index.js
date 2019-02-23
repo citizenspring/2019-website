@@ -28,8 +28,8 @@ const server = express();
 server.use((req, res, next) => {
   const accept = accepts(req);
   // Detect language as query string in the URL
-  if (req.query.language && languages.includes(req.query.language)) {
-    req.language = req.query.language;
+  if (req.query.lang && languages.includes(req.query.lang)) {
+    req.language = req.query.lang;
   }
   const locale = req.language || accept.language(languages) || 'en';
   logger.debug('url %s locale %s', req.url, locale);
