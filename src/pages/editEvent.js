@@ -100,7 +100,7 @@ class CreateEventPage extends React.Component {
         </div>
       );
     const event = data.Post;
-    console.log('>>> event to edit', data);
+
     return (
       <div>
         <TopBar group={{ slug: this.props.groupSlug }} />
