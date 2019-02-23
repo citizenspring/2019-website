@@ -155,6 +155,14 @@ module.exports = (sequelize, DataTypes) => {
           if (!post.slug && !post.title) {
             throw new Error('Post validation error: need to provide a slug or a title', post);
           }
+          const tags = post.dataValues.title && post.dataValues.title.match(/#[a-z0-9_]+/g);
+          if (tags) {
+            post.tags = post.tags || [];
+            tags.map(t => {
+              post.tags.push(t.toLowerCase().substr(1));
+            });
+            post.title = post.dataValues.title.replace(/ ?#[a-z0-9_]+/g, '');
+          }
           post.slug = post.slug || slugify(post.title);
           const location = get(post, 'dataValues.location');
           if (location) {
@@ -170,6 +178,7 @@ module.exports = (sequelize, DataTypes) => {
               };
             }
           }
+
           return post;
         },
         afterCreate: async post => {

@@ -10,6 +10,18 @@ describe('post model', () => {
   });
   afterAll(db.close);
 
+  it('creates a post with tags', async () => {
+    const post = await models.Post.create({
+      title: 'This is a great post #education #todo',
+      tags: ['tag1'],
+      UserId: user.id,
+      GroupId: group.id,
+    });
+    expect(post.title).toEqual('This is a great post');
+    expect(post.slug).toEqual('this-is-a-great-post-1');
+    expect(post.tags).toEqual(['tag1', 'education', 'todo']);
+  });
+
   it('creates a new version when editing a post data', async () => {
     const post = await models.Post.create({
       slug: 'test',
@@ -17,7 +29,7 @@ describe('post model', () => {
       GroupId: group.id,
     });
     const newVersion = await post.edit({ title: 'new title' });
-    expect(newVersion.PostId).toEqual(1);
+    expect(newVersion.PostId).toEqual(post.id);
     expect(newVersion.version).toEqual(2);
     const versions = await models.Post.findAll({ where: { PostId: post.PostId } });
     expect(versions.length).toEqual(2);
