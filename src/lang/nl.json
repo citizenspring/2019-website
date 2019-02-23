@@ -1,6 +1,6 @@
 {
   "edit": "bewerk",
-  "group.header.events": "evenement(en)",
+  "group.header.events": "{n} {n, plural, one {evenement} other {evenementen}}",
   "group.header.followers": "{n} {n, plural, one {volger} other {volgers}}",
   "group.header.members": "{n} {n, plural, one {lid} other {leden}}",
   "group.header.posts": "{n} {n, plural, one {post} other {posts}}",
@@ -14,8 +14,8 @@
   "event.metadata.at": "bij",
   "post.metadata.started": "Gestart",
   "post.metadata.by": "van",
-  "post.metadata.repliesCount": "{n, plural, zero {} one {one reply} other {# replies}}",
-  "post.metadata.followersCount": "{n, plural, zero {} one {one follower} other {# followers}}",
+  "post.metadata.repliesCount": "{n, plural, zero {} one {één antwoord} other {# antwoorden}}",
+  "post.metadata.followersCount": "{n, plural, zero {} one {een volger} other {# volgers}}",
   "post.reactions.title": "Kies een reactie",
   "post.reactions.or": "of",
   "post.reply.btn": "antwoord",
