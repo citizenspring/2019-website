@@ -142,6 +142,7 @@ libemail.getHTML = function(email) {
     .replace(/<div[^>]*>((?:(?!<\/?div)(.|\n))*)(<\/div>)/gm, '<br>\r\n$1\r\n')
     .replace(/(\r)?\n((\r)?\n)+/gm, '\r\n\r\n') // max 2 new lines in a row
     .replace(/\no /gm, '\n  - ') // handle lists level 2
+    .replace(/\n&gt;/g, '\n>')
     .replace(/(<br[^>]*>)+(\r\n)*$/g, ''); // clean trailing new lines
 
   debug('>>> html pre markdown', html);

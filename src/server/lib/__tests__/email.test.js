@@ -108,6 +108,16 @@ describe('email', () => {
     );
   });
 
+  it('markdown quote', () => {
+    const email = {
+      'body-html': `<div dir="ltr">\r\n\r\n\r\n\r\n\r\n\r\n<p class="gmail-p1" style="margin:0px;font-variant-numeric:normal;font-variant-east-asian:normal;font-stretch:normal;font-size:13px;line-height:normal;font-family:Menlo">&gt; « Le futur est déjà ici. Il est tout simplement pas encore uniformément disponible » - quelqu&#39;un de célèbre.</p>\r\n`,
+    };
+    const html = libemail.getHTML(email);
+    expect(html).toEqual(
+      `<div><blockquote><p>« Le futur est déjà ici. Il est tout simplement pas encore uniformément disponible » - quelqu'un de célèbre.</blockquote></div>`,
+    );
+  });
+
   it('cleans html from facebook', () => {
     const email = {
       'body-html': `<br><br>[40] <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.bruzz.be%2Fstedenbouw%2Fwoningen-hotel-en-openbare-ruimte-muntcentrum-2019-01-28%3Ffbclid%3DIwAR3jN3fR2fs6czLNF58ntN7baSpoRhj66CjENY8CxeV2mEwjph_CUYlpc_I&#x26h=AT386hBCXcOs33bbprawmWTpTiAZ_9exoxbbt2Fe1DkD3pRxoT9W9hzXvvNT5XqiPg71dOY1ZIszdgXyxufWMQo1ejIyWSFztlSxq2c0JdmJ2jjNaPgFi4RZJig2GpfaYnSUSi5OkHhuCzhwjHQDlEwbkA"rel="nofollow noopener" data-lynx-mode=async target=_blank>https://www.bruzz.be/<wbr><span class=word_break></span>stedenbouw/<wbr><span class=word_break></span>woningen-hotel-en-openbare-<wbr><span class=word_break></span>ruimte-muntcentrum-2019-01<wbr><span class=word_break></span>-28</a><br>`,
