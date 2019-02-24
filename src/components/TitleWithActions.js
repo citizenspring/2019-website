@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Link from './Link';
 import { Title, Subtitle } from '../styles/layout';
 import TagsList from './TagsList';
+import { Box, Flex } from '@rebass/grid';
+
 const Wrapper = styled.div`
   display: flex;
   align-items: baseline;
@@ -19,22 +21,26 @@ const Action = styled.div`
 
 export default function TitleWithActions({ title, subtitle, actions, tags, groupSlug }) {
   return (
-    <Wrapper>
+    <Flex alignItems="baseline" flexDirection={['column', 'row', 'row']}>
       {title && <Title>{title}</Title>}
       {subtitle && <Subtitle>{subtitle}</Subtitle>}
-      {tags && <TagsList tags={tags} groupSlug={groupSlug} />}
-      <Actions>
+      {tags && (
+        <Box mt={[-3, 0, 0]} mb={[3, 0, 0]}>
+          <TagsList tags={tags} groupSlug={groupSlug} />
+        </Box>
+      )}
+      <Flex>
         {actions &&
           actions.map((action, i) => (
-            <Action key={i}>
+            <Box m={1} key={i}>
               <Link href={action.href}>
                 <StyledLink buttonStyle={action.style || 'primary'} buttonSize="small">
                   {action.label}
                 </StyledLink>
               </Link>
-            </Action>
+            </Box>
           ))}
-      </Actions>
-    </Wrapper>
+      </Flex>
+    </Flex>
   );
 }
