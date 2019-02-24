@@ -17,10 +17,13 @@ const Wrapper = styled.div`
     padding-left: 2rem;
   }
   ul li {
-    margin: 0.25rem 0;
+    margin: 0.5rem 0;
   }
   ul ul {
     margin-bottom: 2rem;
+  }
+  ul p {
+    margin: 0;
   }
   img {
     max-width: 100%;

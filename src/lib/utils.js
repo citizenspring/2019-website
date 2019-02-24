@@ -22,7 +22,7 @@ export const mailto = (to, action, subject = '', body = '', tags = []) => {
   // let email = to.indexOf('@') === -1 ? `${to}@${domain}` : to;
   let email = to;
   if (tags && tags.length > 0) {
-    subject += tags.join(' #');
+    subject += ` #${tags.join(' #')}`;
   }
   if (action) {
     email = email.replace('@', `/${action}@`);

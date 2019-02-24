@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Link from '../Link';
 import { LinksWrapper } from './Styles';
 import LinkItem from './LinkItem';
+import Link from '../Link';
 import env from '../../env.frontend';
 import settings from '../../../settings.json';
 import { get } from 'lodash';

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from '../../lib/propTypes';
 import { FooterWrapper, FooterTitle, FooterSubtitle } from './Styles';
-import Link from '../Link';
 import settings from '../../../settings.json';
 import Links from './Links';
+import Link from '../Link';
 
 class Footer extends Component {
   static propTypes = {

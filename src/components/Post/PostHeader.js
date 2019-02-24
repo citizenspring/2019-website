@@ -7,6 +7,7 @@ import { PostHeaderWrapper, Metadata, Reaction } from './Styles';
 import { MetadataItem } from '../../styles/layout';
 import withIntl from '../../lib/withIntl';
 import { defineMessages } from 'react-intl';
+import Link from '../Link';
 
 class PostHeader extends React.Component {
   static propTypes = {
