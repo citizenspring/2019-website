@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import PropTypes from '../lib/propTypes';
 import { Router } from '../server/pages';
 
+const hiddenTags = ['topbar', 'fr', 'nl', 'en', 'featured', 'hidden'];
+
 const TagsListWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -64,11 +66,13 @@ class TagsList extends React.Component {
       <TagsListWrapper>
         {showLabel && <Label>Filter by tag:</Label>}
         <List>
-          {(tags || []).map((tag, key) => (
-            <Tag key={key} selected={tag === selected} onClick={() => this.onClick(tag)}>
-              {tag}
-            </Tag>
-          ))}
+          {(tags || [])
+            .filter(t => !hiddenTags.includes(t))
+            .map((tag, key) => (
+              <Tag key={key} selected={tag === selected} onClick={() => this.onClick(tag)}>
+                {tag}
+              </Tag>
+            ))}
         </List>
       </TagsListWrapper>
     );
