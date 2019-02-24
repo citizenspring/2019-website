@@ -4,13 +4,13 @@ import withIntl from '../lib/withIntl';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import { get, pick, omit } from 'lodash';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import CreateEvent from '../containers/CreateEventPage';
 import CreateEventPending from '../containers/CreateEventPending';
 import Footer from '../components/Footer';
 import TopBar from '../components/TopBar';
-import { Title, Content, Description } from '../styles/layout';
+import { Title, Content } from '../styles/layout';
 
 class CreateEventPage extends React.Component {
   static getInitialProps({ query: { groupSlug, eventSlug } }) {

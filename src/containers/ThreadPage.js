@@ -10,7 +10,6 @@ import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 import { Content } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
-import TagsList from '../components/TagsList';
 import env from '../env.frontend';
 import { mailto } from '../lib/utils';
 import { capitalize } from '../server/lib/utils';

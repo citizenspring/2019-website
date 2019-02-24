@@ -19,7 +19,6 @@ const getPinnedPosts = locale => {
       break;
   }
   posts.push({ path: '/groups', title: 'working groups' });
-  console.log('>>> getPinnedPosts', locale, posts);
   return posts;
 };
 
@@ -30,7 +29,7 @@ class TopBar extends Component {
 
   render() {
     const { group } = this.props;
-    console.log('>>> TopBar props', this.props);
+
     return (
       <TopBarWrapper>
         <LeftMenu>
