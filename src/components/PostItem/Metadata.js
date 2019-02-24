@@ -20,13 +20,10 @@ function Metadata({ repliesCount, followersCount, createdAt, user, group, editUr
       <MetadataItem>
         <Emoji>📝</Emoji> <FormattedMessage id="post.metadata.started" defaultMessage="Started" />{' '}
         <Moment fromNow>{timestamp}</Moment> <FormattedMessage id="post.metadata.by" defaultMessage="by" />
-      </MetadataItem>
-      <MetadataItem>
         <FooterLink>{user}</FooterLink>
       </MetadataItem>
       {repliesCount > 0 && (
         <MetadataItem>
-          {' '}
           |{' '}
           <FormattedMessage
             id="post.metadata.repliesCount"
