@@ -15,7 +15,6 @@ import * as groupCreated from './groupCreated.email.js';
 import * as groupInfo from './groupInfo.email.js';
 import * as groupEdited from './groupEdited.email.js';
 import * as postEdited from './postEdited.email.js';
-import * as approveGroupEdit from './approveGroupEdit.email.js';
 import * as approveEdit from './approveEdit.email.js';
 import * as threadCreated from './threadCreated.email.js';
 import * as post from './post.email.js';
@@ -37,7 +36,6 @@ const templates = {
   groupInfo,
   groupEdited,
   postEdited,
-  approveGroupEdit,
   approveEdit,
 };
 
