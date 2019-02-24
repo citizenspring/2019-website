@@ -10,7 +10,6 @@ const TagsListWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  margin: 1rem 0;
 `;
 
 const Tag = styled.a`
@@ -53,6 +52,9 @@ class TagsList extends React.Component {
   }
 
   onClick(tag) {
+    if (tag === this.props.selected) {
+      tag = null;
+    }
     Router.pushRoute('group', { groupSlug: this.props.groupSlug, tag });
   }
 

@@ -6,20 +6,24 @@ import LinkItem from './LinkItem';
 import env from '../../env.frontend';
 import settings from '../../../settings.json';
 import { get } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 
-export default function FooterLinks({ groupSlug, PostId }) {
-  const threadEmail = `${groupSlug}/${PostId}@${env.DOMAIN}`;
+export default function FooterLinks({ groupSlug, editUrl }) {
   const groupEmail = `${groupSlug}@${env.DOMAIN}`;
   return (
     <LinksWrapper>
-      {PostId && (
-        <LinkItem icon="↵">
-          Reply to this thread by sending an email to <Link mailto={threadEmail}>{threadEmail}</Link>
+      {editUrl && (
+        <LinkItem icon="✏️">
+          <Link href={editUrl} color="black">
+            <FormattedMessage id="footer.suggestEdit" defaultMessage="suggest an edit to this page" />
+          </Link>
         </LinkItem>
       )}
       {groupSlug && (
         <LinkItem icon="✉️">
-          Start a new thread by sending an email to <Link mailto={groupEmail}>{groupEmail}</Link>
+          <Link mailto={groupEmail} color="black">
+            <FormattedMessage id="footer.group.sendMessage" defaultMessage="Send a message to this group" />
+          </Link>
         </LinkItem>
       )}
 
@@ -36,5 +40,5 @@ export default function FooterLinks({ groupSlug, PostId }) {
 
 FooterLinks.propTypes = {
   groupSlug: PropTypes.string,
-  PostId: PropTypes.number,
+  editUrl: PropTypes.string,
 };

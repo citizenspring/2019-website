@@ -10,23 +10,23 @@ const StyledA = styled.a`
   cursor: pointer;
 `;
 
-export default function Link({ href, mailto, color, children }) {
+export default function Link({ href, mailto, color, children, className }) {
   if (mailto) {
     return (
-      <StyledA color={color} href={`mailto:${mailto}`}>
+      <StyledA color={color} href={`mailto:${mailto}`} className={className}>
         {children}
       </StyledA>
     );
   }
   if (href.match(/^https?:\/\//i) || href.match(/^mailto:/)) {
     return (
-      <StyledA color={color} href={href}>
+      <StyledA color={color} href={href} className={className}>
         {children}
       </StyledA>
     );
   }
   return (
-    <Router.Link route={href}>
+    <Router.Link route={href} className={className}>
       <StyledA color={color}>{children}</StyledA>
     </Router.Link>
   );

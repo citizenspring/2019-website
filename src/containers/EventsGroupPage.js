@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 
 import { Content, DescriptionBlock } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
-import EditableText from '../components/EditableText';
+import RichText from '../components/RichText';
 import { mailto } from '../lib/utils';
 
 import env from '../env.frontend';
@@ -56,13 +56,13 @@ class EventsGroupPage extends React.Component {
         <TopBar group={group} />
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
-          <Metadata group={group} />
+          <Metadata group={group} editUrl={mailto(groupEmail, 'edit', group.name, group.description)} />
           <DescriptionBlock>
-            <EditableText mailto={mailto(groupEmail, 'edit', group.name, group.description)} html={group.description}>
+            <RichText html={group.description}>
               {!group.description && (
                 <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
               )}
-            </EditableText>
+            </RichText>
           </DescriptionBlock>
           <TagsSelector groupSlug={group.slug} selected={tag} />
           <Box mb={3}>

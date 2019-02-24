@@ -76,29 +76,45 @@ class ThreadPage extends React.Component {
       `${capitalize(intl.formatMessage(this.messages['interested']))} ${thread.title}`,
       intl.formatMessage(this.messages['interested.body']),
     );
-    const actions = [];
-    if (thread.type === 'EVENT') {
-      actions.push({
-        label: intl.formatMessage(this.messages['interested']),
-        href: interestedEmail,
-        style: 'standard',
-      });
-    } else {
-      actions.push({ label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' });
-    }
+    const action =
+      thread.type === 'EVENT'
+        ? {
+            label: intl.formatMessage(this.messages['interested']),
+            href: interestedEmail,
+            style: 'standard',
+          }
+        : { label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' };
+
+    const editUrl = mailto(
+      `${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.PostId}@${env.DOMAIN}`,
+      'edit',
+      thread.title,
+      thread.text,
+      thread.tags,
+    );
+
     return (
       <div>
         <TopBar group={thread.group} />
         <Content>
-          <TitleWithActions title={thread.title} actions={actions} />
+          <TitleWithActions title={thread.title} tags={thread.tags} groupSlug={thread.group.slug} />
           <Box mt={[-2, -2, -3]}>
             {thread.type === 'POST' && (
-              <Metadata user={thread.user.name} createdAt={thread.createdAt} followersCount={thread.followers.total} />
+              <Metadata
+                user={thread.user.name}
+                createdAt={thread.createdAt}
+                followersCount={thread.followers.total}
+                editUrl={editUrl}
+              />
             )}
             {thread.type === 'EVENT' && (
-              <EventMetadata startsAt={thread.startsAt} endsAt={thread.endsAt} location={thread.location} />
+              <EventMetadata
+                startsAt={thread.startsAt}
+                endsAt={thread.endsAt}
+                location={thread.location}
+                editUrl={`/${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`}
+              />
             )}
-            <TagsList tags={thread.tags} groupSlug={thread.group.slug} />
           </Box>
           <Flex flexDirection={['column', 'row', 'row']}>
             <Box width={1} mr={[0, 3, 4]}>
@@ -116,11 +132,11 @@ class ThreadPage extends React.Component {
               )}
             </Box>
             <Box width={300} mt={[4, 1, 1]}>
-              <Members type={thread.type} members={thread.followers} />
+              <Members type={thread.type} members={thread.followers} action={action} />
             </Box>
           </Flex>
         </Content>
-        <Footer group={thread.group} post={thread} />
+        <Footer group={thread.group} post={thread} editUrl={editUrl} />
       </div>
     );
   }

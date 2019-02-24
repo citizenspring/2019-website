@@ -1,15 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from '../Link';
-import { Title } from './Styles';
+import { TitleWrapper, Title } from './Styles';
+import TagsList from '../TagsList';
 
 export default function PostItemTitle(props) {
   return (
-    <Title>
-      <Link href={props.path} color="black">
-        {props.title}
-      </Link>
-    </Title>
+    <TitleWrapper>
+      <Title>
+        <Link href={props.path} color="black">
+          {props.title}
+        </Link>
+      </Title>
+      <TagsList tags={props.tags} groupSlug={props.groupSlug} />
+    </TitleWrapper>
   );
 }
 

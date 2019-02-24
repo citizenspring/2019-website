@@ -15,7 +15,7 @@
     "PG_PASSWORD": "@pg_password"
   },
   "version": 1,
-  "alias": ["citizenspring.be", "www.citizenspring.be"],
+  "alias": ["citizenspring.be", "www.citizenspring.be", "citizenspring.net", "www.citizenspring.net"],
   "scale": {
     "bru1": {
       "min": 1,

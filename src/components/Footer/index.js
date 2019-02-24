@@ -8,13 +8,12 @@ import Links from './Links';
 class Footer extends Component {
   static propTypes = {
     group: PropTypes.nodeType('Group'),
-    post: PropTypes.nodeType('Post'),
+    editUrl: PropTypes.string,
   };
 
   render() {
-    const { group, post } = this.props;
+    const { group, editUrl } = this.props;
     const groupSlug = group && group.slug;
-    const PostId = post && post.PostId;
     return (
       <FooterWrapper>
         <FooterTitle>
@@ -29,7 +28,7 @@ class Footer extends Component {
             </Link>
           </FooterSubtitle>
         )}
-        <Links groupSlug={groupSlug} PostId={PostId} />
+        <Links groupSlug={groupSlug} editUrl={editUrl} />
       </FooterWrapper>
     );
   }

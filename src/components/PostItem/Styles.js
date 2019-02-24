@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import { Span } from '../Text';
 import { Box } from '@rebass/grid';
+import { Metadata } from '../../styles/layout';
 
 export const MetadataWrapper = children => {
   return (
     <Box>
-      <Span fontSize={'1.2rem'} color="#828282">
-        {children.children}
-      </Span>
+      <Metadata>{children.children}</Metadata>
     </Box>
   );
 };
@@ -28,7 +27,13 @@ export const DateContainer = styled.div`
   color: #828282;
 `;
 
+export const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const Title = styled.h1`
+  white-space: nowrap;
   color: #000000;
   font-size: 1.6rem;
   text-decoration: none;
@@ -36,6 +41,7 @@ export const Title = styled.h1`
   &:visited {
     color: #828282;
   }
+  margin-right: 0.5rem;
 `;
 
 export const FooterLink = styled.a.attrs({

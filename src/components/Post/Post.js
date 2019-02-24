@@ -4,7 +4,7 @@ import PropTypes from '../../lib/propTypes';
 import { PostWrapper, ContentWrapper } from './Styles';
 import PostHeader from './PostHeader';
 import PostReactions from '../PostReactions';
-import EditableText from '../EditableText';
+import RichText from '../RichText';
 import { mailto, keepAnchorsShort } from '../../lib/utils';
 import env from '../../env.frontend';
 
@@ -22,30 +22,30 @@ class Post extends Component {
       reaction = post.text;
     }
     const html = keepAnchorsShort(post.html);
+
     return (
       <PostWrapper id={post.PostId}>
         <ContentWrapper>
           {thread.PostId !== post.PostId && (
-            <PostHeader type={post.type} reaction={reaction} user={post.user} createdAt={post.createdAt} />
+            <PostHeader
+              type={post.type}
+              reaction={reaction}
+              user={post.user}
+              createdAt={post.createdAt}
+              editUrl={mailto(
+                `${group.slug}/${thread.type.toLowerCase()}s/${thread.PostId}/${post.PostId}@${env.DOMAIN}`,
+                'edit',
+                post.title,
+                post.text,
+                post.tags,
+              )}
+            />
           )}
           {!reaction && (
             <div>
+              <RichText html={html} />
               {post.type === 'POST' && post.html.length > 14 && (
-                <div>
-                  <EditableText
-                    mailto={mailto(
-                      `${group.slug}/${thread.PostId}/${post.PostId}@${env.DOMAIN}`,
-                      'edit',
-                      post.title,
-                      post.text,
-                    )}
-                    html={html}
-                  />
-                  <PostReactions group={group} thread={thread} reply={post} size={16} />
-                </div>
-              )}
-              {post.type === 'EVENT' && (
-                <EditableText href={`/${group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`} html={html} />
+                <PostReactions group={group} thread={thread} reply={post} size={16} />
               )}
             </div>
           )}

@@ -4,25 +4,51 @@ import Moment from 'react-moment';
 import Avatar from '../Avatar';
 
 import { PostHeaderWrapper, Metadata, Reaction } from './Styles';
+import { MetadataItem } from '../../styles/layout';
+import withIntl from '../../lib/withIntl';
+import { defineMessages } from 'react-intl';
 
-export default function PostHeader(props) {
-  const timestamp = new Date(Number(props.createdAt));
-  let str = props.reaction ? 'reacted' : 'replied';
-  if (props.type === 'EVENT') {
-    str = 'submitted';
+class PostHeader extends React.Component {
+  static propTypes = {
+    user: PropTypes.nodeType('User').isRequired,
+    createdAt: PropTypes.string.isRequired,
+  };
+
+  constructor(props) {
+    super(props);
+    this.messages = defineMessages({
+      reaction: { id: 'post.header.verb.reaction', defaultMessage: 'reacted' },
+      response: { id: 'post.header.verb.response', defaultMessage: 'replied' },
+      submission: { id: 'post.header.verb.submission', defaultMessage: 'submitted' },
+    });
   }
-  return (
-    <PostHeaderWrapper>
-      {props.reaction && <Reaction>{props.reaction}</Reaction>}
-      {!props.reaction && <Avatar user={props.user} />}
-      <Metadata>
-        {props.user.name} {str} <Moment fromNow>{timestamp}</Moment>
-      </Metadata>
-    </PostHeaderWrapper>
-  );
+
+  render() {
+    const { intl, createdAt, reaction, user, editUrl, type } = this.props;
+    const timestamp = new Date(Number(createdAt));
+    let verb = reaction ? 'reaction' : 'response';
+    if (type === 'EVENT') {
+      verb = 'submission';
+    }
+    return (
+      <PostHeaderWrapper>
+        {reaction && <Reaction>{reaction}</Reaction>}
+        {!reaction && <Avatar user={user} />}
+        <MetadataItem>
+          {user.name} {intl.formatMessage(this.messages[verb])} <Moment fromNow>{timestamp}</Moment>
+        </MetadataItem>
+        {editUrl && (
+          <MetadataItem>
+            |{' '}
+            <Link href={editUrl} className="edit">
+              ✏️
+              <FormattedMessage id="edit" defaultMessage="edit" />
+            </Link>
+          </MetadataItem>
+        )}
+      </PostHeaderWrapper>
+    );
+  }
 }
 
-PostHeader.propTypes = {
-  user: PropTypes.nodeType('User').isRequired,
-  createdAt: PropTypes.string.isRequired,
-};
+export default withIntl(PostHeader);
