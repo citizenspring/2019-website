@@ -7,9 +7,10 @@ import env from '../../env.frontend';
 import settings from '../../../settings.json';
 import { get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
+import { mailto } from '../../lib/utils';
 
-export default function FooterLinks({ groupSlug, editUrl }) {
-  const groupEmail = `${groupSlug}@${env.DOMAIN}`;
+export default function FooterLinks({ group, editUrl }) {
+  const groupEmail = `${group.slug}@${env.DOMAIN}`;
   return (
     <LinksWrapper>
       {editUrl && (
@@ -19,12 +20,27 @@ export default function FooterLinks({ groupSlug, editUrl }) {
           </Link>
         </LinkItem>
       )}
-      {groupSlug && (
-        <LinkItem icon="✉️">
-          <Link mailto={groupEmail} color="black">
-            <FormattedMessage id="footer.group.sendMessage" defaultMessage="Send a message to this group" />
-          </Link>
-        </LinkItem>
+      {group && (
+        <div>
+          <LinkItem icon="✉️">
+            <Link mailto={groupEmail} color="black">
+              <FormattedMessage id="footer.group.sendMessage" defaultMessage="Send a message to this group" />
+            </Link>
+          </LinkItem>
+          <LinkItem icon="📥">
+            <Link
+              mailto={mailto(
+                groupEmail,
+                'follow',
+                `Follow ${group.name}`,
+                'Just send this email be notified whenever a new post is published in this group',
+              )}
+              color="black"
+            >
+              <FormattedMessage id="footer.group.follow" defaultMessage="Follow this group" />
+            </Link>
+          </LinkItem>
+        </div>
       )}
 
       {get(settings, 'home.buttons', []).map((button, key) => (

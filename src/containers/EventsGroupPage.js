@@ -14,6 +14,7 @@ import env from '../env.frontend';
 import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/EventsMetadata';
 import MapMarkers from '../components/MapMarkers';
+import Banner from '../components/Group/Banner';
 import TagsSelector from '../components/TagsSelectorWithData';
 
 import { get } from 'lodash';
@@ -54,9 +55,8 @@ class EventsGroupPage extends React.Component {
     return (
       <div>
         <TopBar group={group} />
+        <Banner groupSlug={group.slug} />
         <Content>
-          <TitleWithActions title={group.name} actions={actions} />
-          <Metadata group={group} editUrl={mailto(groupEmail, 'edit', group.name, group.description)} />
           <DescriptionBlock>
             <RichText html={group.description}>
               {!group.description && (

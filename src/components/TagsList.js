@@ -40,6 +40,8 @@ const List = styled.div`
 const Label = styled.div`
   color: #666;
   margin-right: 0.5rem;
+  font-size: 12px;
+  text-transform: uppercase;
 `;
 
 class TagsList extends React.Component {

@@ -28,7 +28,7 @@ class Footer extends Component {
             </Link>
           </FooterSubtitle>
         )}
-        <Links groupSlug={groupSlug} editUrl={editUrl} />
+        <Links group={group} editUrl={editUrl} />
       </FooterWrapper>
     );
   }

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const TopBarWrapper = styled.div`
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.9);
   padding: 8px;
   margin: 0;
   color: white;

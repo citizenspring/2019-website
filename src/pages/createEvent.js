@@ -86,9 +86,10 @@ class CreateEventPage extends React.Component {
   }
 
   render() {
+    const group = { slug: this.props.groupSlug, name: this.props.groupSlug };
     return (
       <div>
-        <TopBar group={{ slug: this.props.groupSlug }} />
+        <TopBar group={group} />
         <Content>
           <Title>
             <FormattedMessage id="event.create.title" defaultMessage="Register your Citizen Initiative" />
@@ -96,9 +97,9 @@ class CreateEventPage extends React.Component {
           {this.state.view === 'pending' && (
             <CreateEventPending email={get(this.state, 'form.email')} group={get(this.state, 'post.group')} />
           )}
-          {this.state.view !== 'pending' && <CreateEvent groupSlug={this.props.groupSlug} onSubmit={this.onSubmit} />}
+          {this.state.view !== 'pending' && <CreateEvent groupSlug={group.slug} onSubmit={this.onSubmit} />}
         </Content>
-        <Footer />
+        <Footer group={group} />
       </div>
     );
   }
