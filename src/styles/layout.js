@@ -15,7 +15,8 @@ export const Content = children => (
 
 const TitleH1 = styled(H1)`
   font-size: 3rem;
-  white-space: nowrap;
+  line-height: 1.3;
+  margin-bottom: 8px;
 `;
 
 export const Title = children => {

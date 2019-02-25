@@ -27,13 +27,7 @@ export const DateContainer = styled.div`
   color: #828282;
 `;
 
-export const TitleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const Title = styled.h1`
-  white-space: nowrap;
   color: #000000;
   font-size: 1.6rem;
   text-decoration: none;

@@ -32,7 +32,7 @@ export default function TitleWithActions({ title, subtitle, actions, tags, group
       <Flex>
         {actions &&
           actions.map((action, i) => (
-            <Box m={1} key={i}>
+            <Box mx={1} mt={[-3, 0, 0]} mb={[4, 0, 0]} key={i}>
               <Link href={action.href}>
                 <StyledLink buttonStyle={action.style || 'primary'} buttonSize="small">
                   {action.label}
