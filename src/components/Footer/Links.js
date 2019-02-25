@@ -10,7 +10,7 @@ import { FormattedMessage } from 'react-intl';
 import { mailto } from '../../lib/utils';
 
 export default function FooterLinks({ group, editUrl }) {
-  const groupEmail = `${group.slug}@${env.DOMAIN}`;
+  const groupEmail = group && `${group.slug}@${env.DOMAIN}`;
   return (
     <LinksWrapper>
       {editUrl && (
