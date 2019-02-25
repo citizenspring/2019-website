@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Flex, Box } from '@rebass/grid';
 import Link from '../Link';
 import StyledLink from '../StyledLink';
+import { MaxWidth } from '../../styles/layout';
 
 const Banner = styled.div`
   width: 100%;
@@ -35,26 +36,28 @@ class MapMarkers extends React.Component {
     const { groupSlug } = this.props;
     return (
       <Banner>
-        <Flex alignItems="center" justifyContent="space-around">
-          <Box>
-            <Title>
-              <FormattedMessage id="eventsGroup.banner.title" defaultMessage="Register your citizen initiative!" />
-            </Title>
-            <Description>
-              <FormattedMessage
-                id="eventsGroup.banner.description"
-                defaultMessage="You just need to open your doors one of the first few days of Spring (March 21-24) to join the movement!"
-              />
-            </Description>
-          </Box>
-          <Box mx={3}>
-            <Link href={`/${groupSlug}/events/new`}>
-              <StyledLink buttonStyle={'primary'} buttonSize="medium">
-                <FormattedMessage id="eventsGroup.banner.btn" defaultMessage="register" />
-              </StyledLink>
-            </Link>
-          </Box>
-        </Flex>
+        <MaxWidth>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Box>
+              <Title>
+                <FormattedMessage id="eventsGroup.banner.title" defaultMessage="Register your citizen initiative!" />
+              </Title>
+              <Description>
+                <FormattedMessage
+                  id="eventsGroup.banner.description"
+                  defaultMessage="You just need to open your doors one of the first few days of Spring (March 21-24) to join the movement!"
+                />
+              </Description>
+            </Box>
+            <Box mx={3}>
+              <Link href={`/${groupSlug}/events/new`}>
+                <StyledLink buttonStyle={'primary'} buttonSize="medium">
+                  <FormattedMessage id="eventsGroup.banner.btn" defaultMessage="register" />
+                </StyledLink>
+              </Link>
+            </Box>
+          </Flex>
+        </MaxWidth>
       </Banner>
     );
   }

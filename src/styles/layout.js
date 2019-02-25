@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box } from '@rebass/grid';
 import { H1 } from '../components/Text';
 
-const MaxWidth = styled.div`
+export const MaxWidth = styled.div`
   max-width: 900px;
   margin: 0 auto;
 `;
