@@ -1,6 +1,10 @@
 {
   "footer.suggestEdit": "Stel een wijziging voor aan deze pagina\n",
   "footer.group.sendMessage": "Stuur een bericht naar deze groep",
+  "footer.group.follow": "Follow this group",
+  "eventsGroup.banner.title": "Register your citizen initiative!",
+  "eventsGroup.banner.description": "You just need to open your doors one of the first few days of Spring (March 21-24) to join the movement!",
+  "eventsGroup.banner.btn": "register",
   "group.header.events": "{n} {n, plural, one {evenement} other {evenementen}}",
   "group.header.followers": "{n} {n, plural, one {volger} other {volgers}}",
   "edit": "bewerk",
