@@ -96,7 +96,7 @@ const mutations = {
       const groupCreated = await user.createGroup(inputGroupData);
       groupCreated.group = collective;
       const tokenData = { type: 'group', TargetId: collective.id, includeChildren: true };
-      const token = createJwt('confirmCreateGroup', { data: tokenData }, '1h');
+      const token = createJwt('confirmCreateGroup', { data: tokenData }, '1d');
       const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${collective.slug}&token=${token}`;
       await libemail.sendTemplate(
         `confirmCreateGroup`,
@@ -139,8 +139,8 @@ const mutations = {
           newVersion: editedPost,
         };
         const tokenData = { type: 'post', TargetId: editedPost.id };
-        const token = createJwt('approveEdit', { data: tokenData }, '1h');
-        const token2 = createJwt('alwaysApproveEdit', { data: { ...tokenData, always: true } }, '1h');
+        const token = createJwt('approveEdit', { data: tokenData }, '1d');
+        const token2 = createJwt('alwaysApproveEdit', { data: { ...tokenData, always: true } }, '1d');
         templateData.approveUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}&postSlug=${
           editedPost.slug
         }&token=${token}`;
@@ -151,7 +151,7 @@ const mutations = {
       } else {
         const postCreated = await user.createPost(postData);
         const tokenData = { type: 'post', TargetId: postCreated.id };
-        const token = createJwt('confirmCreatePost', { data: tokenData }, '1h');
+        const token = createJwt('confirmCreatePost', { data: tokenData }, '1d');
         const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}&postSlug=${
           postCreated.slug
         }&token=${token}`;
