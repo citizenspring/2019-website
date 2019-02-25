@@ -51,7 +51,8 @@ const defaultData = {
     },
     user: { name: 'Pia' },
   },
-  approveGroupEdit: {
+  approveEdit2: {
+    type: 'group',
     url: 'https://www.citizenspring.be/communication',
     user: { name: 'Pia' },
     currentVersion: {
@@ -183,7 +184,7 @@ export async function edit(senderEmail, GroupId, PostId, data) {
     templateData.approveUrl = `${config.server.baseUrl}/api/approve?token=${token}`;
     templateData.alwaysApproveUrl = `${config.server.baseUrl}/api/approve?token=${token2}`;
 
-    await libemail.sendTemplate(`approve${capitalize(type)}Edit`, templateData, admin.email);
+    await libemail.sendTemplate(`approveEdit`, templateData, admin.email);
   }
   return editedTarget;
 }
@@ -200,15 +201,6 @@ export async function handleIncomingEmail(email) {
 
   const userData = extractNamesAndEmailsFromString(email.From)[0];
   const user = await models.User.findOrCreate(userData);
-
-  // if we didn't have the name of the user before (i.e. because added by someone else just by email),
-  // we add it
-  const emailAccount = parseEmailAddress(userData.email).groupSlug;
-  if (userData.name && (user.name === 'anonymous' || user.name === emailAccount)) {
-    user.setName(userData.name);
-  } else if (user.name === 'anonymous') {
-    user.setName(emailAccount);
-  }
 
   let group = await models.Group.findBySlug(groupSlug, 'PUBLISHED');
 

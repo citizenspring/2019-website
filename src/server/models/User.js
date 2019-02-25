@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
       hooks: {
         beforeValidate: user => {
-          if (user.name && !user.firstName) {
+          if (user.name && (!user.firstName || user.firstName === 'anonymous')) {
             const spaceIndex = user.name.indexOf(' ');
             if (spaceIndex === -1) {
               user.firstName = user.name;
@@ -140,7 +140,15 @@ module.exports = (sequelize, DataTypes) => {
 
   User.findOrCreate = async userData => {
     const user = await User.findByEmail(userData.email);
-    if (user) return user;
+    if (user) {
+      if ((!user.firstName || user.firstName === 'anonymous') && userData.name) {
+        // if we didn't have the name of the user before (i.e. because added by someone else just by email),
+        // we add it
+        user.name = userData.name;
+        await user.save();
+      }
+      return user;
+    }
     try {
       return await User.create(userData);
     } catch (e) {

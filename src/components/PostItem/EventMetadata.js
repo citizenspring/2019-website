@@ -4,24 +4,34 @@ import Moment from 'react-moment';
 import withIntl from '../../lib/withIntl';
 
 import { MetadataWrapper, FooterLink } from './Styles';
+import { Emoji, MetadataItem } from '../../styles/layout';
 import Link from '../Link';
 import { FormattedMessage } from 'react-intl';
 
-function EventMetadata({ startsAt, endsAt, group, location }) {
+function EventMetadata({ startsAt, endsAt, group, location, editUrl }) {
   return (
     <MetadataWrapper>
       {group && (
-        <span>
+        <MetadataItem>
           <Link href={`/${group.slug}`}>{group.name || group.slug}</Link> |{' '}
-        </span>
+        </MetadataItem>
       )}
-      <span>
-        📆 <Moment format="dddd D MMMM HH:mm">{new Date(Number(startsAt))}</Moment>{' '}
+      <MetadataItem>
+        <Emoji>🗓</Emoji> <Moment format="dddd D MMMM HH:mm">{new Date(Number(startsAt))}</Moment>{' '}
         <FormattedMessage id="event.metadata.till" defaultMessage="till" />{' '}
         <Moment format="HH:mm">{new Date(Number(endsAt))}</Moment>{' '}
         <FormattedMessage id="event.metadata.at" defaultMessage="at" /> {location.name}, {location.address}{' '}
         {location.zipcode} {location.city}
-      </span>
+      </MetadataItem>
+      {editUrl && (
+        <MetadataItem className="edit">
+          |{' '}
+          <Link href={editUrl}>
+            ✏️
+            <FormattedMessage id="edit" defaultMessage="edit" />
+          </Link>
+        </MetadataItem>
+      )}
     </MetadataWrapper>
   );
 }

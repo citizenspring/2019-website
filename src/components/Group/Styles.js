@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import { Span } from '../Text';
 import { Box } from '@rebass/grid';
+import { Metadata } from '../../styles/layout';
 
 export const MetadataWrapper = children => {
   return (
     <Box mt={-3} mb={1}>
-      <Span fontSize={'1.2rem'} color="#555">
-        {children.children}
-      </Span>
+      <Metadata>{children.children}</Metadata>
     </Box>
   );
 };

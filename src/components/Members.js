@@ -6,15 +6,20 @@ import styled from 'styled-components';
 import Member from '../components/Member';
 import { FormattedMessage } from 'react-intl';
 import { Subtitle } from '../styles/layout';
+import StyledLink from './StyledLink';
+import Link from './Link';
+import { Flex } from '@rebass/grid';
 
 const Wrapper = styled.div`
   margin: 0px;
 `;
+
 const List = styled.div`
   display: flex;
   justify-content: left;
   flex-wrap: wrap;
 `;
+
 const LoadingWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -48,14 +53,24 @@ export default class Members extends Component {
   }
 
   renderList(members) {
-    const { type } = this.props;
+    const { type, action } = this.props;
     return (
       <Wrapper>
-        <Subtitle mt={0} pt={0}>
-          {type === 'GROUP' && <FormattedMessage id="group.membersList.title" defaultMessage="Members" />}
-          {type === 'EVENT' && <FormattedMessage id="event.membersList.title" defaultMessage="Interested" />}
-          {type === 'POST' && <FormattedMessage id="post.membersList.title" defaultMessage="Followers" />}
-        </Subtitle>
+        <Flex flexDirection={['column', 'row', 'row']} alignItems="baseline">
+          <Subtitle mt={0} pt={0}>
+            {type === 'GROUP' && <FormattedMessage id="group.membersList.title" defaultMessage="Members" />}
+            {type === 'EVENT' && <FormattedMessage id="event.membersList.title" defaultMessage="Interested" />}
+            {type === 'POST' && <FormattedMessage id="post.membersList.title" defaultMessage="Followers" />}
+          </Subtitle>
+          {action && (
+            <Link href={action.href}>
+              <StyledLink buttonStyle={action.style || 'primary'} buttonSize="small">
+                {action.label}
+              </StyledLink>
+            </Link>
+          )}
+        </Flex>
+
         <List>
           {members.nodes.map((item, i) => (
             <Member key={i} member={item} />

@@ -17,10 +17,13 @@ export const requireAttributes = (obj, attributes, getErrorMsg) => {
  * @param {*} subject
  * @param {*} body
  */
-export const mailto = (to, action, subject = '', body = '') => {
+export const mailto = (to, action, subject = '', body = '', tags = []) => {
   const iOS = process.browser && !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
   // let email = to.indexOf('@') === -1 ? `${to}@${domain}` : to;
   let email = to;
+  if (tags && tags.length > 0) {
+    subject += ` #${tags.join(' #')}`;
+  }
   if (action) {
     email = email.replace('@', `/${action}@`);
   }

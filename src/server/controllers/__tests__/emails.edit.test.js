@@ -40,7 +40,7 @@ describe('emails controller', () => {
       expect(sendEmailSpy.callCount).toEqual(2);
       expect(sendEmailSpy.firstCall.args[4].template).toEqual('groupEdited');
       expect(sendEmailSpy.firstCall.args[2]).toContain('pending approval');
-      expect(sendEmailSpy.secondCall.args[4].template).toEqual('approveGroupEdit');
+      expect(sendEmailSpy.secondCall.args[4].template).toEqual('approveEdit');
     });
   });
 });

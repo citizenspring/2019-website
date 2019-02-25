@@ -17,27 +17,20 @@ const Wrapper = styled.div`
     padding-left: 2rem;
   }
   ul li {
-    margin: 0.25rem 0;
+    margin: 0.5rem 0;
   }
   ul ul {
     margin-bottom: 2rem;
   }
+  ul p {
+    margin: 0;
+  }
   img {
     max-width: 100%;
   }
-  @media (min-width: 600px) {
-    .edit {
-      visibility: hidden;
-    }
-    &:hover {
-      .edit {
-        visibility: visible;
-      }
-    }
-  }
 `;
 
-export default function EditableText({ mailto, href, html, children }) {
+export default function RichText({ html, children }) {
   return (
     <Wrapper>
       {html && (
@@ -57,10 +50,6 @@ export default function EditableText({ mailto, href, html, children }) {
         />
       )}
       {children && <div>{children}</div>}
-      <Link href={mailto || href} className="edit">
-        ✏️
-        <FormattedMessage id="edit" defaultMessage="edit" />
-      </Link>
     </Wrapper>
   );
 }

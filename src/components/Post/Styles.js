@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import { Metadata } from '../../styles/layout';
 export const PostWrapper = styled.div`
   background-color: white;
   display: flex;
@@ -31,18 +31,7 @@ export const Title = styled.a`
   }
 `;
 
-export const PostHeaderWrapper = styled.div`
-  padding: 0px;
-  font-size: 1.2rem;
-  line-height: 36px;
-  color: #828282;
-  margin: 0 0 1rem 0;
-  display: flex;
-`;
-
-export const Metadata = styled.div`
-  margin-left: 0.5rem;
-`;
+export const PostHeaderWrapper = styled(Metadata)``;
 
 export const Reaction = styled.div`
   font-size: 2rem;

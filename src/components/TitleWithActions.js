@@ -4,6 +4,8 @@ import StyledLink from './StyledLink';
 import styled from 'styled-components';
 import Link from './Link';
 import { Title, Subtitle } from '../styles/layout';
+import TagsList from './TagsList';
+import { Box, Flex } from '@rebass/grid';
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,22 +19,28 @@ const Action = styled.div`
   margin: 0.5rem;
 `;
 
-export default function TitleWithActions({ title, subtitle, actions }) {
+export default function TitleWithActions({ title, subtitle, actions, tags, groupSlug }) {
   return (
-    <Wrapper>
+    <Flex alignItems="baseline" flexDirection={['column', 'row', 'row']}>
       {title && <Title>{title}</Title>}
       {subtitle && <Subtitle>{subtitle}</Subtitle>}
-      <Actions>
-        {actions.map((action, i) => (
-          <Action key={i}>
-            <Link href={action.href}>
-              <StyledLink buttonStyle={action.style || 'primary'} buttonSize="small">
-                {action.label}
-              </StyledLink>
-            </Link>
-          </Action>
-        ))}
-      </Actions>
-    </Wrapper>
+      {tags && (
+        <Box mt={[-3, 0, 0]} mb={[3, 0, 0]}>
+          <TagsList tags={tags} groupSlug={groupSlug} />
+        </Box>
+      )}
+      <Flex>
+        {actions &&
+          actions.map((action, i) => (
+            <Box mx={1} mt={[-3, 0, 0]} mb={[4, 0, 0]} key={i}>
+              <Link href={action.href}>
+                <StyledLink buttonStyle={action.style || 'primary'} buttonSize="small">
+                  {action.label}
+                </StyledLink>
+              </Link>
+            </Box>
+          ))}
+      </Flex>
+    </Flex>
   );
 }

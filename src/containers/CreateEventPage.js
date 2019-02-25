@@ -450,9 +450,7 @@ class CreateEventPage extends React.Component {
               fontWeight="600"
               loading={loading}
             >
-              {get(this.props, 'data.PostId') && (
-                <FormattedMessage id="editGroup.submitBtn" defaultMessage="suggest edit" />
-              )}
+              {get(this.props, 'data.PostId') && <FormattedMessage id="editGroup.submitBtn" defaultMessage="suggest edit" />}
               {!get(this.props, 'data.PostId') && (
                 <FormattedMessage id="createGroup.submitBtn" defaultMessage="Register" />
               )}

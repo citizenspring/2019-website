@@ -23,10 +23,6 @@ export default Page => {
       now: PropTypes.number,
     };
 
-    static defaultProps = {
-      locale: 'fr',
-    };
-
     // Note: when adding withIntl to a child component, getInitialProps doesn't get called
     // and it doesn't populate the messages in the props
     static async getInitialProps(context) {

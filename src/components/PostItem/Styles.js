@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import { Span } from '../Text';
 import { Box } from '@rebass/grid';
+import { Metadata } from '../../styles/layout';
 
 export const MetadataWrapper = children => {
   return (
     <Box>
-      <Span fontSize={'1.2rem'} color="#828282">
-        {children.children}
-      </Span>
+      <Metadata>{children.children}</Metadata>
     </Box>
   );
 };
@@ -36,6 +35,7 @@ export const Title = styled.h1`
   &:visited {
     color: #828282;
   }
+  margin-right: 0.5rem;
 `;
 
 export const FooterLink = styled.a.attrs({

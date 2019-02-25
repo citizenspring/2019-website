@@ -13,10 +13,16 @@ export const Content = children => (
   </Box>
 );
 
+const TitleH1 = styled(H1)`
+  font-size: 3rem;
+  line-height: 1.3;
+  margin-bottom: 8px;
+`;
+
 export const Title = children => {
   return (
     <Box mr={2} mt={[2, 3, 3]} mb={[2, 2, 3]} pt={[1, 2, 4]}>
-      <H1 fontSize={'3rem'}>{children.children}</H1>
+      <TitleH1>{children.children}</TitleH1>
     </Box>
   );
 };
@@ -45,4 +51,32 @@ export const PullQuote = styled.p`
   max-width: 400px;
   color: #555;
   font-weight: 300;
+`;
+
+export const Metadata = styled.div`
+  padding: 0px;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: #828282;
+  display: flex;
+  .edit {
+    visibility: hidden;
+  }
+  &:hover {
+    .edit {
+      visibility: visible;
+    }
+    .emoji {
+      filter: grayscale(0);
+    }
+  }
+`;
+
+export const MetadataItem = styled.div`
+  margin-right: 0.5rem;
+`;
+
+export const Emoji = styled.span.attrs({ className: 'emoji' })`
+  font-size: 1.2rem;
+  filter: grayscale(1);
 `;

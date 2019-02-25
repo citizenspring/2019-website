@@ -11,7 +11,7 @@ import { Box, Flex } from '@rebass/grid';
 import { Content, DescriptionBlock } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
 import EventsGroupPage from './EventsGroupPage';
-import EditableText from '../components/EditableText';
+import RichText from '../components/RichText';
 import Members from '../components/Members';
 import { mailto } from '../lib/utils';
 
@@ -63,18 +63,15 @@ class GroupPage extends React.Component {
         <TopBar group={group} />
         <Content>
           <TitleWithActions title={group.name} actions={actions} />
-          <Metadata group={group} />
+          <Metadata group={group} editUrl={mailto(groupEmail, 'edit', group.name, group.description)} />
           <Flex flexDirection={['column', 'row', 'row']}>
             <Box width={1} mr={[0, 3, 4]}>
               <DescriptionBlock>
-                <EditableText
-                  mailto={mailto(groupEmail, 'edit', group.name, group.description)}
-                  html={group.description}
-                >
+                <RichText html={group.description}>
                   {!group.description && (
                     <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
                   )}
-                </EditableText>
+                </RichText>
               </DescriptionBlock>
               <TagsSelector groupSlug={group.slug} selected={selectedTag} />
               <PostList groupSlug={group.slug} posts={group.posts} />
