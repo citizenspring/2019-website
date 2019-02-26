@@ -8,7 +8,7 @@ import { Emoji, MetadataItem } from '../../styles/layout';
 import Link from '../Link';
 import { FormattedMessage } from 'react-intl';
 
-function EventMetadata({ startsAt, endsAt, group, location, editUrl }) {
+function EventMetadata({ startsAt, endsAt, group, location, website, editUrl }) {
   return (
     <MetadataWrapper>
       {group && (

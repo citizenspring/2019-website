@@ -8,6 +8,7 @@ import { MetadataItem } from '../../styles/layout';
 import withIntl from '../../lib/withIntl';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import Link from '../Link';
+import { Box } from '@rebass/grid';
 
 class PostHeader extends React.Component {
   static propTypes = {
@@ -34,7 +35,11 @@ class PostHeader extends React.Component {
     return (
       <PostHeaderWrapper>
         {reaction && <Reaction>{reaction}</Reaction>}
-        {!reaction && <Avatar user={user} />}
+        {!reaction && (
+          <Box mr={2}>
+            <Avatar user={user} />
+          </Box>
+        )}
         <MetadataItem>
           {user.name} {intl.formatMessage(this.messages[verb])} <Moment fromNow>{timestamp}</Moment>
         </MetadataItem>

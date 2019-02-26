@@ -25,7 +25,7 @@ async function handleFirstTimeUser(email, data, action) {
   const mailServer = email['message-url'].substring(8, email['message-url'].indexOf('.'));
 
   const tokenData = { messageId, mailServer };
-  const token = createJwt('emailConfirmation', tokenData, '1h');
+  const token = createJwt('emailConfirmation', tokenData, '1d');
   data.confirmationUrl = `${config.server.baseUrl}/api/publishEmail?groupSlug=${data.groupSlug}&token=${token}`;
 
   if (isEmpty(email['stripped-text']) || ['join', 'follow'].includes(action)) {

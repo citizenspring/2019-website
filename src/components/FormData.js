@@ -53,8 +53,8 @@ class FormData extends React.Component {
 
   render() {
     return (
-      <Flex>
-        <Box mb={4} width={2 / 3}>
+      <Flex flexDirection="column">
+        <Box mb={4}>
           <StyledInputField label="Languages" description="What languages can you accommodate?" htmlFor="languages">
             {inputProps =>
               this.languagesValues.map(lang => (
@@ -66,7 +66,7 @@ class FormData extends React.Component {
           </StyledInputField>
         </Box>
 
-        <Box mb={4} width={1 / 3}>
+        <Box mb={4}>
           <StyledInputField label="Kids friendly" description="Is your open door kid friendly?" htmlFor="kidsFriendly">
             {inputProps =>
               this.kidsFriendlyValues.map(lang => (

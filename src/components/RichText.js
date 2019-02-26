@@ -12,6 +12,12 @@ const Wrapper = styled.div`
     font-size: 1.4rem;
     display: inline-block;
     margin-left: 0.5rem;
+    visibility: hidden;
+  }
+  &:hover {
+    .edit {
+      visibility: visible;
+    }
   }
   ul {
     padding-left: 2rem;
@@ -28,9 +34,10 @@ const Wrapper = styled.div`
   img {
     max-width: 100%;
   }
+  }
 `;
 
-export default function RichText({ html, children }) {
+export default function RichText({ html, children, mailto, href }) {
   return (
     <Wrapper>
       {html && (
@@ -50,6 +57,12 @@ export default function RichText({ html, children }) {
         />
       )}
       {children && <div>{children}</div>}
+      {(mailto || href) && (
+        <Link href={mailto || href} className="edit">
+          ✏️
+          <FormattedMessage id="edit" defaultMessage="edit" />
+        </Link>
+      )}
     </Wrapper>
   );
 }
