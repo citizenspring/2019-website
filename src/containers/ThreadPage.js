@@ -130,9 +130,11 @@ class ThreadPage extends React.Component {
             </Box>
             <Box width={300} mt={[4, 1, 1]}>
               <Members type={thread.type} members={thread.followers} action={action} />
-              <Box mt={3}>
-                <FormData data={thread.formData} />
-              </Box>
+              {thread.type === 'EVENT' && (
+                <Box mt={3}>
+                  <FormData data={thread.formData} />
+                </Box>
+              )}
             </Box>
           </Flex>
         </Content>
