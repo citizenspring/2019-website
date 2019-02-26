@@ -59,6 +59,7 @@ export const Metadata = styled.div`
   font-size: 1.2rem;
   color: #828282;
   display: flex;
+  align-items: center;
   .edit {
     visibility: hidden;
   }

@@ -52,13 +52,15 @@ class EventsGroupPage extends React.Component {
       },
     ];
 
+    const editMailto = mailto(groupEmail, 'edit', group.title, group.description);
+
     return (
       <div>
         <TopBar group={group} />
         <Banner groupSlug={group.slug} />
         <Content>
           <DescriptionBlock>
-            <RichText html={group.description}>
+            <RichText html={group.description} mailto={editMailto}>
               {!group.description && (
                 <FormattedMessage id="group.description.empty" defaultMessage="no group description" />
               )}
@@ -70,7 +72,7 @@ class EventsGroupPage extends React.Component {
           </Box>
           <PostList groupSlug={group.slug} posts={group.posts} />
         </Content>
-        <Footer group={group} />
+        <Footer group={group} editUrl={editMailto} />
       </div>
     );
   }

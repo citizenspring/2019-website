@@ -5,8 +5,11 @@ import { PostWrapper, ContentWrapper } from './Styles';
 import PostHeader from './PostHeader';
 import PostReactions from '../PostReactions';
 import RichText from '../RichText';
-import { mailto, keepAnchorsShort } from '../../lib/utils';
+import { mailto, keepAnchorsShort, getDomain } from '../../lib/utils';
 import env from '../../env.frontend';
+import { FormattedMessage } from 'react-intl';
+import { get } from 'lodash';
+import { Subtitle } from '../../styles/layout';
 
 class Post extends Component {
   static propTypes = {
@@ -44,6 +47,30 @@ class Post extends Component {
           {!reaction && (
             <div>
               <RichText html={html} />
+              {post.website && (
+                <FormattedMessage
+                  id="event.viewWebsite"
+                  defaultMessage="View event on {website}"
+                  values={{ website: <a href={post.website}>{getDomain(post.website)}</a> }}
+                />
+              )}
+              {thread.PostId === post.PostId && get(thread, 'formData.collectiveDescription') && (
+                <div>
+                  <Subtitle>
+                    <FormattedMessage id="event.aboutCollective" defaultMessage="About our collective" />
+                  </Subtitle>
+                  <p>{thread.formData.collectiveDescription}</p>
+                  <FormattedMessage
+                    id="event.collectiveWebsite"
+                    defaultMessage="Visit our website on {website}"
+                    values={{
+                      website: (
+                        <a href={thread.formData.collectiveWebsite}>{getDomain(thread.formData.collectiveWebsite)}</a>
+                      ),
+                    }}
+                  />
+                </div>
+              )}
               {post.type === 'POST' && post.html.length > 14 && (
                 <PostReactions group={group} thread={thread} reply={post} size={16} />
               )}

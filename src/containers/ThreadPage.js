@@ -54,6 +54,7 @@ class ThreadPage extends React.Component {
 
   render() {
     const thread = this.props.data.Post;
+    console.log('>>> thread', thread);
     if (!thread) {
       return (
         <div>
@@ -122,16 +123,16 @@ class ThreadPage extends React.Component {
                 <Post key={i} group={thread.group} thread={thread} post={post} />
               ))}
               {thread.type === 'EVENT' && (
-                <div>
+                <Box mt={3}>
                   <GoogleMap lat={thread.location.lat} lng={thread.location.long} zoom={16} markerSize={'34px'} />
-                  <Box width={[1, null, 1 / 2]} mt={4}>
-                    <FormData data={thread.formData} />
-                  </Box>
-                </div>
+                </Box>
               )}
             </Box>
             <Box width={300} mt={[4, 1, 1]}>
               <Members type={thread.type} members={thread.followers} action={action} />
+              <Box mt={3}>
+                <FormData data={thread.formData} />
+              </Box>
             </Box>
           </Flex>
         </Content>
@@ -151,6 +152,7 @@ const getDataQuery = gql`
       html
       text
       tags
+      website
       formData
       createdAt
       startsAt
