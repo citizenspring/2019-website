@@ -71,7 +71,7 @@ class Post extends Component {
                   />
                 </div>
               )}
-              {post.type === 'POST' && post.html.length > 14 && (
+              {thread.type === 'POST' && post.html.length > 14 && (
                 <PostReactions group={group} thread={thread} reply={post} size={16} />
               )}
             </div>
