@@ -23,7 +23,6 @@ libemail.removeEmailResponse = function(html) {
   if (!html || typeof html !== 'string') throw new Error('libemail.removeEmailResponse error: html should be a string');
 
   if (html.indexOf('gmail_quote') === -1) return html;
-
   return html.substr(0, html.indexOf('<div class="gmail_quote"')) + '</body></html>';
 };
 
@@ -140,6 +139,10 @@ libemail.getHTML = function(email) {
     .replace(/<p[^>]*>((?:(?!<\/?p)(.|\n))*)(<\/p>)/gm, '\r\n$1\r\n')
     // convert <div></div> to new lines since they will be converted back by markdown processor
     .replace(/<div[^>]*>((?:(?!<\/?div)(.|\n))*)(<\/div>)/gm, '<br>\r\n$1\r\n')
+    // remove wrapping <div></div>
+    .replace(/(<div>)((.|\n|\r)*)(<\/div>)/gm, '$2')
+    // remove wrapping <div></div>
+    .replace(/(<div>)((.|\n|\r)*)(<\/div>)/gm, '$2')
     .replace(/(\r)?\n((\r)?\n)+/gm, '\r\n\r\n') // max 2 new lines in a row
     .replace(/\no /gm, '\n  - ') // handle lists level 2
     .replace(/\n&gt;/g, '\n>')
