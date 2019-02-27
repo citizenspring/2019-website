@@ -83,13 +83,17 @@ class ThreadPage extends React.Component {
           }
         : { label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' };
 
-    const editUrl = mailto(
+    let editUrl = mailto(
       `${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.PostId}@${env.DOMAIN}`,
       'edit',
       thread.title,
       thread.text,
       thread.tags,
     );
+
+    if (thread.type === 'EVENT') {
+      editUrl = `/${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`;
+    }
 
     return (
       <div>
@@ -110,7 +114,7 @@ class ThreadPage extends React.Component {
                 startsAt={thread.startsAt}
                 endsAt={thread.endsAt}
                 location={thread.location}
-                editUrl={`/${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`}
+                editUrl={editUrl}
               />
             )}
           </Box>
