@@ -53,16 +53,14 @@ class ThreadPage extends React.Component {
   }
 
   render() {
-    const thread = this.props.data.Post;
-    console.log('>>> thread', thread);
-    if (!thread) {
-      return (
-        <div>
-          <FormattedMessage id="loading" defaultMessage="loading" />
-        </div>
-      );
-    }
-    const { intl } = this.props;
+    const {
+      intl,
+      data: { Post: thread },
+      loading,
+      groupSlug,
+    } = this.props;
+    if (loading) return <Loading groupSlug={groupSlug} />;
+
     const threadEmail = `${thread.group.slug}/${thread.PostId}@${env.DOMAIN}`;
     const followEmail = mailto(
       threadEmail,

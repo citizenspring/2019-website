@@ -10,7 +10,11 @@ class ThreadPage extends React.Component {
       res.setHeader('Cache-Control', 's-maxage=300');
     }
 
-    return { threadSlug: query && query.threadSlug, query };
+    return {
+      groupSlug: query && query.groupSlug,
+      threadSlug: query && query.threadSlug,
+      query,
+    };
   }
 
   static propTypes = {
@@ -18,15 +22,11 @@ class ThreadPage extends React.Component {
     query: PropTypes.object, // from getInitialProps
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   async componentDidMount() {}
 
   render() {
-    return <Thread threadSlug={this.props.threadSlug} />;
+    const { groupSlug, threadSlug } = this.props;
+    return <Thread groupSlug={groupSlug} threadSlug={threadSlug} />;
   }
 }
 

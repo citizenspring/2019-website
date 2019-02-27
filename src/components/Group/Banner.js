@@ -10,6 +10,7 @@ import { MaxWidth } from '../../styles/layout';
 const Banner = styled.div`
   width: 100%;
   padding: 8px;
+  box-sizing: border-box;
   overflow: hidden;
   background: #e0f1ff;
 `;
