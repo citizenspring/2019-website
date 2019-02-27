@@ -40,7 +40,7 @@ describe('webhook edit', () => {
       await webhook(req, res);
     });
     it('updates the title and description of the group if sender is admin', async () => {
-      const groups = await models.Group.findAll();
+      const groups = await models.Group.findAll({ order: [['id', 'ASC']] });
       expect(groups.length).toEqual(2);
       expect(groups[0].status).toEqual('ARCHIVED');
       expect(groups[1].status).toEqual('PUBLISHED');
@@ -62,7 +62,7 @@ describe('webhook edit', () => {
     it('updates the title and body of the post if sender is admin', async () => {
       req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
-      const posts = await models.Post.findAll();
+      const posts = await models.Post.findAll({ order: [['id', 'ASC']] });
       expect(posts.length).toEqual(2);
       expect(posts[0].status).toEqual('ARCHIVED');
       expect(posts[1].status).toEqual('PUBLISHED');
@@ -76,7 +76,7 @@ describe('webhook edit', () => {
       req.body.sender = 'anotheruser@gmail.com';
       req.body['Message-Id'] = `${Math.round(Math.random() * 10000000)}`;
       await webhook(req, res);
-      const posts = await models.Post.findAll();
+      const posts = await models.Post.findAll({ order: [['id', 'ASC']] });
       expect(posts.length).toEqual(2);
       expect(posts[0].status).toEqual('PUBLISHED');
       expect(posts[1].status).toEqual('PENDING');
