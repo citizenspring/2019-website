@@ -82,7 +82,6 @@ export const body = withIntl(data => {
           values={{ user: user.name, title: currentVersion.title }}
           defaultMessage="Please review the changes below and approve or ignore."
         />
-        />
       </p>
       <div style={styles.editBox}>
         <Table>

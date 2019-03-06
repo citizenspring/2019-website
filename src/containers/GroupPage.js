@@ -166,7 +166,7 @@ export const addData = graphql(getDataQuery, {
         groupSlug: props.groupSlug,
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
-        tags: props.tag && [props.tag],
+        tags: props.selectedTag && [props.selectedTag],
       },
     };
   },

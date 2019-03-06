@@ -66,7 +66,11 @@ class TagsList extends React.Component {
     const { showLabel, tags, selected } = this.props;
     return (
       <TagsListWrapper>
-        {showLabel && <Label>Filter by tag:</Label>}
+        {showLabel && (
+          <Label>
+            <FormattedMessage id="tags.filter.label" defaultMessage="Filter by tag" />:
+          </Label>
+        )}
         <List>
           {(tags || [])
             .filter(t => !hiddenTags.includes(t))

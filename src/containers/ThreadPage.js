@@ -99,8 +99,12 @@ class ThreadPage extends React.Component {
       <div>
         <TopBar group={thread.group} />
         <Content>
-          <TitleWithActions title={thread.title} tags={thread.tags} groupSlug={thread.group.slug} />
-          <Box mt={[-2, -2, -3]}>
+          <TitleWithActions
+            title={thread.title}
+            tags={(thread.tags || []).sort().slice(0, 10)}
+            groupSlug={thread.group.slug}
+          />
+          <Box>
             {thread.type === 'POST' && (
               <Metadata
                 user={thread.user.name}
