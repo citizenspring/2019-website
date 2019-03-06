@@ -28,7 +28,7 @@ class GroupPage extends React.Component {
   static propTypes = {
     groupSlug: PropTypes.string.isRequired,
     intl: PropTypes.object.isRequired,
-    tag: PropTypes.string,
+    selectedTag: PropTypes.string,
   };
 
   constructor(props) {
