@@ -45,7 +45,7 @@
   "form.createEvent.endsAtTime.label": "Tot",
   "form.createEvent.location.label": "Locatie",
   "form.createEvent.location.description": "Waar vindt de opendeurdag plaats?",
-  "form.createEvent.languages.label": "languagess",
+  "form.createEvent.languages.label": "languages",
   "form.createEvent.languages.description": "What languages can you accommodate?",
   "form.createEvent.kidsFriendly.label": "Kindvriendelijk",
   "form.createEvent.kidsFriendly.description": "Is je activiteit kindvriendelijk?",
