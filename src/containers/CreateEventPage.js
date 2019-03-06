@@ -101,7 +101,7 @@ class CreateEventPage extends React.Component {
         id: 'form.createEvent.location.description',
         defaultMessage: 'Where will your open door take place?',
       },
-      'languages.label': { id: 'form.createEvent.languages.label', defaultMessage: 'languagess' },
+      'languages.label': { id: 'form.createEvent.languages.label', defaultMessage: 'languages' },
       'languages.description': {
         id: 'form.createEvent.languages.description',
         defaultMessage: 'What languages can you accommodate?',

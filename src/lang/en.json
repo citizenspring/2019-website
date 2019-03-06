@@ -45,7 +45,7 @@
   "form.createEvent.endsAtTime.label": "Till",
   "form.createEvent.location.label": "Location",
   "form.createEvent.location.description": "Where will your open door take place?",
-  "form.createEvent.languages.label": "languagess",
+  "form.createEvent.languages.label": "languages",
   "form.createEvent.languages.description": "What languages can you accommodate?",
   "form.createEvent.kidsFriendly.label": "Kids friendly",
   "form.createEvent.kidsFriendly.description": "Is your open door kid friendly?",
