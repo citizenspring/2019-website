@@ -216,10 +216,11 @@ module.exports = (sequelize, DataTypes) => {
       version: this.version + 1,
       status: groupData.status || 'PUBLISHED',
     };
-    if (newVersionData.status === 'PUBLISHED') {
+    const newVersion = await Group.create(newVersionData);
+    if (newVersion.status === 'PUBLISHED') {
       await this.update({ status: 'ARCHIVED' });
     }
-    return await Group.create(newVersionData);
+    return newVersion;
   };
 
   Group.prototype.addAdmin = async function(UserId) {

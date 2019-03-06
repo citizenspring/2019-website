@@ -44,10 +44,17 @@ class TagsSelector extends React.Component {
     if (tagsArray.length === 0) {
       return <div />;
     }
-    tagsArray[0].selected = true;
+    tagsArray.sort((a, b) => {
+      if (a.weight > b.weight) return -1;
+      else if (a.weight === b.weight) {
+        return a.label < b.label ? -1 : 1;
+      } else return 1;
+    });
+    tagsArray.splice(10);
+    console.log('>>> TagsSelectorWithData props.selected', selected);
     return (
       <TagsSelectorWrapper>
-        <TagsList groupSlug={groupSlug} tags={Object.keys(tags)} showLabel={true} selected={selected} />
+        <TagsList groupSlug={groupSlug} tags={tagsArray} showLabel={true} selected={selected} />
       </TagsSelectorWrapper>
     );
   }

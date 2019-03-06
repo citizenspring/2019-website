@@ -217,7 +217,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.prototype.isAdmin = async function(group) {
     const membership = await models.Member.count({
-      where: { UserId: this.id, GroupId: group.id, role: 'ADMIN' },
+      where: { UserId: this.id, GroupId: group.GroupId, role: 'ADMIN' },
     });
     return membership === 1;
   };

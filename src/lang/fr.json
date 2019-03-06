@@ -45,7 +45,7 @@
   "form.createEvent.endsAtTime.label": "à",
   "form.createEvent.location.label": "Lieu",
   "form.createEvent.location.description": "Où aura lieu votre porte ouverte?",
-  "form.createEvent.languages.label": "languagess",
+  "form.createEvent.languages.label": "languages",
   "form.createEvent.languages.description": "What languages can you accommodate?",
   "form.createEvent.kidsFriendly.label": "Familles",
   "form.createEvent.kidsFriendly.description": "Est-ce que les enfants sont bienvenus?",

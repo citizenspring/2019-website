@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Span } from '../Text';
 import { Box } from '@rebass/grid';
-import { Metadata } from '../../styles/layout';
+import { Metadata, MetadataItem as Item } from '../../styles/layout';
 
 export const MetadataWrapper = children => {
   return (
@@ -10,3 +10,5 @@ export const MetadataWrapper = children => {
     </Box>
   );
 };
+
+export const MetadataItem = Item;

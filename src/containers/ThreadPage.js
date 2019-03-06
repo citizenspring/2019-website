@@ -53,16 +53,14 @@ class ThreadPage extends React.Component {
   }
 
   render() {
-    const thread = this.props.data.Post;
-    console.log('>>> thread', thread);
-    if (!thread) {
-      return (
-        <div>
-          <FormattedMessage id="loading" defaultMessage="loading" />
-        </div>
-      );
-    }
-    const { intl } = this.props;
+    const {
+      intl,
+      data: { Post: thread },
+      loading,
+      groupSlug,
+    } = this.props;
+    if (loading) return <Loading groupSlug={groupSlug} />;
+
     const threadEmail = `${thread.group.slug}/${thread.PostId}@${env.DOMAIN}`;
     const followEmail = mailto(
       threadEmail,
@@ -85,7 +83,7 @@ class ThreadPage extends React.Component {
           }
         : { label: intl.formatMessage(this.messages['follow']), href: followEmail, style: 'standard' };
 
-    const editUrl = mailto(
+    let editUrl = mailto(
       `${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.PostId}@${env.DOMAIN}`,
       'edit',
       thread.title,
@@ -93,12 +91,20 @@ class ThreadPage extends React.Component {
       thread.tags,
     );
 
+    if (thread.type === 'EVENT') {
+      editUrl = `/${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`;
+    }
+
     return (
       <div>
         <TopBar group={thread.group} />
         <Content>
-          <TitleWithActions title={thread.title} tags={thread.tags} groupSlug={thread.group.slug} />
-          <Box mt={[-2, -2, -3]}>
+          <TitleWithActions
+            title={thread.title}
+            tags={(thread.tags || []).sort().slice(0, 10)}
+            groupSlug={thread.group.slug}
+          />
+          <Box>
             {thread.type === 'POST' && (
               <Metadata
                 user={thread.user.name}
@@ -112,7 +118,7 @@ class ThreadPage extends React.Component {
                 startsAt={thread.startsAt}
                 endsAt={thread.endsAt}
                 location={thread.location}
-                editUrl={`/${thread.group.slug}/${thread.type.toLowerCase()}s/${thread.slug}/edit`}
+                editUrl={editUrl}
               />
             )}
           </Box>

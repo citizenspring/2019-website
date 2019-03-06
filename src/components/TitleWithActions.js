@@ -21,11 +21,11 @@ const Action = styled.div`
 
 export default function TitleWithActions({ title, subtitle, actions, tags, groupSlug }) {
   return (
-    <Flex alignItems="baseline" flexDirection={['column', 'row', 'row']}>
+    <Flex alignItems="baseline" flexDirection="column">
       {title && <Title>{title}</Title>}
       {subtitle && <Subtitle>{subtitle}</Subtitle>}
       {tags && (
-        <Box mt={[-3, 0, 0]} mb={[3, 0, 0]}>
+        <Box mt={[-2, -3, -3]} mb={[2, 1, 1]}>
           <TagsList tags={tags} groupSlug={groupSlug} />
         </Box>
       )}

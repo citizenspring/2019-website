@@ -405,10 +405,11 @@ module.exports = (sequelize, DataTypes) => {
       status: postData.status || 'PUBLISHED',
       version: this.version + 1,
     };
-    if (newVersionData.status === 'PUBLISHED') {
+    const newVersion = await Post.create(newVersionData);
+    if (newVersion.status === 'PUBLISHED') {
       await this.update({ status: 'ARCHIVED' });
     }
-    return await Post.create(newVersionData);
+    return newVersion;
   };
 
   /**

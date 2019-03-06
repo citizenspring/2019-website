@@ -101,9 +101,9 @@ class CreateEventPage extends React.Component {
         id: 'form.createEvent.location.description',
         defaultMessage: 'Where will your open door take place?',
       },
-      'language.label': { id: 'form.createEvent.language.label', defaultMessage: 'Languages' },
-      'language.description': {
-        id: 'form.createEvent.language.description',
+      'languages.label': { id: 'form.createEvent.languages.label', defaultMessage: 'languages' },
+      'languages.description': {
+        id: 'form.createEvent.languages.description',
         defaultMessage: 'What languages can you accommodate?',
       },
       'kidsFriendly.label': { id: 'form.createEvent.kidsFriendly.label', defaultMessage: 'Kids friendly' },
@@ -371,16 +371,16 @@ class CreateEventPage extends React.Component {
             <Flex>
               <Box mb={4} width={2 / 3}>
                 <StyledInputField
-                  label={intl.formatMessage(this.messages['language.label'])}
-                  description={intl.formatMessage(this.messages['language.description'])}
-                  htmlFor="language"
-                  error={this.getFieldError('language')}
+                  label={intl.formatMessage(this.messages['languages.label'])}
+                  description={intl.formatMessage(this.messages['languages.description'])}
+                  htmlFor="languages"
+                  error={this.getFieldError('languages')}
                 >
                   {inputProps =>
                     this.languagesValues.map(value => (
                       <Box my={2}>
                         <StyledCheckbox
-                          label={intl.formatMessage(this.messages[`language.options.${value}`])}
+                          label={intl.formatMessage(this.messages[`languages.options.${value}`])}
                           {...inputProps}
                           {...this.getFieldProps(inputProps.name, value)}
                           onChange={val => this.onChange(inputProps.name, value, val.checked)}
@@ -450,7 +450,9 @@ class CreateEventPage extends React.Component {
               fontWeight="600"
               loading={loading}
             >
-              {get(this.props, 'data.PostId') && <FormattedMessage id="editGroup.submitBtn" defaultMessage="suggest edit" />}
+              {get(this.props, 'data.PostId') && (
+                <FormattedMessage id="editGroup.submitBtn" defaultMessage="suggest edit" />
+              )}
               {!get(this.props, 'data.PostId') && (
                 <FormattedMessage id="createGroup.submitBtn" defaultMessage="Register" />
               )}

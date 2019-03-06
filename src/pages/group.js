@@ -29,7 +29,7 @@ class GroupPage extends React.Component {
 
   render() {
     const { groupSlug, tag } = this.props;
-    return <Group groupSlug={groupSlug} tag={tag} />;
+    return <Group groupSlug={groupSlug} selectedTag={tag} />;
   }
 }
 

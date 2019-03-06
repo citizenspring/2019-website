@@ -8,8 +8,10 @@ import TopBar from '../components/TopBar';
 import Footer from '../components/Footer';
 
 import { Box, Flex } from '@rebass/grid';
-import { Content, DescriptionBlock } from '../styles/layout';
+import { Title, Content, DescriptionBlock } from '../styles/layout';
 import TitleWithActions from '../components/TitleWithActions';
+import Loading from './Loading';
+import GroupNotFound from './GroupNotFound';
 import EventsGroupPage from './EventsGroupPage';
 import RichText from '../components/RichText';
 import Members from '../components/Members';
@@ -26,7 +28,7 @@ class GroupPage extends React.Component {
   static propTypes = {
     groupSlug: PropTypes.string.isRequired,
     intl: PropTypes.object.isRequired,
-    tag: PropTypes.string,
+    selectedTag: PropTypes.string,
   };
 
   constructor(props) {
@@ -34,10 +36,15 @@ class GroupPage extends React.Component {
   }
 
   render() {
-    const group = this.props.data.Group;
-    if (!group) return <div>Loading</div>;
-    const selectedTag = this.props.tag;
-    const groupEmail = `${group.slug}@${env.DOMAIN}`;
+    const {
+      data: { loading, Group: group },
+      groupSlug,
+      selectedTag,
+    } = this.props;
+    const groupEmail = `${groupSlug}@${env.DOMAIN}`;
+    if (loading) return <Loading groupSlug={groupSlug} />;
+    if (!group) return <GroupNotFound groupSlug={groupSlug} />;
+
     const template = get(group, 'settings.template');
 
     if (template === 'events') {
@@ -159,7 +166,7 @@ export const addData = graphql(getDataQuery, {
         groupSlug: props.groupSlug,
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
-        tags: props.tag && [props.tag],
+        tags: props.selectedTag && [props.selectedTag],
       },
     };
   },

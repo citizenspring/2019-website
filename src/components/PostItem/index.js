@@ -30,7 +30,13 @@ class PostListItem extends Component {
     }
     return (
       <ListItemWrapper>
-        <Title title={post.title} path={path} createdAt={post.createdAt} tags={post.tags} groupSlug={groupSlug} />
+        <Title
+          title={post.title}
+          path={path}
+          createdAt={post.createdAt}
+          tags={(post.tags || []).sort().slice(0, 7)}
+          groupSlug={groupSlug}
+        />
         {post.type === 'EVENT' && (
           <EventMetadata
             startsAt={post.startsAt}

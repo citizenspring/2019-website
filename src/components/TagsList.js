@@ -66,15 +66,29 @@ class TagsList extends React.Component {
     const { showLabel, tags, selected } = this.props;
     return (
       <TagsListWrapper>
-        {showLabel && <Label>Filter by tag:</Label>}
+        {showLabel && (
+          <Label>
+            <FormattedMessage id="tags.filter.label" defaultMessage="Filter by tag" />:
+          </Label>
+        )}
         <List>
           {(tags || [])
             .filter(t => !hiddenTags.includes(t))
-            .map((tag, key) => (
-              <Tag key={key} selected={tag === selected} onClick={() => this.onClick(tag)}>
-                {tag}
-              </Tag>
-            ))}
+            .map((tag, key) => {
+              if (typeof tag === 'string') {
+                return (
+                  <Tag key={key} selected={tag === selected} onClick={() => this.onClick(tag)}>
+                    {tag}
+                  </Tag>
+                );
+              } else {
+                return (
+                  <Tag key={key} selected={tag.label === selected} onClick={() => this.onClick(tag.label)}>
+                    {tag.label} ({tag.weight})
+                  </Tag>
+                );
+              }
+            })}
         </List>
       </TagsListWrapper>
     );
