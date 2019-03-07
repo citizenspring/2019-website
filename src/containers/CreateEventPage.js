@@ -161,24 +161,24 @@ class CreateEventPage extends React.Component {
       'tags.options.social business': { id: 'tags.socialBusiness', defaultMessage: 'social business' },
       'tags.options.vegan': { id: 'tags.vegan', defaultMessage: 'vegan' },
       'tags.options.cafe': { id: 'tags.cafe', defaultMessage: 'cafe' },
-      'language.options.English': { id: 'language.English', defaultMessage: 'English' },
-      'language.options.French': { id: 'language.French', defaultMessage: 'French' },
-      'language.options.Dutch': { id: 'language.Dutch', defaultMessage: 'Dutch' },
-      'language.options.Arabic': { id: 'language.Arabic', defaultMessage: 'Arabic' },
-      'language.options.Italian': { id: 'language.Italian', defaultMessage: 'Italian' },
-      'language.options.Polish': { id: 'language.Polish', defaultMessage: 'Polish' },
-      'language.options.Romanian': { id: 'language.Romanian', defaultMessage: 'Romanian' },
-      'language.options.Spanish': { id: 'language.Spanish', defaultMessage: 'Spanish' },
-      'language.options.Turkish': { id: 'language.Turkish', defaultMessage: 'Turkish' },
-      'language.options.Brusseleer': { id: 'language.Brusseleer', defaultMessage: 'Brusseleer' },
+      'languages.options.English': { id: 'languages.English', defaultMessage: 'English' },
+      'languages.options.French': { id: 'languages.French', defaultMessage: 'French' },
+      'languages.options.Dutch': { id: 'languages.Dutch', defaultMessage: 'Dutch' },
+      'languages.options.Arabic': { id: 'languages.Arabic', defaultMessage: 'Arabic' },
+      'languages.options.Italian': { id: 'languages.Italian', defaultMessage: 'Italian' },
+      'languages.options.Polish': { id: 'languages.Polish', defaultMessage: 'Polish' },
+      'languages.options.Romanian': { id: 'languages.Romanian', defaultMessage: 'Romanian' },
+      'languages.options.Spanish': { id: 'languages.Spanish', defaultMessage: 'Spanish' },
+      'languages.options.Turkish': { id: 'languages.Turkish', defaultMessage: 'Turkish' },
+      'languages.options.Brusseleer': { id: 'languages.Brusseleer', defaultMessage: 'Brusseleer' },
       'kidsFriendly.options.babies': { id: 'kidsFriendly.babies', defaultMessage: 'babies' },
       'kidsFriendly.options.toddlers': { id: 'kidsFriendly.toddlers', defaultMessage: 'toddlers' },
       'kidsFriendly.options.kids': { id: 'kidsFriendly.kids', defaultMessage: 'kids' },
     });
 
     this.languagesValues = Object.keys(this.messages)
-      .filter(key => key.match(/^language\.options\./))
-      .map(key => key.replace(/^language\.options\./, ''));
+      .filter(key => key.match(/^languages\.options\./))
+      .map(key => key.replace(/^languages\.options\./, ''));
     this.kidsFriendlyValues = Object.keys(this.messages)
       .filter(key => key.match(/^kidsFriendly\.options\./))
       .map(key => key.replace(/^kidsFriendly\.options\./, ''));
