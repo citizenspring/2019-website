@@ -42,7 +42,7 @@ class MapMarkers extends React.Component {
     }
     return (
       <MapMarkersWrapper>
-        <GoogleMap lat={location.lat} lng={location.long} markers={markers} zoom={14} markerSize={'28px'} />
+        <GoogleMap lat={location.lat} lng={location.long} markers={markers} zoom={12} markerSize={'28px'} />
       </MapMarkersWrapper>
     );
   }

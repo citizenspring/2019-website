@@ -51,7 +51,6 @@ class TagsSelector extends React.Component {
       } else return 1;
     });
     tagsArray.splice(10);
-    console.log('>>> TagsSelectorWithData props.selected', selected);
     return (
       <TagsSelectorWrapper>
         <TagsList groupSlug={groupSlug} tags={tagsArray} showLabel={true} selected={selected} />
