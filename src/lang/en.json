@@ -53,6 +53,8 @@
   "form.createEvent.tags.description": "Tags help people browse through all the citizen initiatives",
   "form.createEvent.website.label": "Registration URL if any",
   "form.createEvent.website.description": "Facebook event / Eventbrite - optional - please make sure you mention #CitizenSpring in the title/description of the event",
+  "confirmation.label": "Confirmation",
+  "confirmation.description": "I hereby confirm that I represent an initiative that has been started by citizens and that is open to any other citizen to come and contribute",
   "tags.food": "food",
   "tags.shopping": "shopping",
   "tags.mobility": "mobility",

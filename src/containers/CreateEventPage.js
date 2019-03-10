@@ -122,6 +122,12 @@ class CreateEventPage extends React.Component {
         defaultMessage:
           'Facebook event / Eventbrite - optional - please make sure you mention #CitizenSpring in the title/description of the event',
       },
+      'confirmation.label': { id: 'confirmation.label', defaultMessage: 'Confirmation' },
+      'confirmation.description': {
+        id: 'confirmation.description',
+        defaultMessage:
+          'I hereby confirm that I represent an initiative that has been started by citizens and that is open to any other citizen to come and contribute',
+      },
       'tags.options.food': { id: 'tags.food', defaultMessage: 'food' },
       'tags.options.shopping': { id: 'tags.shopping', defaultMessage: 'shopping' },
       'tags.options.mobility': { id: 'tags.mobility', defaultMessage: 'mobility' },
@@ -212,10 +218,16 @@ class CreateEventPage extends React.Component {
     }
     newState.edited[fieldname] = true;
     this.setState(newState);
+    console.log('>>> newState', newState);
   }
 
   onSubmit(event) {
     event.preventDefault();
+    if (!this.state.form.confirmation) {
+      const errors = { confirmation: 'Please confirm' };
+      this.setState({ errors });
+      return;
+    }
     return this.props.onSubmit(this.state.form);
   }
 
@@ -440,6 +452,23 @@ class CreateEventPage extends React.Component {
               >
                 {inputProps => <StyledInput {...inputProps} {...this.getFieldProps(inputProps.name)} />}
               </StyledInputField>
+            </Box>
+
+            <Box mb={4}>
+              <Flex>
+                <Box mt={1}>
+                  <StyledInputField htmlFor="confirmation" error={this.getFieldError('confirmation')}>
+                    {inputProps => (
+                      <StyledCheckbox
+                        {...inputProps}
+                        {...this.getFieldProps(inputProps.name)}
+                        onChange={val => this.onChange('confirmation', val.checked)}
+                      />
+                    )}
+                  </StyledInputField>
+                </Box>
+                <Box ml={4}>{intl.formatMessage(this.messages['confirmation.description'])}</Box>
+              </Flex>
             </Box>
 
             <StyledButton
