@@ -53,6 +53,8 @@
   "form.createEvent.tags.description": "Tags helpen mensen door alle burgerinitiatieven te bladeren",
   "form.createEvent.website.label": "Registratie URL indien van toepassing",
   "form.createEvent.website.description": "Facebook evenement / Eventbrite - optioneel - zorg ervoor dat je #CitizenSpring vermeldt in de titel/beschrijving van het evenement",
+  "confirmation.label": "Confirmation",
+  "confirmation.description": "I hereby confirm that I represent an initiative that has been started by citizens and that is open to any other citizen to come and contribute",
   "tags.food": "eten",
   "tags.shopping": "shopping",
   "tags.mobility": "mobiliteit",
