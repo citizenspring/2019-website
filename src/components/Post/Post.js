@@ -21,7 +21,7 @@ class Post extends Component {
   render() {
     const { group, thread, post } = this.props;
     let reaction;
-    if (post.text.length === 2) {
+    if ((get(post, 'text') || '').length === 2) {
       reaction = post.text;
     }
     const html = keepAnchorsShort(post.html);

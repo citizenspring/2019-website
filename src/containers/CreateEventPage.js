@@ -218,7 +218,6 @@ class CreateEventPage extends React.Component {
     }
     newState.edited[fieldname] = true;
     this.setState(newState);
-    console.log('>>> newState', newState);
   }
 
   onSubmit(event) {

@@ -21,8 +21,6 @@ class FormData extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log('>>> formData', props);
-    console.log('>>> languages: ', get(this.props, `data[languages]`, []));
     this.languagesValues = [
       'English',
       'French',
