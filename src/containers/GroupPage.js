@@ -40,6 +40,7 @@ class GroupPage extends React.Component {
       data: { loading, Group: group },
       groupSlug,
       selectedTag,
+      date,
     } = this.props;
     const groupEmail = `${groupSlug}@${env.DOMAIN}`;
     if (loading) return <Loading groupSlug={groupSlug} />;
@@ -48,7 +49,7 @@ class GroupPage extends React.Component {
     const template = get(group, 'settings.template');
 
     if (template === 'events') {
-      return <EventsGroupPage group={group} tag={selectedTag} />;
+      return <EventsGroupPage group={group} tag={selectedTag} date={date} />;
     }
 
     const actions = [
@@ -167,6 +168,7 @@ export const addData = graphql(getDataQuery, {
         offset: 0,
         limit: props.limit || POSTS_PER_PAGE * 2,
         tags: props.selectedTag && [props.selectedTag],
+        date: props.date,
       },
     };
   },

@@ -48,6 +48,7 @@ class TagsList extends React.Component {
   static propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     selected: PropTypes.string,
+    date: PropTypes.string,
     showLabel: PropTypes.bool,
   };
   constructor(props) {
@@ -56,10 +57,11 @@ class TagsList extends React.Component {
   }
 
   onClick(tag) {
+    const { groupSlug, date } = this.props;
     if (tag === this.props.selected) {
       tag = null;
     }
-    Router.pushRoute('group', { groupSlug: this.props.groupSlug, tag });
+    Router.pushRoute('group', { groupSlug, tag, date });
   }
 
   render() {

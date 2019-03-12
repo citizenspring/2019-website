@@ -373,6 +373,10 @@ export const GroupType = new GraphQLObjectType({
             type: new GraphQLList(GraphQLString),
             description: 'only return posts that have those tags',
           },
+          date: {
+            type: GraphQLString,
+            description: 'only return events that start on that date',
+          },
           limit: { type: GraphQLInt },
           offset: { type: GraphQLInt },
         },
@@ -387,6 +391,15 @@ export const GroupType = new GraphQLObjectType({
           }
           if (args.hasLocation) {
             where.geoLocationLatLong = { [Op.not]: null };
+          }
+          if (args.date) {
+            const startsAt = new Date(args.date);
+            startsAt.setHours(0);
+            startsAt.setMilliseconds(0);
+            const endsAt = new Date(startsAt);
+            endsAt.setDate(startsAt.getDate() + 1);
+            where.startsAt = { [Op.gte]: startsAt };
+            where.endsAt = { [Op.gte]: endsAt };
           }
           where.ParentPostId = { [Op.is]: null };
           const query = { where };

@@ -11,7 +11,7 @@ class GroupPage extends React.Component {
       res.setHeader('Cache-Control', 's-maxage=300');
     }
 
-    return { groupSlug: get(query, 'groupSlug'), tag: get(query, 'tag'), query };
+    return { groupSlug: get(query, 'groupSlug'), tag: get(query, 'tag'), date: get(query, 'date'), query };
   }
 
   static propTypes = {
@@ -28,8 +28,8 @@ class GroupPage extends React.Component {
   async componentDidMount() {}
 
   render() {
-    const { groupSlug, tag } = this.props;
-    return <Group groupSlug={groupSlug} selectedTag={tag} />;
+    const { groupSlug, tag, date } = this.props;
+    return <Group groupSlug={groupSlug} selectedTag={tag} date={date} />;
   }
 }
 

@@ -15,6 +15,7 @@ import { FormattedMessage } from 'react-intl';
 import Metadata from '../components/Group/EventsMetadata';
 import MapMarkers from '../components/MapMarkers';
 import Banner from '../components/Group/Banner';
+import DateSelector from '../components/DateSelector';
 import TagsSelector from '../components/TagsSelectorWithData';
 
 import { get } from 'lodash';
@@ -25,6 +26,7 @@ class EventsGroupPage extends React.Component {
     group: PropTypes.object.isRequired,
     intl: PropTypes.object.isRequired,
     tag: PropTypes.string,
+    date: PropTypes.string,
   };
 
   constructor(props) {
@@ -32,7 +34,7 @@ class EventsGroupPage extends React.Component {
   }
 
   render() {
-    const { group, tag } = this.props;
+    const { group, tag, date } = this.props;
     const groupEmail = `${group.slug}@${env.DOMAIN}`;
     const template = get(group, 'settings.template');
     const actions = [
@@ -66,7 +68,8 @@ class EventsGroupPage extends React.Component {
               )}
             </RichText>
           </DescriptionBlock>
-          <TagsSelector groupSlug={group.slug} selected={tag} />
+          <DateSelector groupSlug={group.slug} selected={date} tag={tag} />
+          <TagsSelector groupSlug={group.slug} selected={tag} date={date} />
           <Box mb={3}>
             <MapMarkers group={group} />
           </Box>

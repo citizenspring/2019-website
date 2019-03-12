@@ -19,7 +19,7 @@ class TagsSelector extends React.Component {
   }
 
   render() {
-    const { data, selected, groupSlug } = this.props;
+    const { data, selected, groupSlug, date } = this.props;
     const posts = get(data, 'allPosts.nodes');
     if (!posts) {
       return <div />;
@@ -53,15 +53,15 @@ class TagsSelector extends React.Component {
     tagsArray.splice(10);
     return (
       <TagsSelectorWrapper>
-        <TagsList groupSlug={groupSlug} tags={tagsArray} showLabel={true} selected={selected} />
+        <TagsList groupSlug={groupSlug} tags={tagsArray} showLabel={true} selected={selected} date={date} />
       </TagsSelectorWrapper>
     );
   }
 }
 
 const getDataQuery = gql`
-  query allPosts($groupSlug: String, $onlyPostsWithLocation: Boolean) {
-    allPosts(groupSlug: $groupSlug, hasLocation: $onlyPostsWithLocation) {
+  query allPosts($groupSlug: String, $onlyPostsWithLocation: Boolean, $date: String) {
+    allPosts(groupSlug: $groupSlug, hasLocation: $onlyPostsWithLocation, date: $date) {
       total
       nodes {
         id
@@ -78,6 +78,7 @@ export const addData = graphql(getDataQuery, {
     return {
       variables: {
         groupSlug: props.groupSlug,
+        date: props.date,
         onlyPostsWithLocation: true,
       },
     };

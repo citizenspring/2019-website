@@ -13,7 +13,7 @@ export default function PostItemTitle(props) {
           {props.title}
         </Link>
       </Title>
-      <TagsList tags={props.tags} groupSlug={props.groupSlug} />
+      <TagsList tags={props.tags} groupSlug={props.groupSlug} date={props.date} />
     </Flex>
   );
 }
