@@ -54,7 +54,7 @@
   "form.createEvent.website.label": "URL pour s'enregistrer",
   "form.createEvent.website.description": "URL de l'événement sur Facebook ou Eventbrite (optionnel). Merci de vous assurer de mentionner #CitizenSpring dans le titre ou description de l'événement ",
   "confirmation.label": "Confirmation",
-  "confirmation.description": "Je confirme par la présente que je représente une initiative qui a été lancée par des citoyens et qui est ouverte à tout autre citoyen qui souhaiterait y contribuer",
+  "confirmation.description": "I hereby confirm that I represent an initiative that has been started by citizens and that is open to any other citizen to come and contribute or to get inspiration from to start a similar initiative elsewhere.",
   "tags.food": "nourriture",
   "tags.shopping": "shopping",
   "tags.mobility": "mobilité",
