@@ -126,7 +126,7 @@ class CreateEventPage extends React.Component {
       'confirmation.description': {
         id: 'confirmation.description',
         defaultMessage:
-          'I hereby confirm that I represent an initiative that has been started by citizens and that is open to any other citizen to come and contribute',
+          'I hereby confirm that I represent an initiative that has been started by citizens and that is open to any other citizen to come and contribute or to get inspiration from to start a similar initiative elsewhere.',
       },
       'tags.options.food': { id: 'tags.food', defaultMessage: 'food' },
       'tags.options.shopping': { id: 'tags.shopping', defaultMessage: 'shopping' },

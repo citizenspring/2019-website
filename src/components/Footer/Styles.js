@@ -27,7 +27,7 @@ export const FooterContent = styled.div`
 
 export const FooterCopyLeft = styled.div`
   background: rgba(255, 255, 255, 0.8);
-  font-size: 11px;
+  font-size: 12px;
   z-index: 10;
   padding: 0.5rem;
   position: relative;
@@ -64,5 +64,5 @@ export const LinkItemWrapper = styled.div`
 
 export const Icon = styled.div`
   width: 20px;
-  margin-right: 2px;
+  margin-right: 5px;
 `;
