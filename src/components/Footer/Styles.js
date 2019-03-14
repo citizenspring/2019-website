@@ -30,7 +30,9 @@ export const FooterCopyLeft = styled.div`
   font-size: 12px;
   z-index: 10;
   padding: 0.5rem;
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 `;
 
 export const FooterTitle = styled.h1`

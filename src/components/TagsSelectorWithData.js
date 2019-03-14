@@ -60,8 +60,8 @@ class TagsSelector extends React.Component {
 }
 
 const getDataQuery = gql`
-  query allPosts($groupSlug: String, $onlyPostsWithLocation: Boolean, $date: String) {
-    allPosts(groupSlug: $groupSlug, hasLocation: $onlyPostsWithLocation, date: $date) {
+  query allPosts($groupSlug: String, $onlyPostsWithLocation: Boolean, $date: String, $limit: Int) {
+    allPosts(groupSlug: $groupSlug, hasLocation: $onlyPostsWithLocation, date: $date, limit: $limit) {
       total
       nodes {
         id
@@ -80,6 +80,7 @@ export const addData = graphql(getDataQuery, {
         groupSlug: props.groupSlug,
         date: props.date,
         onlyPostsWithLocation: true,
+        limit: 100,
       },
     };
   },
