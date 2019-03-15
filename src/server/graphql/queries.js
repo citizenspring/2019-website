@@ -37,10 +37,9 @@ const queries = {
         const startsAt = new Date(args.date);
         startsAt.setHours(0);
         startsAt.setMilliseconds(0);
-        const endsAt = new Date(startsAt);
-        endsAt.setDate(startsAt.getDate() + 1);
-        query.where.startsAt = { [Op.gte]: startsAt };
-        query.where.endsAt = { [Op.gte]: endsAt };
+        const startsAtLimit = new Date(startsAt);
+        startsAtLimit.setDate(startsAt.getDate() + 1);
+        query.where.startsAt = { [Op.gte]: startsAt, [Op.gte]: startsAtLimit };
       }
       query.where.ParentPostId = { [Op.is]: null };
       query.limit = args.limit || 20;

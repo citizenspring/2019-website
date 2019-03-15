@@ -396,16 +396,15 @@ export const GroupType = new GraphQLObjectType({
             const startsAt = new Date(args.date);
             startsAt.setHours(0);
             startsAt.setMilliseconds(0);
-            const endsAt = new Date(startsAt);
-            endsAt.setDate(startsAt.getDate() + 1);
-            where.startsAt = { [Op.gte]: startsAt };
-            where.endsAt = { [Op.gte]: endsAt };
+            const startsAtLimit = new Date(startsAt);
+            startsAtLimit.setDate(startsAt.getDate() + 1);
+            where.startsAt = { [Op.gte]: startsAt, [Op.lt]: startsAtLimit };
           }
           where.ParentPostId = { [Op.is]: null };
           const query = { where };
           query.limit = args.limit || 20;
           query.offset = args.offset || 0;
-          query.order = [['createdAt', 'DESC']];
+          query.order = [['startsAt', 'ASC'], ['createdAt', 'DESC']];
           const count = await models.Post.count(query);
           const rows = await models.Post.findAll(query);
           return {
