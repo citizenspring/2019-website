@@ -1,8 +1,8 @@
-import models from '../src/server/models';
+import models, { Op } from '../src/server/models';
 import libemail from '../src/server/lib/email';
 
 const run = async () => {
-  const posts = await models.Post.findAll();
+  const posts = await models.Post.findAll({ where: { status: { [Op.in]: ['PUBLISHED', 'PENDING'] } } });
   console.log('> reprocessing', posts.length, 'emails');
   const promises = [];
   posts.map(p => {
