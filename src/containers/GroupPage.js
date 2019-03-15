@@ -96,7 +96,7 @@ class GroupPage extends React.Component {
 }
 
 const getDataQuery = gql`
-  query Group($groupSlug: String!, $tags: [String]) {
+  query Group($groupSlug: String!, $tags: [String], $limit: Int) {
     Group(groupSlug: $groupSlug) {
       id
       slug
@@ -113,7 +113,7 @@ const getDataQuery = gql`
           }
         }
       }
-      posts(tags: $tags) {
+      posts(tags: $tags, limit: $limit) {
         total
         nodes {
           id
