@@ -151,7 +151,7 @@ const mutations = {
       } else {
         const postCreated = await user.createPost(postData);
         const tokenData = { type: 'post', TargetId: postCreated.id };
-        const token = createJwt('confirmCreatePost', { data: tokenData }, '1d');
+        const token = createJwt('confirmCreatePost', { data: tokenData }, '2d');
         const confirmationUrl = `${config.server.baseUrl}/api/approve?groupSlug=${group.slug}&postSlug=${
           postCreated.slug
         }&token=${token}`;

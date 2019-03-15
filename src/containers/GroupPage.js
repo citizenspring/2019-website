@@ -158,7 +158,7 @@ const getDataQuery = gql`
   }
 `;
 
-const POSTS_PER_PAGE = 20;
+const POSTS_PER_PAGE = 100;
 
 export const addData = graphql(getDataQuery, {
   options(props) {
