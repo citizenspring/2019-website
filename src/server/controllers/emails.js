@@ -137,10 +137,10 @@ export async function follow(senderEmail, group, PostId) {
 export async function edit(senderEmail, GroupId, PostId, data) {
   let target, type;
   if (PostId) {
-    target = await models.Post.findByPk(PostId);
+    target = await models.Post.findByPostId(PostId);
     type = 'post';
   } else {
-    target = await models.Group.findByPk(GroupId);
+    target = await models.Group.findByGroupId(GroupId);
     type = 'group';
   }
   const user = await models.User.findByEmail(senderEmail);
@@ -229,7 +229,7 @@ export async function handleIncomingEmail(email) {
   }
 
   if (action) {
-    const data = {};
+    const data = { email };
     switch (action) {
       case 'submit':
         return submit(email.sender, group, email['body-plain']);

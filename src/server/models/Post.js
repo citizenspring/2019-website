@@ -469,10 +469,10 @@ module.exports = (sequelize, DataTypes) => {
       if (groupSlug) {
         group = { slug: groupSlug };
       } else {
-        group = await models.Group.findByPk(this.GroupId);
+        group = await models.Group.findByGroupId(this.GroupId);
       }
       if (this.ParentPostId) {
-        const parentPost = await Post.findByPk(this.ParentPostId);
+        const parentPost = await Post.findByPostId(this.ParentPostId);
         this.path = `/${group.slug}/${parentPost.slug}`;
       } else {
         this.path = `/${group.slug}/posts/${this.slug}`;

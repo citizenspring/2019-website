@@ -255,7 +255,7 @@ export const MemberType = new GraphQLObjectType({
       group: {
         type: GroupType,
         resolve(member) {
-          return models.Group.findByPk(member.GroupId);
+          return models.Group.findByGroupId(member.GroupId);
         },
       },
       description: {
@@ -518,13 +518,13 @@ export const PostType = new GraphQLObjectType({
       group: {
         type: GroupType,
         resolve(post, args, req) {
-          return models.Group.findByPk(post.GroupId);
+          return models.Group.findByGroupId(post.GroupId);
         },
       },
       parent: {
         type: PostType,
         resolve(post) {
-          return models.Post.findByPk(post.ParentPostId);
+          return models.Post.findByPostId(post.ParentPostId);
         },
       },
       version: {
@@ -683,13 +683,13 @@ export const ActivityType = new GraphQLObjectType({
       group: {
         type: GroupType,
         resolve(activity) {
-          return models.Group.findByPk(activity.GroupId);
+          return models.Group.findByGroupId(activity.GroupId);
         },
       },
       post: {
         type: PostType,
         resolve(activity, args, req) {
-          return models.Post.findByPk(activity.PostId);
+          return models.Post.findByPostId(activity.PostId);
         },
       },
       user: {

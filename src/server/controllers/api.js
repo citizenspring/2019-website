@@ -93,7 +93,8 @@ export async function approve(req, res, next) {
   if (!TargetId) {
     return res.status(500).send(`Invalid token: TargetId missing`);
   }
-  const target = await models[capitalize(get(token, 'data.type'))].findByPk(TargetId);
+  const modelName = capitalize(get(token, 'data.type'));
+  const target = await models[modelName][`findBy${modelName}Id`](TargetId);
   if (!target) {
     return res.status(500).send(`Cannot approve: TargetId ${TargetId} not found`);
   }
@@ -102,8 +103,8 @@ export async function approve(req, res, next) {
     target.addAdmin(target.UserId);
   }
   if (get(token, 'data.includeChildren') === true) {
-    const ParentColumn = `Parent${capitalize(get(token, 'data.type')).replace(/s$/, '')}Id`;
-    const children = await models[capitalize(get(token, 'data.type'))].findAll({ where: { [ParentColumn]: TargetId } });
+    const ParentColumn = `Parent${modelName.replace(/s$/, '')}Id`;
+    const children = await models[modelName].findAll({ where: { [ParentColumn]: TargetId } });
     children.map(async child => await child.publish());
   }
   const path = await target.getPath();
