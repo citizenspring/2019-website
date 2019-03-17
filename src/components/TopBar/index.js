@@ -11,14 +11,21 @@ const getPinnedPosts = locale => {
   const posts = [];
   switch (locale) {
     case 'en':
-    case 'fr':
+      posts.push({ path: '/groups', title: 'Working groups' });
       posts.push({ path: '/brussels/posts/faq-86', title: 'FAQ' });
+      posts.push({ path: '/info/posts/about-355', title: 'About' });
+      break;
+    case 'fr':
+      posts.push({ path: '/groups', title: 'Groupes de travail' });
+      posts.push({ path: '/brussels/posts/faq-86', title: 'FAQ' });
+      posts.push({ path: '/brussels/posts/a-propos-208', title: 'A propos' });
       break;
     case 'nl':
+      posts.push({ path: '/groups', title: 'Werkgroepen' });
       posts.push({ path: '/antwerp/posts/faq-voor-burgerinitiatieven-en-bezoekers-nederlands-129', title: 'FAQ' });
+      posts.push({ path: '/info/posts/over-363', title: 'Over' });
       break;
   }
-  posts.push({ path: '/groups', title: 'working groups' });
   return posts;
 };
 

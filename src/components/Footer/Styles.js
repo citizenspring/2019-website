@@ -3,7 +3,7 @@ import settings from '../../../settings.json';
 
 export const FooterWrapper = styled.div`
   margin-top: 3rem;
-  height: 350px;
+  height: 400px;
   overflow: hidden;
   position: relative;
 `;
@@ -11,7 +11,7 @@ export const FooterBackground = styled.div`
   position: absolute;
   background: url(${settings.background}) no-repeat top center;
   background-size: cover;
-  height: 350px;
+  height: 400px;
   top: -5px;
   left: -5px;
   width: 105%;

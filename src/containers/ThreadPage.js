@@ -60,6 +60,7 @@ class ThreadPage extends React.Component {
       groupSlug,
     } = this.props;
     if (loading) return <Loading groupSlug={groupSlug} />;
+    if (!thread) return <div>No thread</div>;
 
     const threadEmail = `${thread.group.slug}/${thread.PostId}@${env.DOMAIN}`;
     const followEmail = mailto(

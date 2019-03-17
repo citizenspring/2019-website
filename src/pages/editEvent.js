@@ -49,6 +49,9 @@ class CreateEventPage extends React.Component {
   async componentDidMount() {}
 
   async onSubmit(form) {
+    if (!form.startsAt) {
+      return console.error('form.startsAt is undefined', form);
+    }
     const startsAtDate = form.startsAt.replace(/.*[^\d]([0-9]+)[^\d].*/, '$1');
     const startsAt = new Date();
     startsAt.setMonth(2);

@@ -1,4 +1,5 @@
 {
+  "date.filter.label": "Filter by date",
   "footer.suggestEdit": "Stel een wijziging voor aan deze pagina\n",
   "footer.group.sendMessage": "Stuur een bericht naar deze groep",
   "footer.group.follow": "Volg deze groep",
@@ -127,6 +128,7 @@
   "event.create.title": "Registreer je burgerinitiatief",
   "event.edit.title": "Stel een bewerking voor voor dit evenement",
   "homepage.latestMessages": "Laatste berichten",
+  "homepage.pickYourCity": "Kies je stad",
   "homepage.quote": "\"De toekomst is er al. Ze is alleen nog niet volledig gelijkmatig verdeeld\" - iemand beroemd.",
   "homepage.p1": "Klimaatverandering doet ons grondig nadenken over de manier waarop we leven en werken. We moeten een duurzamere toekomst bouwen, niet alleen voor het milieu, ook voor de gemeenschappen waarin we leven.",
   "homepage.p2": "De oplossingen liggen er: zero wast, lokale en circulaire economie, permacultuur, micromobiliteit, burgerparticipatie, ... ze zijn enkel nog te weinig zichtbaar.",

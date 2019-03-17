@@ -121,6 +121,33 @@ const theme = {
         cursor: 'not-allowed',
       },
     },
+    white: {
+      backgroundColor: 'white',
+      border: '1px solid',
+      borderColor: colors.black[300],
+      borderRadius: '100px',
+      borderColor: colors.primary[300],
+      color: colors.primary[400],
+
+      '&:hover': {
+        backgroundColor: colors.primary[500],
+        color: 'white',
+        border: '1px solid',
+      },
+
+      '&:active': {
+        backgroundColor: colors.primary[500],
+        borderColor: colors.primary[500],
+        color: 'white',
+      },
+
+      '&:disabled': {
+        backgroundColor: colors.black[50],
+        borderColor: colors.black[200],
+        color: colors.black[300],
+        cursor: 'not-allowed',
+      },
+    },
 
     primary: {
       backgroundColor: colors.primary[500],
