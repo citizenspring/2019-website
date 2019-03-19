@@ -45,14 +45,14 @@ class HomePage extends React.Component {
             <Flex mt={4} flexDirection={'row'} justifyContent="center">
               <Box mx={2}>
                 <Link prefetch href="/antwerp">
-                  <StyledLink buttonStyle="white" buttonSize="large">
+                  <StyledLink buttonStyle="white" buttonSize="medium">
                     ANTWERP
                   </StyledLink>
                 </Link>
               </Box>
               <Box mx={2}>
                 <Link prefetch href="/brussels">
-                  <StyledLink buttonStyle="white" buttonSize="large">
+                  <StyledLink buttonStyle="white" buttonSize="medium">
                     BRUSSELS
                   </StyledLink>
                 </Link>
