@@ -94,7 +94,7 @@ export async function approve(req, res, next) {
     return res.status(500).send(`Invalid token: TargetId missing`);
   }
   const modelName = capitalize(get(token, 'data.type'));
-  const target = await models[modelName][`findBy${modelName}Id`](TargetId);
+  const target = await models[modelName].findByPk(TargetId);
   if (!target) {
     return res.status(500).send(`Cannot approve: TargetId ${TargetId} not found`);
   }
