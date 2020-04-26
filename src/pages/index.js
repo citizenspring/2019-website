@@ -21,46 +21,38 @@ const Font = styled.div`
   font-size: ${({ size }) => `${size}px`};
 `;
 
+const Links = styled.ul`
+  list-style: none;
+  text-align: center;
+  & li {
+    display: inline;
+    margin-right: 10px;
+  }
+`;
+
 class HomePage extends React.Component {
   componentDidMount() {}
 
   render() {
     return (
       <div className="home">
-        <TopBar />
         <Content>
           <Box my={4}>
             <center>
               <img src="/static/images/citizenspring-logo.svg" width="100%" style={{ maxWidth: '300px' }} />
             </center>
             <Cover>
-              <Font size={36}>March 21-24 2019</Font>
-              <Font size={30}>MEET THE CITIZENS</Font>
-              <Font size={25}>that are taking initiatives</Font>
+              <Font size={36}>Walking the walk</Font>
+              <Font size={21}>towards a sustainable future</Font>
               <img src="/static/images/citizens-emoji.png" height={48} />
             </Cover>
-            <center>
-              <FormattedMessage id="homepage.pickYourCity" defaultMessage="Pick your city" />
-            </center>
-            <Flex mt={4} flexDirection={'row'} justifyContent="center">
-              <Box mx={2}>
-                <Link prefetch href="/antwerp">
-                  <StyledLink buttonStyle="white" buttonSize="medium">
-                    ANTWERP
-                  </StyledLink>
-                </Link>
-              </Box>
-              <Box mx={2}>
-                <Link prefetch href="/brussels">
-                  <StyledLink buttonStyle="white" buttonSize="medium">
-                    BRUSSELS
-                  </StyledLink>
-                </Link>
-              </Box>
-            </Flex>
+            <Links>
+              <li><a href="https://facebook.com/citizenspringmovement">Facebook</a></li>
+              <li><a href="https://twitter.com/citizen_spring">Twitter</a></li>
+              <li><a href="https://opencollective.com/citizenspring">Open Collective</a></li>
+            </Links>
           </Box>
         </Content>
-        <Footer />
       </div>
     );
   }
