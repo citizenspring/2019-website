@@ -1,14 +1,13 @@
 import React from 'react';
-import TopBar from '../../components/TopBar/index.js.js';
-import Footer from '../../components/Footer/index.js.js';
-import { Title, Content, PullQuote } from '../../styles/layoutout';
-import StyledLink from '../../components/StyledLinkink';
-import Link from '../../components/Linkink';
+import TopBar from '../../components/TopBar/index.js';
+import Footer from '../../components/Footer/index.js';
+import { Title, Content, PullQuote } from '../../styles/layout';
+import StyledLink from '../../components/StyledLink';
+import Link from '../../components/Link';
 import styled from 'styled-components';
-import { mailto } from '../../lib/utilsils';
 import { Box, Flex } from '@rebass/grid';
 import { FormattedMessage } from 'react-intl';
-import withIntl from '../../lib/withIntlntl';
+import withIntl from '../../lib/withIntl';
 
 const Cover = styled.div`
   margin: 2rem 0;
