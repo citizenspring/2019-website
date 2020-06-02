@@ -43,12 +43,12 @@ class MapMarkers extends React.Component {
               <Title>
                 <FormattedMessage id="eventsGroup.banner.title" defaultMessage="Register your citizen initiative!" />
               </Title>
-              <Description>
+              {/* <Description>
                 <FormattedMessage
                   id="eventsGroup.banner.description"
                   defaultMessage="You just need to open your doors one of the first few days of Spring (March 21-24) to join the movement!"
                 />
-              </Description>
+              </Description> */}
             </Box>
             <Box mx={3}>
               <Link href={`/${groupSlug}/events/new`}>

@@ -34,7 +34,7 @@ class HomePage extends React.Component {
               <img src="/static/images/citizenspring-logo.svg" width="100%" style={{ maxWidth: '300px' }} />
             </center>
             <Cover>
-              <Font size={36}>March 21-24 2019</Font>
+              <Font size={36}>This Spring</Font>
               <Font size={30}>MEET THE CITIZENS</Font>
               <Font size={25}>that are taking initiatives</Font>
               <img src="/static/images/citizens-emoji.png" height={48} />
